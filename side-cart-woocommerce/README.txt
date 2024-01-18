@@ -1,10 +1,10 @@
-===Side Cart Woocommerce (Ajax)===
+===Side Cart Woocommerce | Woocommerce Cart===
 Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
 Tested up to: 6.4
-Stable tag: 2.4.7
+Stable tag: 2.4.8
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,9 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 6. Change Shipping Pro
 
 == Changelog ==
+
+= 2.4.8 =
+* Fix - bugs
 
 = 2.4.7 =
 * Fix - Woocommerce 8.3 compatibility

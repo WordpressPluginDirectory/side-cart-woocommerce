@@ -362,3 +362,37 @@ table.xoo-sc-table tr td:first-child {
     }
 }
 
+
+
+
+.xoo-sc-bottom-btns > *:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.xoo-sc-bottom-btns > *:last-child  {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+
+.xoo-sc-bottom-btns {
+    bottom: 8px;
+}
+
+.xoo-sc-bottom-btns > * {
+    padding: 15px;
+}
+
+.xoo-sc-bottom-btns a:hover {
+    color: #fff;
+}
+
+a.xoo-as-pro-toggle.xoo-aspt-two, .xoo-as-disable-pro a.xoo-as-pro-toggle {
+    display: block;
+}
+
+.xoo-as-disable-pro a.xoo-as-pro-toggle.xoo-aspt-two, a.xoo-as-pro-toggle  {
+    display: none;
+}
+

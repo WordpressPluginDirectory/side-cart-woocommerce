@@ -77,7 +77,8 @@ class Xoo_Wsc_Template_Args{
 			'heading' 			=> trim( esc_html( self::$gl['sct-cart-heading'] ) ),
 			'showCoupon' 		=> in_array( 'coupon' , $show ),
 			'couponIcon' 		=> esc_html( self::$sy['scf-coup-icon'] ),
-			'footerTxt' 		=> self::$gl['sct-footer']
+			'footerTxt' 		=> self::$gl['sct-footer'],
+			'showFooterTxt' 	=> self::$gl['scf-ftext-hide'] !== "yes" || !WC()->cart->is_empty()
 		);
 
 		return apply_filters( 'xoo_wsc_cart_header_args', $args );

@@ -30,7 +30,7 @@ $settings = array(
 		'id' 			=> 'm-trigger-class',
 		'section_id' 	=> 'av_main',
 		'default' 		=> "",
-		'desc' 			=> 'You can use class xoo-wsc-cart-trigger to open side cart or add your own class here',
+		'desc' 			=> 'You can add your class here to open side cart or use class xoo-wsc-cart-trigger to open side cart',
 	),
 
 );

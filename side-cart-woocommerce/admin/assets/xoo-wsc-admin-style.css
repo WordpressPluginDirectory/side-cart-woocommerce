@@ -420,7 +420,7 @@ a.xoo-wsc-ft-btn, a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn, .xoo-
 /** FOOTER Totals **/
 .xoo-wsc-ft-totals {
     width: 100%;
-    padding: 10px 0;
+    padding: 5px 0 10px 0;
 }
 
 .xoo-wsc-ft-amt {

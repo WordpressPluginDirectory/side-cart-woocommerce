@@ -13,36 +13,6 @@ foreach ($menus as $menuObj ) {
 
 $settings = array(
 
-	/***** Shortcode ****/
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Add to menu',
-		'id' 			=> 'shbk-menu',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> $menuOptions
-		),
-		'default' 	=> 'none',
-	),
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Show',
-		'id' 			=> 'shbk-show',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> array(
-				'icon' 			=> 'Icon',
-				'subtotal' 		=> 'Subtotal',
-				'count' 		=> 'Count',
-			)
-		),
-		'default' 	=> array(
-			'icon', 'subtotal', 'count',
-		),
-	),
-
 
 	/** SIDE CART HEADER **/
 
@@ -202,7 +172,7 @@ $settings = array(
 		'title' 		=> 'Hide footer text when cart is empty',
 		'id' 			=> 'scf-ftext-hide',
 		'section_id' 	=> 'sc_footer',
-		'default' 		=> 'no',
+		'default' 		=> 'yes',
 		'desc' 			=> 'Set footer text below under "Texts section" '
 	),
 
@@ -226,6 +196,38 @@ $settings = array(
 		'desc' 			=> '<a href="https://wordpress.org/plugins/woocommerce-gateway-amazon-payments-advanced/" target="_blank">Download plugin</a><br>Amazon Pay settings: Check Amazon Pay on mini cart ',
 		'pro' 			=> 'yes'
 	),
+
+
+	/***** Shortcode ****/
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Add to menu',
+		'id' 			=> 'shbk-menu',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> $menuOptions
+		),
+		'default' 	=> 'none',
+	),
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Show',
+		'id' 			=> 'shbk-show',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> array(
+				'icon' 			=> 'Icon',
+				'subtotal' 		=> 'Subtotal',
+				'count' 		=> 'Count',
+			)
+		),
+		'default' 	=> array(
+			'icon', 'subtotal', 'count',
+		),
+	),
+
 
 
 	/*** SUGGESTED PRODUCTS ***/
@@ -436,11 +438,11 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'checkbox',
-		'title' 		=> 'Remove WC view cart link',
+		'title' 		=> 'Remove view cart link',
 		'id' 			=> 'm-viewcart-del',
 		'section_id' 	=> 'main',
-		'default' 		=> 'no',
-		'desc' 			=> 'Remove view cart button/link added by woocommerce on ajax add to cart',
+		'default' 		=> 'yes',
+		'desc' 			=> 'Remove view cart button/link added by woocommerce on add to cart',
 	),
 
 
@@ -514,7 +516,7 @@ $settings = array(
 		'title' 		=> 'Footer text',
 		'id' 			=> 'sct-footer',
 		'section_id' 	=> 'texts',
-		'default' 		=> 'To find out your shipping cost , Please proceed to checkout.',
+		'default' 		=> 'Shipping, taxes, and discounts calculated at checkout.',
 	),
 
 	array(

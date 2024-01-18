@@ -260,6 +260,8 @@ jQuery(document).ready(function($){
 			$(document.body).on( 'click', 'a.added_to_cart, .xoo-wsc-cart-trigger', this.openCart.bind(this) );
 			$(document.body).on( 'added_to_cart', this.addedToCart.bind(this) );
 
+			$(document.body).on( 'wc-blocks_added_to_cart', this.blockAddedToCart.bind(this) );
+
 			if( xoo_wsc_params.autoOpenCart === 'yes' && xoo_wsc_params.addedToCart === 'yes'){
 				this.openCart();
 			}
@@ -387,6 +389,17 @@ jQuery(document).ready(function($){
 					},20 )
 				}
 			} );
+		}
+
+		blockAddedToCart(){
+			
+			var _this = this;
+
+			if( xoo_wsc_params.autoOpenCart === "yes" ){
+				setTimeout(function(){
+					_this.openCart();	
+				},20 )
+			}
 		}
 
 

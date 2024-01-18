@@ -33,7 +33,7 @@ class Xoo_Wsc_Admin_Settings{
 	public function preview_info($tab_id){
 		if( !xoo_wsc_helper()->admin->is_settings_page() || $tab_id === 'pro' || $tab_id === 'info' ) return;
 		?>
-		<div class="xoo-as-preview-info">*Only settings with the icon <span class="dashicons dashicons-laptop"></span> are updated in customizer view. Actual website view might look different from the setting view due to theme styling.</div>
+		<div class="xoo-as-preview-info"><span class="dashicons dashicons-laptop"></span> Updates live in customizer</div>
 		<?php
 	}
 

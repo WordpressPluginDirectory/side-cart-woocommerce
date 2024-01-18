@@ -24,4 +24,11 @@ function xoo_wsc_fix_for_divi_builder(){
 }
 add_action( 'wp_head', 'xoo_wsc_fix_for_divi_builder'  );
 
+
+/* Block theme fix */
+add_action( 'wp_enqueue_scripts', function(){
+	if( !function_exists('wc_current_theme_is_fse_theme') || !wc_current_theme_is_fse_theme() ) return;
+	wp_enqueue_script( 'wc-cart-fragments' );
+}, PHP_INT_MAX );
+
 ?>

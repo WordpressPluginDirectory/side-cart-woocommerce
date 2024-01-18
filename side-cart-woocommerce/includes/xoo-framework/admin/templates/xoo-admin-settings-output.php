@@ -18,7 +18,8 @@
 
 		<div class="xoo-sc-bottom-btns">
 			<?php if( $hasPRO ): ?>
-				<a class="xoo-as-pro-toggle">Show/Hide Pro options</a>
+				<a class="xoo-as-pro-toggle">Show Pro options</a>
+				<a class="xoo-as-pro-toggle xoo-aspt-two">Hide Pro options</a>
 			<?php endif; ?>
 			<button type="submit" class="xoo-as-form-save">Save</button>
 			<a class="xoo-as-form-reset" href="<?php echo esc_url( add_query_arg( 'reset', wp_create_nonce('reset') ) ) ?>">Reset</a>

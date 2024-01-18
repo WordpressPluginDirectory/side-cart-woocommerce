@@ -385,15 +385,6 @@ $settings = array(
 
 
 	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Text Color',
-		'id' 			=> 'scb-txtcolor',
-		'section_id' 	=> 'sc_body',
-		'default' 		=> '#000000',
-	),
-
-
-	array(
 		'callback' 		=> 'upload',
 		'title' 		=> 'Empty Cart Image',
 		'id' 			=> 'scb-empty-img',
@@ -470,10 +461,19 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'color',
-		'title' 		=> 'Product BG Color',
+		'title' 		=> 'Background Color',
 		'id' 			=> 'scbp-bgcolor',
 		'section_id' 	=> 'scb_product',
 		'default' 		=> '#ffffff',
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Text Color',
+		'id' 			=> 'scb-txtcolor',
+		'section_id' 	=> 'scb_product',
+		'default' 		=> '#000000',
 	),
 
 
@@ -946,8 +946,8 @@ $settings = array(
 		'title' 		=> 'Shadow',
 		'id' 			=> 'scf-shadow',
 		'section_id' 	=> 'sc_footer',
-		'default' 		=> '0 -5px 10px #0000001a',
-		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0 -5px 10px #0000001a')
+		'default' 		=> '0 -1px 10px #0000001a',
+		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0 -1px 10px #0000001a')
 	),
 
 

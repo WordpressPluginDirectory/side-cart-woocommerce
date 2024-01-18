@@ -128,6 +128,14 @@ else{
 	font-size: <?php echo $ftrFsize ?>px;
 }
 
+.xoo-wsc-btn .amount{
+	color: <?php echo $buttontxtColor ?>
+}
+
+.xoo-wsc-btn:hover .amount{
+	color: <?php echo $HVbuttontxtColor ?>;
+}
+
 .xoo-wsc-ft-buttons-cont{
 	grid-template-columns: <?php echo $gridCols ?>;
 }
