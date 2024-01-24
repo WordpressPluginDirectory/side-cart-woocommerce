@@ -3,7 +3,7 @@
 * Plugin Name: Side Cart WooCommerce
 * Plugin URI: http://xootix.com/side-cart-woocommerce
 * Author: XootiX
-* Version: 2.4.8
+* Version: 2.4.9
 * Text Domain: side-cart-woocommerce
 * Domain Path: /languages
 * Author URI: http://xootix.com

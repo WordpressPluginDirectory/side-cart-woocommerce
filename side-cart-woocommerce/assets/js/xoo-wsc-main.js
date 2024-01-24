@@ -392,6 +392,10 @@ jQuery(document).ready(function($){
 		}
 
 		blockAddedToCart(){
+
+			$( document.body ).trigger( 'wc_fragment_refresh' );
+
+			this.block();
 			
 			var _this = this;
 
