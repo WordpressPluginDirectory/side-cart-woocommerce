@@ -6,9 +6,9 @@
 
 		<div class="xoo-sc-container">
 			<div>
-				<span class="xoo-sc-name"><?php echo $data['shortcode'] ?></span> - <span class="xoo-sc-desc"><?php echo $data['desc'] ?></span>
+				<span class="xoo-sc-name"><?php echo esc_html( $data['shortcode'] ) ?></span> - <span class="xoo-sc-desc"><?php echo esc_html( $data['desc'] ) ?></span>
 			</div>
-			<span class="xoo-sc-example">Eg: <?php echo $data['example'] ?></span>
+			<span class="xoo-sc-example">Eg: <?php echo esc_html( $data['example'] ) ?></span>
 
 			<?php if( isset( $data['atts'] ) ): ?>
 				<table class="xoo-sc-table">
@@ -23,7 +23,7 @@
 					<?php foreach ( $data['atts'] as $attData){
 						echo '<tr>';
 						foreach ( $attData as $keyTD => $valueTD ) {
-							echo '<td>'.$valueTD.'</td>';	
+							echo '<td>'.esc_html( $valueTD ).'</td>';	
 						}
 						echo '</tr>';
 					} ?>

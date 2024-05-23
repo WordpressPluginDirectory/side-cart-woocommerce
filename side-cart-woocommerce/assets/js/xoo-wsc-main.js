@@ -13,6 +13,8 @@ jQuery(document).ready(function($){
 
 	class Notice{
 
+		static markupTimeout = null;
+
 		constructor( $modal ){
 			this.$modal = $modal;
 			this.timeout = null;
@@ -34,6 +36,8 @@ jQuery(document).ready(function($){
 
 		showNotification(){
 
+			Notice.showMarkupNotice();
+
 			var $noticeCont = this.$modal.find('.xoo-wsc-notice-container');
 
 			if( !$noticeCont.length || $noticeCont.children().length === 0 ) return;
@@ -50,8 +54,37 @@ jQuery(document).ready(function($){
 
 		}
 
+
+
 		hideNotification(){
 			this.$modal.find('.xoo-wsc-notice-container').hide();
+		}
+
+		static hideMarkupNotice(){
+			Notice.$noticeContainer().removeClass('xoo-wsc-active');
+		}
+
+		static $noticeContainer(){
+			return $('.xoo-wsc-markup-notices')
+		}
+
+		static showMarkupNotice(){
+
+			if( cart.isOpen() ) return;
+
+			var $markupNotice = Notice.$noticeContainer();
+
+			var $notices = $markupNotice.find('.xoo-wsc-notice-container .xoo-wsc-notices');
+
+			if( !$notices.length || $notices.children().length === 0 ) return;
+
+			setTimeout(function(){$markupNotice.addClass('xoo-wsc-active')},10);
+			
+			clearTimeout(Notice.markupTimeout);
+
+			Notice.markupTimeout = setTimeout(function(){
+				$markupNotice.removeClass('xoo-wsc-active');
+			},xoo_wsc_params.notificationTime )
 		}
 	}
 
@@ -62,6 +95,10 @@ jQuery(document).ready(function($){
 			this.$modal 	= $modal;
 			this.container 	= container || 'cart';
 			this.notice 	= new Notice( this.$modal );
+		}
+
+		isOpen(){
+			return this.$modal.hasClass('xoo-wsc-'+this.container+'-active');
 		}
 
 		eventHandlers(){
@@ -228,12 +265,8 @@ jQuery(document).ready(function($){
 
 			super( $modal, 'cart' );
 
-			this.baseQty 		= 1;
-			this.qtyUpdateDelay = null;
-
 			this.refreshFragmentsOnPageLoad();
 			this.eventHandlers();
-			this.initSlider();
 
 		}
 
@@ -248,13 +281,9 @@ jQuery(document).ready(function($){
 
 			super.eventHandlers();
 
-			this.$modal.on( 'click', '.xoo-wsc-chng', this.toggleQty.bind(this) );
-			this.$modal.on( 'change', '.xoo-wsc-qty', this.changeInputQty.bind(this) );
-			this.$modal.on( 'click', '.xoo-wsc-undo-item', this.undoItem.bind(this) );
-			this.$modal.on( 'focusin', '.xoo-wsc-qty', this.saveQtyFocus.bind(this) );
 			this.$modal.on( 'click', '.xoo-wsc-smr-del', this.deleteIconClick.bind(this) );
 			this.$modal.on( 'click', '.xoo-wsch-close, .xoo-wsc-opac, .xoo-wsc-cart-close', this.closeCartOnClick.bind(this) );
-			this.$modal.on( 'click', '.xoo-wsc-basket', this.toggle.bind(this) );
+			this.$modal.on( 'click', '.xoo-wsc-basket', this.toggleCart.bind(this) );
 
 			$(document.body).on( 'xoo_wsc_cart_updated', this.updateCartCheckoutPage.bind(this) );
 			$(document.body).on( 'click', 'a.added_to_cart, .xoo-wsc-cart-trigger', this.openCart.bind(this) );
@@ -283,11 +312,17 @@ jQuery(document).ready(function($){
 				$(document.body).on( 'updated_shipping_method', this.refreshMyFragments.bind(this) );
 			}
 
-			//Animate shipping bar
-			$(document.body).on( 'xoo_wsc_before_loading_fragments', this.storeShippingBarWidth.bind(this) );
-
 		}
 
+		toggleCart(e){
+			if( this.isOpen() ){
+				this.closeCartOnClick(e);
+			}
+			else{
+				this.openCart(e);
+			}
+			
+		}
 
 		openCart(e){
 			if( e ){
@@ -295,6 +330,7 @@ jQuery(document).ready(function($){
 				e.stopImmediatePropagation();
 			}
 			this.toggle('show');
+			Notice.hideMarkupNotice();
 		}
 
 		addToCartFormSubmit(e){
@@ -360,7 +396,11 @@ jQuery(document).ready(function($){
 					if(response.fragments){
 						// Trigger event so themes can refresh other areas.
 						$( document.body ).trigger( 'added_to_cart', [ response.fragments, response.cart_hash, $button ] );
-					}else{
+					}else if(response.error){
+						Notice.$noticeContainer().replaceWith(response.notice);
+						Notice.showMarkupNotice();
+					}
+					else{
 						window.location.reload();
 					}
 
@@ -382,13 +422,13 @@ jQuery(document).ready(function($){
 	
 			var _this = this;
 
-			this.flyToCart( $button, function(){
-				if( xoo_wsc_params.autoOpenCart === "yes" ){
-					setTimeout(function(){
-						_this.openCart();	
-					},20 )
-				}
-			} );
+			
+			if( xoo_wsc_params.autoOpenCart === "yes" ){
+				setTimeout(function(){
+					_this.openCart();	
+				},20 )
+			}
+			
 		}
 
 		blockAddedToCart(){
@@ -406,156 +446,22 @@ jQuery(document).ready(function($){
 			}
 		}
 
-
-		flyToCart( $atcEL, callback ){
-
-			var $basket = this.$modal.find('.xoo-wsc-basket').length ? this.$modal.find('.xoo-wsc-basket') : $(document.body).find('.xoo-wsc-sc-cont');
-
-			if( !$basket.length || xoo_wsc_params.flyToCart !== 'yes' ){
-				callback();
-				return;
-			}
-
-			var customDragImgClass 	= '',
-				$dragIMG 			= null,
-				$product 			= $atcEL.parents('.product');
-
-
-			//If has product container
-			if( $product.length ){
-
-				var $productGallery = $product.find('.woocommerce-product-gallery');
-
-				if( customDragImgClass && $product.find( customDragImgClass ).length ){
-					$dragIMG = $product.find( customDragImgClass );
-				}
-				else if( $product.find( 'img[data-xooWscFly="fly"]' ).length ){
-					if( $productGallery.length ){
-						$dragIMG = $productGallery.find( '.flex-active-slide img[data-xooWscFly="fly"]' ).length ? $productGallery.find( '.flex-active-slide img[data-xooWscFly="fly"]' ) : $productGallery.find( 'img[data-xooWscFly="fly"]' )
-					}
-					else{
-						$dragIMG = $product.find( 'img[data-xooWscFly="fly"]' );
-					}
-				}
-				else if( $productGallery.length ){
-					$dragIMG = $productGallery;
-				}
-				else{
-					$dragIMG = $product;
-				}
-
-			}
-			else if( customDragImgClass ){
-				var moveUp = 4;
-				for ( var i = moveUp; i >= 0; i-- ) {
-					var $foundImg = $atcEL.parent().find( customDragImgClass );
-					if( $foundImg.length ){
-						$dragIMG = $foundImg;
-						return false;
-					}
-				}
-			}
-
-
-			if( !$dragIMG || !$dragIMG.length ){
-				callback();
-				return;
-			}
-
-			var $imgclone = $dragIMG
-				.clone()
-	    		.offset({
-		            top: $dragIMG.offset().top,
-		            left: $dragIMG.offset().left
-		        })
-	        	.addClass( 'xoo-wsc-fly-animating' )
-	            .appendTo( $('body') )
-	            .animate({
-	            	'top': $basket.offset().top - 10,
-		            'left': $basket.offset().left - 10,
-		            'width': 75,
-		            'height': 75
-		        }, 1000, 'easeInOutExpo' );
-	        
-	        setTimeout(function () {
-	        	callback()
-	        }, 1500 );
-
-	        $imgclone.animate({
-	        	'width': 0,
-	        	'height': 0
-	        }, function () {
-	        	$(this).detach();
-	        });
-
+		
+		closeCartOnClick(e){
+			e.preventDefault();
+			this.toggle( 'hide' );
 		}
 
 
-		toggleQty(e){
-
-			var $toggler 	= $(e.currentTarget),
-				$input 		= $toggler.siblings('.xoo-wsc-qty');
-
-			if( !$input.length ) return;
-
-			var baseQty = this.baseQty = parseFloat( $input.val() ),
-				step 	= parseFloat( $input.attr('step') ),
-				action 	= $toggler.hasClass( 'xoo-wsc-plus' ) ? 'add' : 'less',
-				newQty 	= action === 'add' ? baseQty + step : baseQty - step;
-
-			
-			$input.val(newQty).trigger('change');
-
+		onPageShow(e){
+			if ( e.originalEvent.persisted ) {
+				this.refreshMyFragments();
+				$( document.body ).trigger( 'wc_fragment_refresh' );
+			}
 		}
 
-		changeInputQty(e){
-
-			this.notice.hideNotification();
-
-			var $_this	= this,
- 				$input 	= $(e.currentTarget),
-				newQty 	= parseFloat( $input.val() ),
-				step 	= parseFloat( $input.attr('step') ),
-				min 	= parseFloat( $input.attr('min') ),
-				max 	= parseFloat( $input.attr('max') ),
-				invalid = false,
-				message = false;
-
-
-			//Validation
-			
-			if( isNaN( newQty )  || newQty < 0 || newQty < min  ){
-				invalid = true;
-			}
-			else if( newQty > max ){
-				invalid = true;
-				message = xoo_wsc_params.strings.maxQtyError.replace( '%s%', max );
-			}
-			else if( ( newQty % step ) !== 0 ){
-				invalid = true;
-				message = xoo_wsc_params.strings.stepQtyError.replace( '%s%', step );
-			}
-			
-			//Set back to default quantity
-			if( invalid ){
-				$input.val( this.baseQty );
-				if( message ){
-					this.notice.add( message, 'error' );
-					this.notice.showNotification();
-				}
-				return;
-			}
-
-			//Update
-			$input.val( newQty );
-
-			clearTimeout( this.qtyUpdateDelay );
-
-			this.qtyUpdateDelay = setTimeout(function(){
-				$_this.updateItemQty( $input.parents('.xoo-wsc-product').data('key'), newQty )
-			}, xoo_wsc_params.qtyUpdateDelay );
-			
-			
+		deleteIconClick(e){
+			this.updateItemQty( $( e.currentTarget ).parents('.xoo-wsc-product').data('key'), 0 );
 		}
 
 		updateItemQty( cart_key, qty ){
@@ -584,63 +490,8 @@ jQuery(document).ready(function($){
 			})
 		}
 
-
-		closeCartOnClick(e){
-			e.preventDefault();
-			this.toggle( 'hide' );
-		}
-
-
-		saveQtyFocus(e){
-			this.baseQty = $(e.currentTarget).val();
-		}
-
-
-		onPageShow(e){
-			if ( e.originalEvent.persisted ) {
-				this.refreshMyFragments();
-				$( document.body ).trigger( 'wc_fragment_refresh' );
-			}
-		}
-
-		deleteIconClick(e){
-			this.updateItemQty( $( e.currentTarget ).parents('.xoo-wsc-product').data('key'), 0 );
-		}
-
-		undoItem(e){
-
-			var $undo 		= $(e.currentTarget),
-				formData 	= {
-					cart_key: $undo.data('key')
-				}
-
-			this.block();
-
-			$.ajax({
-				url: get_wcurl('xoo_wsc_undo_item'),
-				type: 'POST',
-				context: this,
-				data: this.setAjaxData(formData),
-				success: function(response){
-					this.updateFragments( response );
-					$(document.body).trigger( 'xoo_wsc_item_restored', [response] );
-					$(document.body).trigger( 'xoo_wsc_cart_updated', [response] );
-					this.unblock();
-				}
-
-			})
-		}
-
-		storeShippingBarWidth( e ){
-			var $bar = $(document.body).find( '.xoo-wsc-sb-bar > span' );
-			if( !$bar.length ) return;
-			this.shippingBarWidth = $bar.prop('style').width;
-		}
-
 		onCartUpdate(){
 			super.onCartUpdate();
-			this.animateShippingBar();
-			this.initSlider();
 			this.showBasket();
 		}
 
@@ -665,290 +516,13 @@ jQuery(document).ready(function($){
 			}
 		}
 
-		animateShippingBar(){
-			if( isCartPage || isCheckoutPage ) return;
-			var $bar = $(document.body).find( '.xoo-wsc-sb-bar > span' );
-			if( !$bar.length || !this.shippingBarWidth ) return;
-			var newWidth = $bar.prop('style').width;
-			$bar
-				.width( this.shippingBarWidth )
-				.animate({ width: newWidth }, 400, 'linear')
-		}
-
-
-		initSlider(){
-
-			if( !$.isFunction( $.fn.lightSlider ) ) return;
-
-			$('ul.xoo-wsc-sp-slider').lightSlider({
-				item: 1,
-			});
-			
-		}
+	
 
 	}
 
-	
 
-	class Slider extends Container{
 
-		constructor( $modal ){
 
-			super( $modal, 'slider' );
-
-			if( xoo_wsc_params.sliderAutoClose ) this.noticeSection = 'cart';
-
-			this.eventHandlers();
-
-			this.shipping = xoo_wsc_params.shippingEnabled ? Shipping.init( this ) : null;
-		}
-
-		eventHandlers(){
-
-			super.eventHandlers();
-
-
-			$( document.body ).on( 'click', '.xoo-wsc-toggle-slider', this.triggerSlider.bind(this) );
-			$( document.body ).on( 'xoo_wsc_cart_toggled', this.closeSliderOnCartClose.bind(this) );
-
-			if( xoo_wsc_params.sliderAutoClose ){
-				$( document.body ).on( 'xoo_wsc_coupon_applied xoo_wsc_shipping_calculated updated_shipping_method xoo_wsc_coupon_removed', this.closeSlider.bind(this) );
-			}
-
-			this.$modal.on( 'submit', 'form.xoo-wsc-sl-apply-coupon', this.submitCouponForm.bind(this) );
-			this.$modal.on( 'click', '.xoo-wsc-coupon-apply-btn', this.applyCouponFromBtn.bind(this) );
-			$(document.body).on( 'click', '.xoo-wsc-remove-coupon', this.removeCoupon.bind(this) );
-		}
-
-
-		removeCoupon(e){
-
-			e.preventDefault();
-
-			var $removeEl 	= $(e.currentTarget),
-				coupon 		= $removeEl.data('code'),
-				formData 	= {
-					coupon: coupon,
-				};
-
-			this.block();	
-
-			$.ajax( {
-				url: get_wcurl( 'xoo_wsc_remove_coupon' ),
-				type: 'POST',
-				context: this,
-				data: this.setAjaxData( formData, cart.$modal.find( $removeEl ).length ? 'cart' : 'slider' ),
-				success: function( response ) {
-					this.updateFragments(response);
-				},
-				complete: function() {
-					this.unblock();
-					this.updateCartCheckoutPage();
-					$( document.body ).trigger( 'xoo_wsc_coupon_removed' );
-				}
-			} );
-		}
-
-		onCartUpdate(){
-			super.onCartUpdate();
-			this.toggleContent();
-		}
-
-		closeSlider(){
-			this.toggle('hide');
-		}
-
-
-		applyCouponFromBtn(e){
-			this.applyCoupon( $(e.currentTarget).val() );
-		}
-
-		submitCouponForm(e){
-
-			e.preventDefault();
-
-			var $form = $(e.currentTarget);
-
-			this.applyCoupon( $form.find('input[name="xoo-wsc-slcf-input"]').val() );
-
-		}
-
-
-		closeSliderOnCartClose(e){
-
-			var $this = $(e.currentTarget); 
-
-			if( !cart.$modal.hasClass('xoo-wsc-cart-active') ){
-				this.toggle('hide');
-			}
-
-		}
-
-
-		triggerSlider(e){
-
-			var $toggler 	= $(e.currentTarget),
- 				slider 		= $toggler.data('slider');
-
-			if( slider === 'shipping' && isCheckoutPage ){
-				this.notice.add( xoo_wsc_params.strings.calculateCheckout, 'error' );
-				this.notice.showNotification();
-				return;
-			}
-
-
-			this.$modal.attr( 'data-slider', slider );
-			
-			this.toggle();
-
-			this.toggleContent();
-		}
-
-
-		toggleContent(){
-
-			var activeSlider = '';
-
-			$('.xoo-wsc-sl-content').hide();
-			
-			var activeSlider 	= this.$modal.attr('data-slider'),
-				$toggleEl 		= $('.xoo-wsc-sl-content[data-slider="'+activeSlider+'"]');
-	
-			if( $toggleEl.length ) $toggleEl.show();
-
-			$( document.body ).trigger( 'xoo_wsc_slider_data_toggled', [activeSlider] );
-		}
-
-
-		applyCoupon( coupon ){
-
-			if( !coupon ){
-				this.notice.add( xoo_wsc_params.strings.couponEmpty, 'error' );
-				this.notice.showNotification();
-				return;
-			}
-
-			this.block();
-
-			var formData = {
-				'action': 'xoo_wsc_apply_coupon'
-			}
-
-			$.ajax( {
-				url: get_wcurl('xoo_wsc_apply_coupon'),
-				type: 'POST',
-				context: this,
-				data: this.setAjaxData( formData ),
-				success: function( response ) {
-					this.updateFragments(response);
-				},
-				complete: function() {
-					this.unblock();
-					this.updateCartCheckoutPage();
-					$( document.body ).trigger( 'xoo_wsc_coupon_applied' );
-				}
-			} );
-
-		}
-
-	}
-
-	
-
-	var Shipping = {
-
-		init: function( slider ){
-			slider.$modal.on( 'change', 'input.xoo-wsc-shipping-method', this.shippingMethodChange );
-			slider.$modal.on( 'submit', 'form.woocommerce-shipping-calculator', this.shippingCalculatorSubmit );
-			slider.$modal.on( 'click', '.shipping-calculator-button', this.toggleCalculator );
-			$(document.body).on( 'wc_fragments_refreshed wc_fragments_loaded xoo_wsc_slider_data_toggled', this.initSelect2 );
-		},
-
-		toggleCalculator: function(e){
-
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			$(this).siblings('.shipping-calculator-form').slideToggle();
-			$( document.body ).trigger( 'country_to_state_changed' );
-		},
-
-		shippingCalculatorSubmit: function(e){
-
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var $form = $(this);
-
-			slider.block();
-
-			// Provide the submit button value because wc-form-handler expects it.
-			$( '<input />' )
-				.attr( 'type', 'hidden' )
-				.attr( 'name', 'calc_shipping' )
-				.attr( 'value', 'x' )
-				.appendTo( $form );
-
-			var formData = $form.serialize();
-
-			// Make call to actual form post URL.
-			$.ajax( {
-				url: get_wcurl( 'xoo_wsc_calculate_shipping' ),
-				type: 'POST',
-				context: this,
-				data: slider.setAjaxData(formData),
-				success: function( response ) {
-					slider.updateFragments(response);
-				},
-				complete: function() {
-					slider.unblock();
-					slider.updateCartCheckoutPage();
-					$( document.body ).trigger( 'xoo_wsc_shipping_calculated' );
-				}
-			} );
-
-		},
-
-		shippingMethodChange: function(e){
-
-			e.preventDefault();
-			e.stopImmediatePropagation();
-
-			var shipping_methods = {};
-
-			slider.block();
-
-			$( 'select.shipping_method, :input[name^=xoo-wsc-shipping_method][type=radio]:checked, :input[name^=shipping_method][type=hidden]' ).each( function() {
-				shipping_methods[ $( this ).data( 'index' ) ] = $( this ).val();
-			} );
-
-			var formData = {
-				shipping_method: shipping_methods
-			}
-
-			$.ajax( {
-				type:     'POST',
-				url:      get_wcurl( 'xoo_wsc_update_shipping_method' ),
-				data:     slider.setAjaxData( formData ),
-				success:  function( response ) {
-					slider.updateFragments(response);
-				},
-				complete: function() {
-					slider.unblock();
-					slider.updateCartCheckoutPage();
-					$( document.body ).trigger( 'updated_shipping_method' );
-				}
-			} );
-
-		},
-
-		initSelect2: function(e){
-			$( document.body ).trigger( 'country_to_state_changed' );
-		},
-	}
-
-
-	var cart 	= new Cart( $('.xoo-wsc-modal') ),
-		slider 	= new Slider( $('.xoo-wsc-slider-modal') );
+	var cart 	= new Cart( $('.xoo-wsc-modal') );
 
 })

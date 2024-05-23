@@ -28,6 +28,8 @@ class Xoo_Wsc_Admin_Settings{
 		add_action( 'admin_footer', array( $this, 'sidecart_preview' ) );
 
 		add_action( 'xoo_tab_page_start', array( $this, 'preview_info' ), 5 );
+
+		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'checkpoints_bar_setting_html' ), 10, 4 );
 	}
 
 	public function preview_info($tab_id){
@@ -100,6 +102,109 @@ class Xoo_Wsc_Admin_Settings{
 			xoo_wsc_helper()->get_template( 'xoo-wsc-tab-info.php', array(), XOO_WSC_PATH.'/admin/templates/' );
 		}
 		
+	}
+
+
+
+	public function checkpoints_bar_setting_html( $field, $field_id, $value, $args ){
+
+		if( $field_id !== 'xoo-wsc-gl-options[scbar-data]' ) return $field;
+
+		$default = array(
+			array(
+				'enable' 		=> 'yes',
+				'amount' 		=> 100,
+				'remaining'		=> "You're [amount] away from free gift",
+				'title' 		=> "Free Gift",
+				'type'			=> 'gift',
+				'gift_ids' 		=> '',
+				'gift_qty' 		=> 1,
+			)
+		);
+
+		$value = !is_array( $value ) ? $default : $value;
+
+		$chkpointID = $field_id.'[%$]';
+
+		ob_start();
+
+		?>
+
+		<button class="button button-primary xoo-scbchk-add" type="button">Add Checkpoint</button>
+		<button class="button button-primary xoo-scbchk-add xoo-scbhk-add-ship" type="button">Add Free Shipping Checkpoint</button>
+
+		<div class="xoo-bar-points-cont" data-idholder="<?php echo $chkpointID; ?>">
+
+			<?php foreach ( $value as $index => $chkpoint ): ?>
+
+				<div class="xoo-scbhk-chkcont <?php echo $chkpoint['type'] === 'freeshipping' ? 'xoo-scbhk-shipcont' : '' ?>">
+
+					
+					<div class="xoo-scbhk-ship-el xoo-scbhk-ship-title">
+						<span>Free Shipping</span>
+						<i>The amount is fetched from Free shipping method ( woocommerce shipping settings ).<br> Please make sure you have a free shipping method available for customers' location.<br><a href="https://docs.xootix.com/side-cart-for-woocommerce/#shippingbar" target="__blank">Read more</a></i><br>
+					</div>
+					
+
+					<div class="xoo-scbar-chkpoint">
+					
+						<div class="xoo-scbhk-field xoo-scb-enable">
+							<label>Enable</label>
+							<input type="hidden" name="<?php echo $chkpointID ?>[enable]" value="no">
+							<input type="checkbox" value="yes" name="<?php echo $chkpointID ?>[enable]" <?php if( $chkpoint['enable'] === 'yes' ) echo 'checked'; ?> >
+						</div>
+
+						<div class="xoo-scbhk-field xoo-scb-comp">
+							<label>Title</label>
+							<input type="text" name="<?php echo $chkpointID ?>[title]" value="<?php esc_attr_e( $chkpoint['title'] ) ?>">
+						</div>
+
+						<div class="xoo-scbhk-field xoo-scb-amount">
+							<label>Amount</label>
+							<input type="number" name="<?php echo $chkpointID ?>[amount]" value="<?php esc_attr_e( $chkpoint['amount'] ) ?>">
+						</div>
+
+						<div class="xoo-scbhk-field xoo-scb-rem">
+							<label>Remaining Text</label>
+							<input type="text" name="<?php echo $chkpointID ?>[remaining]" value="<?php esc_attr_e( $chkpoint['remaining'] ) ?>">
+							<span class="xoo-scbhk-desc">[amount] is the remaining amount to unlock this checkpoint</span>
+						</div>
+
+
+						<div class="xoo-scbhk-field xoo-scb-type">
+							<label>Type</label>
+							<select name="<?php echo $chkpointID ?>[type]">
+								<option value="display" <?php selected( $chkpoint['type'], 'display' ) ?> >Only for display</option>
+								<option value="gift" <?php selected( $chkpoint['type'], 'gift' ) ?>>Free Gift</option>
+								<option value="freeshipping" <?php selected( $chkpoint['type'], 'freeshipping' ) ?> style="display: none;">Free Shipping</option>
+							</select>
+						</div>
+
+						<div class="xoo-scbhk-field xoo-scbhk-giftid xoo-scbhk-gift">
+							<label>Free Gift Product ID(s)</label>
+							<input type="text" name="<?php echo $chkpointID ?>[gift_ids]" value="<?php esc_attr_e( $chkpoint['gift_ids'] ) ?>">
+							<span class="xoo-scbhk-desc">Add product ID(s) to be given as free gift. (Separated by commas)</span>
+						</div>
+
+						<div class="xoo-scbhk-field xoo-scbhk-giftqty xoo-scbhk-gift">
+							<label>Gift Quantity</label>
+							<input type="number" name="<?php echo $chkpointID ?>[gift_qty]" value="<?php esc_attr_e( $chkpoint['gift_qty'] ) ?>">
+						</div>
+
+					</div>
+
+					<span class="dashicons dashicons-no-alt xoo-scbh-del"></span>
+
+				</div>
+
+			<?php endforeach; ?>
+
+		</div>
+
+		<?php
+
+		return ob_get_clean();
+
 	}
 
 }

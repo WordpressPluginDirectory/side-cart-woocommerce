@@ -16,7 +16,7 @@ class Xoo_Helper{
 
 	public function set_constants(){
 		$this->define( 'XOO_FW_URL', untrailingslashit(plugin_dir_url( XOO_FW_DIR .'/'.basename( XOO_FW_DIR ) ) ) );
-		$this->define( 'XOO_FW_VERSION', '1.0' );
+		$this->define( 'XOO_FW_VERSION', '1.1' );
 	}
 
 	public function define( $name, $value ){
@@ -236,17 +236,17 @@ class Xoo_Helper{
 					<?php
 					foreach ( $odTempData['templates'] as $template_data ){
 						if( $template_data['is_outdated'] !== 'yes' ) continue;
-						echo '<li><span class="dashicons dashicons-warning"></span>'.$template_data['name'].'</li>';
+						echo '<li><span class="dashicons dashicons-warning"></span>'. esc_html( $template_data['name'] ).'</li>';
 					}
 					?>
 				</ul>
 			<?php else: ?>
 				<div>Templates Status
 				<span class="dashicons dashicons-yes-alt" style="font-size: 14px;color: #008000;line-height: 1.3;"></span>
-				<a href="https://docs.xootix.com/<?php echo $this->slug; ?>" target="_blank">How to override?</a>
+				<a href="https://docs.xootix.com/<?php echo esc_attr( $this->slug ); ?>" target="_blank">How to override?</a>
 				</div>
 			<?php endif; ?>
-			<span>Last checked: <?php echo get_date_from_gmt( date( 'Y-m-d H:i:s', $odTempData['last_scanned'] ) ); ?></span>
+			<span>Last checked: <?php echo esc_html( get_date_from_gmt( date( 'Y-m-d H:i:s', $odTempData['last_scanned'] ) ) ); ?></span>
 			<a href="<?php echo esc_url( add_query_arg( array( 'scan_templates' => 'yes' , 'slug' => $this->slug ) ) ); ?>">Check again</a>
 		</div>
 		<?php

@@ -3,8 +3,8 @@ Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
-Tested up to: 6.4
-Stable tag: 2.4.9
+Tested up to: 6.5
+Stable tag: 2.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,9 +77,9 @@ Three different styles to choose from - drawer, slider and column. You can set t
 
 Customers can directly update their shipping location and get the exact shipping fee. You will no longer need a cart page to calculate the shipping value.
 
-##Shipping bar
+##Rewards progress bar
 
-Incentivize with progress: display the minimum amount required for free shipping in a progress bar to reward valued customers
+Incentivize with progress: Free gifts and free shipping, display the minimum amount required to achieve a reward on progress bar.
 
 ##Cart notifications
 
@@ -126,6 +126,16 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 6. Change Shipping Pro
 
 == Changelog ==
+
+= 2.5 =
+* New - Option to disable ajax add to cart on categories.
+* New - Export/Import plugin settings.
+* New - Option to disable quantity.
+* Update - Disable auto open cart when add to cart fails.
+
+Template update
+- /global/body/product.php 
+
 
 = 2.4.9 =
 * Fix - bugs

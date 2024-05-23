@@ -24,13 +24,12 @@ $settings = array(
 		'args' 			=> array(
 			'options' 	=> array(
 				'notifications' => 'Notifications',
-				'shipping_bar' 	=> 'Free Shipping Bar',
 				'basket' 		=> 'Basket Icon',
 				'close' 		=> 'Close Icon'
 			),
 		),
 		'default' 	=> array(
-			'notifications', 'shipping_bar', 'basket', 'close'
+			'notifications', 'basket', 'close'
 		),
 		'pro' => array(
 			'notifications', 'shipping_bar'
@@ -62,6 +61,7 @@ $settings = array(
 				'product_image' => 'Product Image',
 				'product_name' 	=> 'Product Name',
 				'product_price' => 'Product Price',
+				'product_qty' 	=> 'Product Quantity',
 				'product_total' => 'Product Total',
 				'product_meta' 	=> 'Product Meta ( Variations )',
 				'product_link' 	=> 'Link to Product Page',
@@ -69,11 +69,27 @@ $settings = array(
 			),
 		),
 		'default' 	=> array(
-			'total_sales', 'product_price', 'product_total', 'product_name', 'product_link', 'product_del', 'product_image', 'product_meta'
+			'total_sales', 'product_price', 'product_qty', 'product_total', 'product_name', 'product_link', 'product_del', 'product_image', 'product_meta'
 		),
 		'pro' => array(
 			'total_sales'
 		)
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Quantiy & Price Display',
+		'id' 			=> 'scbp-qpdisplay',
+		'section_id' 	=> 'sc_body',
+		'args' 			=> array(
+			'options' 	=> array(
+				'one_liner' => 'Show in one line',
+				'separate' 	=> 'Show separately',
+			),
+		),
+		'default' 		=> 'one_liner',
+		'desc' 			=> '"One line" works when quantity, price and total are enabled'
 	),
 
 
@@ -228,6 +244,107 @@ $settings = array(
 		),
 	),
 
+	/*** PROGRESS BAR ***/
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Enable',
+		'id' 			=> 'scbar-en',
+		'section_id' 	=> 'sc_bar',
+		'default' 		=> 'yes',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Use cart total',
+		'id' 			=> 'scbar-total',
+		'section_id' 	=> 'sc_bar',
+		'args' 			=> array(
+			'options' 	=> array(
+				'total'			=> 'Total',
+				'subtotal' 		=> 'Subtotal',
+				'subtotal_tax' 	=> 'Subtotal including Tax'
+			),
+		),
+		'default' 	=> 'subtotal_tax',
+		'desc' 		=> 'The cart value to be used to calculate the remaining amount',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Bar Location',
+		'id' 			=> 'scbar-pos',
+		'section_id' 	=> 'sc_bar',
+		'args' 			=> array(
+			'options' 	=> array(
+				'xoo_wsc_header_end'  	=> 'Header',
+				'xoo_wsc_body_start' 	=> 'Before Products',
+				'xoo_wsc_body_end' 		=> 'After Products',
+				'xoo_wsc_footer_start' 	=> 'Footer Start',
+				'xoo_wsc_footer_end' 	=> 'Footer end',
+			),
+		),
+		'default' 	=> 'xoo_wsc_body_start',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Divide bar',
+		'id' 			=> 'scbar-divide',
+		'section_id' 	=> 'sc_bar',
+		'args' 			=> array(
+			'options' 	=> array(
+				'equal'	=> 'Equally',
+				'prop' 	=> 'Proportionately',
+			),
+		),
+		'default' 	=> 'equal',
+		'pro' 		=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Show',
+		'id' 			=> 'scbar-show',
+		'section_id' 	=> 'sc_bar',
+		'args' 			=> array(
+			'options' 	=> array(
+				'remaining' 	=> 'Remaining Text',
+				'title' 		=> 'Title',
+				'amount' 		=> 'Amount'
+			),
+		),
+		'default' 	=> array(
+			'remaining', 'title', 'amount'
+		),
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'custombardata',
+		'title' 		=> 'Checkpoints',
+		'id' 			=> 'scbar-data',
+		'section_id' 	=> 'sc_bar',
+		'default' 		=> '',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Completed Text',
+		'id' 			=> 'scbar-comptext',
+		'section_id' 	=> 'sc_bar',
+		'default' 		=> 'Congrats! you have unlocked all achievements.',
+		'pro' 			=> 'yes'
+	),
 
 
 	/*** SUGGESTED PRODUCTS ***/
@@ -339,12 +456,29 @@ $settings = array(
 
 
 	array(
-		'callback' 		=> 'checkbox',
+		'callback' 		=> 'select',
 		'title' 		=> 'Ajax add to cart',
 		'id' 			=> 'm-ajax-atc',
 		'section_id' 	=> 'main',
+		'args' 			=> array(
+			'options' 	=> array(
+				'yes' 		=> 'Yes',
+				'cat_no' 	=> 'Yes, except product categories',
+				'cat_yes' 	=> 'Yes, only for product categories',
+				'no'		=> 'No',
+			),
+		),
 		'default' 		=> 'yes',
 		'desc' 			=> 'Add to cart without refreshing page'
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Category IDs (Ajax add to cart)',
+		'id' 			=> 'm-ajax-atc-catid',
+		'section_id' 	=> 'main',
+		'desc' 			=> 'Add your category IDs here. ( Separated by comma ). <br> <a href="https://woocommerce.com/document/find-product-category-ids/" target="_blank">Find Category ID</a>'
 	),
 
 
@@ -525,47 +659,6 @@ $settings = array(
 		'id' 			=> 'sct-delete',
 		'section_id' 	=> 'texts',
 		'default' 		=> 'Remove',
-	),
-
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Remaining amount',
-		'id' 			=> 'sct-sb-remaining',
-		'section_id' 	=> 'texts',
-		'default' 		=> "You're %s away from free shipping.",
-		'desc' 			=> 'Shipping Bar',
-		'pro' 			=> 'yes',
-	),
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Free shipping',
-		'id' 			=> 'sct-sb-free',
-		'section_id' 	=> 'texts',
-		'default' 		=> "Congrats! You get free shipping.",
-		'desc' 			=> 'Shipping Bar',
-		'pro' 			=> 'yes',
-	),
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Remaining amount',
-		'id' 			=> 'sct-sb-remaining',
-		'section_id' 	=> 'texts',
-		'default' 		=> "You're %s away from free shipping.",
-		'desc' 			=> 'Shipping Bar',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Free shipping',
-		'id' 			=> 'sct-sb-free',
-		'section_id' 	=> 'texts',
-		'default' 		=> "Congrats! You get free shipping.",
-		'desc' 			=> 'Shipping Bar',
-		'pro' 			=> 'yes'
 	),
 
 

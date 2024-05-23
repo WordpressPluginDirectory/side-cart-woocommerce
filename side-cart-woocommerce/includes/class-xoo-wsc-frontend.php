@@ -85,6 +85,13 @@ class Xoo_Wsc_Frontend{
 
 		$glSettings = $this->glSettings;
 
+		if( is_product() ){
+			$ajaxAtc = xoo_wsc_enable_ajax_atc_for_product( get_the_id() );
+		}
+		else{
+			$ajaxAtc = $glSettings['m-ajax-atc'] !== 'no';
+		}
+
 		wp_enqueue_script( 'xoo-wsc-main-js', XOO_WSC_URL.'/assets/js/xoo-wsc-main.js', array('jquery'), XOO_WSC_VERSION, array( 'strategy' => 'defer' ) ); // Main JS
 
 		$noticeMarkup = '<ul class="xoo-wsc-notices">%s</ul>';
@@ -111,7 +118,7 @@ class Xoo_Wsc_Frontend{
 			'couponsEnabled' 		=> in_array( 'coupon' , $glSettings['scf-show'] ),
 			'autoOpenCart' 			=> $glSettings['m-auto-open'],
 			'addedToCart' 			=> xoo_wsc_cart()->addedToCart,
-			'ajaxAddToCart' 		=> $glSettings['m-ajax-atc'],
+			'ajaxAddToCart' 		=> $ajaxAtc ? 'yes' : 'no',
 			'showBasket' 			=> xoo_wsc_helper()->get_style_option('sck-enable'),
 			'flyToCart' 			=> 'no',
 			'productFlyClass' 		=> apply_filters( 'xoo_wsc_product_fly_class', '' ),
@@ -127,6 +134,7 @@ class Xoo_Wsc_Frontend{
 
 		if( !xoo_wsc()->isSideCartPage() ) return;
 
+		echo '<div class="xoo-wsc-markup-notices"></div>';
 		xoo_wsc_helper()->get_template( 'xoo-wsc-markup.php' );
 
 	}

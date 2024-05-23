@@ -34,46 +34,42 @@
 					<?php echo $product_meta ?>
 				<# } #>
 
-				<# if ( data.product.showPprice && "separate" === data.product.qtyPriceDisplay ) { #>
-					<div class="xoo-wsc-pprice">
-						<?php echo __( 'Price: ', 'side-cart-woocommerce' ) ?>
-						<# if( data.product.priceType === "actual" ){ #>
-							<?php echo $product_price; ?>
-						<# }else{ #>
-							<?php echo $product_sale_price ?>
-						<# } #>
-					</div>
-				<# } #>
 
-				<!-- Quantity -->
+				<# if ( data.product.oneLiner ) { #>
 
-				<div class="xoo-wsc-qty-price">
-
-					<# if ( data.product.showPprice && "one_liner" === data.product.qtyPriceDisplay ) { #>
-
-						<span><?php echo $product_quantity; ?></span> X 
-
+					<div class="xoo-wsc-qty-price">
+						<span><?php echo $product_quantity; ?></span>
+						<span>X</span>
 						<span>
 							<# if( data.product.priceType === "actual" ){ #>
 								<?php echo $product_price; ?>
 							<# }else{ #>
 								<?php echo $product_sale_price ?>
 							<# } #>
-							
 						</span>
+						<span>=</span>
+						<span><?php echo $product_subtotal ?></span>
+					</div>
 
-						<# if ( data.product.showPtotal ) { #>
-							<span> = <?php echo $product_subtotal ?></span>
-						<# } #>
+				<# }else{ #>
 
-					<# }else{ #>
-
-						<span><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?></span> <span><?php echo $product_quantity; ?></span>
-
+					<# if ( data.product.showPqty ) { #>
+						<span class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <?php echo $product_quantity; ?></span>
 					<# } #>
 
+					<# if ( data.product.showPprice ) { #>
+						<div class="xoo-wsc-pprice">
+							<?php echo __( 'Price: ', 'side-cart-woocommerce' ); ?>
+								<# if( data.product.priceType === "actual" ){ #>
+								<?php echo $product_price; ?>
+							<# }else{ #>
+								<?php echo $product_sale_price ?>
+							<# } #>
+						</div>
+					<# } #>
 
-				</div>
+				<# } #>
+
 
 			</div>
 
@@ -92,7 +88,7 @@
 
 				<# } #>
 
-				<# if ( data.product.showPtotal && "separate" === data.product.qtyPriceDisplay  ) { #>
+				<# if ( data.product.showPtotal && !data.product.oneLiner ) { #>
 					<span class="xoo-wsc-smr-ptotal"><?php echo $product_subtotal ?></span>
 				<# } #>
 

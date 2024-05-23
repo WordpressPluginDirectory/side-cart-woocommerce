@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.2
+ * @version 2.5
  */
 
 
@@ -18,6 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $productClasses = apply_filters( 'xoo_wsc_product_class', $productClasses );
+$oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal && $showPqty;
 
 ?>
 
@@ -63,33 +64,37 @@ $productClasses = apply_filters( 'xoo_wsc_product_class', $productClasses );
 				
 				<?php if( $showPmeta ) echo $product_meta ?>
 
-				<?php if( $showPprice && ( $qtyPriceDisplay === 'separate' ) ): ?>
-					<div class="xoo-wsc-pprice">
-						<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
-					</div>
-				<?php endif; ?>
 
 				<!-- Quantity -->
 
-				<div class="xoo-wsc-qty-price">
+				
+				<?php if( $oneLiner ): ?>
 
-					<?php if( $showPprice && $qtyPriceDisplay === 'one_liner' ): ?>
-						<span><?php echo $cart_item['quantity']; ?></span> X <span><?php echo $product_price; ?></span>
-						<?php if( $showPtotal ): ?>
-							<span> = <?php echo $product_subtotal ?></span>
-						<?php endif; ?>
+					<div class="xoo-wsc-qty-price">
+						<span><?php echo $cart_item['quantity']; ?></span>
+						<span>X</span>
+						<span><?php echo $product_price; ?></span>
+						<span>=</span>
+						<span><?php echo $product_subtotal ?></span>
+					</div>
 
-					<?php else: ?>
-						<span><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?></span> <span><?php echo $cart_item['quantity']; ?></span>
+				<?php else: ?>
+
+					<?php if( $showPqty ): ?>
+						<div class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <span><?php echo $cart_item['quantity']; ?></span></div>
 					<?php endif; ?>
 
-				</div>
+					<?php if( $showPprice ): ?>
+						<div class="xoo-wsc-pprice">
+							<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
+						</div>
+					<?php endif; ?>
+
+				<?php endif; ?>
 
 			</div>
 
 			<!-- End Quantity -->
-
-		
 
 			<div class="xoo-wsc-sm-right">
 
@@ -103,8 +108,7 @@ $productClasses = apply_filters( 'xoo_wsc_product_class', $productClasses );
 
 				<?php endif; ?>
 
-
-				<?php if( $showPtotal && ( $qtyPriceDisplay === 'separate' ) ): ?>
+				<?php if( $showPtotal && !$oneLiner ): ?>
 					<span class="xoo-wsc-smr-ptotal"><?php echo $product_subtotal ?></span>
 				<?php endif; ?>
 

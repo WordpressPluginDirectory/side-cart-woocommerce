@@ -326,12 +326,23 @@ $settings = array(
 		'desc' 			=> 'Size in px'
 	),
 
+
 	array(
 		'callback' 		=> 'color',
-		'title' 		=> 'Shipping Bar Color',
-		'id' 			=> 'sch-sbcolor',
+		'title' 		=> 'Progress Bar Color',
+		'id' 			=> 'sch-pbcolor',
 		'section_id' 	=> 'sc_head',
-		'default' 		=> '#1e73be',
+		'default' 		=> '#f0f0f0',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Progress Bar Filled Color',
+		'id' 			=> 'sch-pbfillcolor',
+		'section_id' 	=> 'sc_head',
+		'default' 		=> '#000000',
 		'pro' 			=> 'yes'
 	),
 
@@ -548,225 +559,7 @@ $settings = array(
 		'default' 		=> 'center',
 	),
 
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Quantity & Price Display',
-		'id' 			=> 'scbp-qpdisplay',
-		'section_id' 	=> 'scb_product',
-		'args' 			=> array(
-			'options' 	=> array(
-				'one_liner' => 'Show in one line',
-				'separate' 	=> 'Show separately',
-			),
-		),
-		'default' 		=> 'one_liner',
-		'desc' 			=> 'When quantity update is not allowed'
-	),
-
-
-
-	/* Product card */
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Enable Card Layout',
-		'id' 			=> 'scbp-card-en',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> 'no',
-		'desc' 			=> '',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'number',
-		'title' 		=> 'Number of cards per row',
-		'id' 			=> 'scbp-card-count',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '2',
-		'pro' 			=> 'yes'
-	),
-
 	
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Show details',
-		'id' 			=> 'scbp-card-visible',
-		'section_id' 	=> 'scb_productcard',
-		'args' 			=> array(
-			'options' 	=> array(
-				'all_on_front'		=> 'Everything on front',
-				'back_hover' 		=> 'Back side on Hover',
-				'back_click' 		=> 'Back side on Click',
-			),
-		),
-		'default' 		=> 'back_hover',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Details to show on back of card. <br>If unchecked, will be shown on the front.',
-		'id' 			=> 'scbp-card-back',
-		'section_id' 	=> 'scb_productcard',
-		'args' 			=> array(
-			'options' 	=> array(
-				'total_sales' 	=> 'Product Sales Count',
-				'name' 	=> 'Product Name',
-				'price' => 'Product Price',
-				'qty' 	=> 'Product Quantity',
-				'total' => 'Product Total',
-				'meta' 	=> 'Product Meta ( Variations )',
-				'link' 	=> 'View Product Link',
-			),
-		),
-		'default' 	=> array(
-			'total_sales', 'name', 'link', 'meta', 'price'
-		),
-		'desc' 		=> 'This only controls back and front display. To enable/disable the detail go to tab general -> Side cart body -> Show and check/uncheck the detail from there.',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Show details card animation',
-		'id' 			=> 'scbp-card-anim-type',
-		'section_id' 	=> 'scb_productcard',
-		'args' 			=> array(
-			'options' 	=> array(
-				'openUpLeft'		=> 'openUpLeft',
-				'openDownRight'		=> 'openDownRight',
-				'openUpLeft'		=> 'openUpLeft',
-				'openUpRight'		=> 'openUpRight',
-				'perspectiveDown'	=> 'perspectiveDown',
-				'perspectiveUp'		=> 'perspectiveUp',
-				'perspectiveLeft'	=> 'perspectiveLeft',
-				'perspectiveRight'	=> 'perspectiveRight',
-				'slideDown' 		=> 'slideDown',
-				'slideUp' 			=> 'slideUp',
-				'slideLeft' 		=> 'slideLeft',
-				'slideRight' 		=> 'slideRight'
-			),
-		),
-		'default' 		=> 'slideUp',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Animation duration',
-		'id' 			=> 'scbp-card-anim-time',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '0.5',
-		'desc' 			=> 'in seconds',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Image Background Color',
-		'id' 			=> 'scbp-card-img-color',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '#eee',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Back side details Background Color',
-		'id' 			=> 'scbp-card-back-color',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '#fff',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Front Details Background Color',
-		'id' 			=> 'scbp-card-front-color',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '#eee',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Card Text Color',
-		'id' 			=> 'scbp-card-txtcolor',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '#000',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'number',
-		'title' 		=> 'Image Width',
-		'id' 			=> 'scbp-card-imgw',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> 100,
-		'desc' 			=> 'Value in percentage',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Products Spacing',
-		'id' 			=> 'scbp-card-padding',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '10px 10px',
-		'desc' 			=> '↨ ⟷ ( Default: 10px 10px )',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Card Border',
-		'id' 			=> 'scbp-card-border',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '0',
-		'desc' 			=> 'Eg: 2px solid #777',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'number',
-		'title' 		=> 'Card Radius Top',
-		'id' 			=> 'scbp-card-radius-top',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '5',
-		'desc' 			=> 'In px',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'number',
-		'title' 		=> 'Card Radius Bottom',
-		'id' 			=> 'scbp-card-radius-btm',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '5',
-		'desc' 			=> 'In px',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Shadow',
-		'id' 			=> 'scbp-card-shadow',
-		'section_id' 	=> 'scb_productcard',
-		'default' 		=> '0px 10px 15px -12px #0000001a',
-		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0px 10px 15px -12px #0000001a'),
-		'pro' 			=> 'yes'
-	),
-
 
 	/** SIDE CART BODY Quantity **/
 
@@ -1288,6 +1081,206 @@ $settings = array(
 		'id' 			=> 'shbk-txt-color',
 		'section_id' 	=> 'sh_bk',
 		'default' 		=> '#000000',
+	),
+
+	/* Product card */
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Enable Card Layout',
+		'id' 			=> 'scbp-card-en',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> 'no',
+		'desc' 			=> '',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Number of cards per row',
+		'id' 			=> 'scbp-card-count',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '2',
+		'pro' 			=> 'yes'
+	),
+
+	
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Show details',
+		'id' 			=> 'scbp-card-visible',
+		'section_id' 	=> 'scb_productcard',
+		'args' 			=> array(
+			'options' 	=> array(
+				'all_on_front'		=> 'Everything on front',
+				'back_hover' 		=> 'Back side on Hover',
+				'back_click' 		=> 'Back side on Click',
+			),
+		),
+		'default' 		=> 'back_hover',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Details to show on back of card. <br>If unchecked, will be shown on the front.',
+		'id' 			=> 'scbp-card-back',
+		'section_id' 	=> 'scb_productcard',
+		'args' 			=> array(
+			'options' 	=> array(
+				'total_sales' 	=> 'Product Sales Count',
+				'name' 	=> 'Product Name',
+				'price' => 'Product Price',
+				'qty' 	=> 'Product Quantity',
+				'total' => 'Product Total',
+				'meta' 	=> 'Product Meta ( Variations )',
+				'link' 	=> 'View Product Link',
+			),
+		),
+		'default' 	=> array(
+			'total_sales', 'name', 'link', 'meta', 'price'
+		),
+		'desc' 		=> 'This only controls back and front display. To enable/disable the detail go to tab general -> Side cart body -> Show and check/uncheck the detail from there.',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Show details card animation',
+		'id' 			=> 'scbp-card-anim-type',
+		'section_id' 	=> 'scb_productcard',
+		'args' 			=> array(
+			'options' 	=> array(
+				'openUpLeft'		=> 'openUpLeft',
+				'openDownRight'		=> 'openDownRight',
+				'openUpLeft'		=> 'openUpLeft',
+				'openUpRight'		=> 'openUpRight',
+				'perspectiveDown'	=> 'perspectiveDown',
+				'perspectiveUp'		=> 'perspectiveUp',
+				'perspectiveLeft'	=> 'perspectiveLeft',
+				'perspectiveRight'	=> 'perspectiveRight',
+				'slideDown' 		=> 'slideDown',
+				'slideUp' 			=> 'slideUp',
+				'slideLeft' 		=> 'slideLeft',
+				'slideRight' 		=> 'slideRight'
+			),
+		),
+		'default' 		=> 'slideUp',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Animation duration',
+		'id' 			=> 'scbp-card-anim-time',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '0.5',
+		'desc' 			=> 'in seconds',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Image Background Color',
+		'id' 			=> 'scbp-card-img-color',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '#eee',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Back side details Background Color',
+		'id' 			=> 'scbp-card-back-color',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '#fff',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Front Details Background Color',
+		'id' 			=> 'scbp-card-front-color',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '#eee',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Card Text Color',
+		'id' 			=> 'scbp-card-txtcolor',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '#000',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Image Width',
+		'id' 			=> 'scbp-card-imgw',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> 100,
+		'desc' 			=> 'Value in percentage',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Products Spacing',
+		'id' 			=> 'scbp-card-padding',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '10px 10px',
+		'desc' 			=> '↨ ⟷ ( Default: 10px 10px )',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Card Border',
+		'id' 			=> 'scbp-card-border',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '0',
+		'desc' 			=> 'Eg: 2px solid #777',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Card Radius Top',
+		'id' 			=> 'scbp-card-radius-top',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '5',
+		'desc' 			=> 'In px',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Card Radius Bottom',
+		'id' 			=> 'scbp-card-radius-btm',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '5',
+		'desc' 			=> 'In px',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Shadow',
+		'id' 			=> 'scbp-card-shadow',
+		'section_id' 	=> 'scb_productcard',
+		'default' 		=> '0px 10px 15px -12px #0000001a',
+		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0px 10px 15px -12px #0000001a'),
+		'pro' 			=> 'yes'
 	),
 
 );

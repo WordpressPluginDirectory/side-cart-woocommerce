@@ -52,6 +52,17 @@ class Xoo_Wsc_Template_Args{
 
 	}
 
+	public static function markup_notice(){
+
+		$show 	= self::$gl['sch-show'];
+
+		$args = array(
+			'showNotifications' => true,
+		);
+
+		return apply_filters( 'xoo_wsc_markup_notice_args', $args );
+	}
+
 
 	public static function cart_header(){
 
@@ -154,9 +165,10 @@ class Xoo_Wsc_Template_Args{
 			'showPname' 		=> in_array( 'product_name' , $show ),
 			'showPtotal' 		=> in_array( 'product_total' , $show ),
 			'showPmeta' 		=> in_array( 'product_meta' , $show ),
+			'showPqty' 			=> in_array( 'product_qty', $show ),
 			'close_icon' 		=> esc_html( self::$sy['sch-close-icon'] ),
 			'delete_icon' 		=> esc_html( self::$sy['scb-del-icon'] ),
-			'qtyPriceDisplay' 	=> self::$sy['scbp-qpdisplay'],
+			'qtyPriceDisplay' 	=> self::$gl['scbp-qpdisplay'],
 			'deletePosition' 	=> self::$sy['scbp-delpos'],
 			'deleteType' 		=> self::$sy['scbp-deltype'],
 			'deleteText' 		=> self::$gl['sct-delete']

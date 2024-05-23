@@ -363,7 +363,7 @@ jQuery(document).ready(function($){
 		},
 
 		setPreviewHTMLData: function(){
-			return {
+			var data = {
 				basketIcon: 					this.sy('sck-basket-icon'),
 				header: {
 					showBasketIcon: 			this.gl('sch-show').includes('basket'),
@@ -378,7 +378,8 @@ jQuery(document).ready(function($){
 					showPtotal: 			this.gl('scb-show').includes('product_total'),
 					showPmeta: 				this.gl('scb-show').includes('product_meta'),
 					showPprice: 			this.gl('scb-show').includes('product_price'),
-					qtyPriceDisplay: 		this.sy('scbp-qpdisplay'),
+					showPqty: 				this.gl('scb-show').includes('product_qty'),
+					qtyPriceDisplay: 		this.gl('scbp-qpdisplay'),
 					deletePosition: 		this.sy('scbp-delpos'),
 					deleteText: 			this.gl('sct-delete'),
 					deleteType: 			this.sy('scbp-deltype'),
@@ -399,6 +400,10 @@ jQuery(document).ready(function($){
 					}
 				}
 			}
+
+			data.product.oneLiner = data.product.qtyPriceDisplay === 'one_liner' && data.product.showPqty && data.product.showPprice && data.product.showPtotal;
+
+			return data;
 		},
 
 		toggle: function( type ){
@@ -420,6 +425,85 @@ jQuery(document).ready(function($){
 	}
 
 	SideCart.init();
+
+
+	function barToggleShipButton(){
+
+		var hasFreeShipping = false,
+			$button 		= $('button.xoo-scbchk-add.xoo-scbhk-add-ship');
+
+		$('.xoo-scbhk-chkcont').each(function(index,el){
+			if( $(el).find( '.xoo-scb-type select' ).val() === 'freeshipping' ){
+				hasFreeShipping = true;
+				return true;
+			}
+		})
+
+		if( hasFreeShipping ){
+			$button.hide();
+		}
+		else{
+			$button.show();
+		}
+	}
+
+	barToggleShipButton();
+
+
+	$('button.xoo-scbchk-add').click( function(){
+		var $cont = $('.xoo-bar-points-cont').append( $('.xoo-bar-points-cont .xoo-scbhk-chkcont:last-child').clone() );
+		
+		var $addedCheckpoint 	= $cont.find( '.xoo-scbhk-chkcont:last-child' ),
+			$pointType 			= $addedCheckpoint.find('.xoo-scb-type select');
+
+		$pointType.find('option').removeAttr('selected');	
+
+		if( $(this).hasClass('xoo-scbhk-add-ship') ){
+			$addedCheckpoint.addClass('xoo-scbhk-shipcont');
+			$pointType.find('option[value="freeshipping"]').attr('selected', 'selected');
+		}
+		else{
+			$addedCheckpoint.removeClass('xoo-scbhk-shipcont');
+			$pointType.find('option:first-child').attr('selected', 'selected');
+		}
+		$pointType.trigger('change');
+		barToggleShipButton();
+	} );
+
+
+	$('body').on( 'click', '.xoo-scbh-del', function(){
+		$(this).closest('.xoo-scbhk-chkcont').remove();
+		barToggleShipButton();
+	} );
+
+
+	$('body').on( 'change', '.xoo-scb-type select', function(){
+
+		var $giftField = $(this).closest('.xoo-scbar-chkpoint').find('.xoo-scbhk-gift');
+
+		if( $(this).val() === 'gift' ){
+			$giftField.show();
+		}
+		else{
+			$giftField.hide();
+		}
+
+	} );
+
+	$('.xoo-scb-type select').trigger('change');
+
+
+	$('select[name="xoo-wsc-gl-options[m-ajax-atc]"]').on( 'change', function(){
+
+		var $catSetting = $(this).closest('.xoo-as-setting').next();
+
+		if( $(this).val() === 'cat_yes' || $(this).val() === 'cat_no' ){
+			$catSetting.show();
+		}
+		else{
+			$catSetting.hide();
+		}
+	} ).trigger('change');
 
 	
 })

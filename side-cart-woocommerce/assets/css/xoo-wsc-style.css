@@ -373,6 +373,7 @@ a.xoo-wsc-ft-btn, .xoo-wsc-container .xoo-wsc-btn {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 a.xoo-wsc-ft-btn, a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn, .xoo-wsc-container .xoo-wsc-btn:hover{
@@ -560,4 +561,37 @@ body.rtl span.xoo-wsc-ft-amt-label {
 
 body.rtl .xoo-wsc-product dl.variation dd, body.rtl .xoo-wsc-product dl.variation dt {
     float: right;
+}
+
+.xoo-wsc-markup-notices {
+    top: 20%;
+    right: -100%;
+    left: auto;
+    position: fixed;
+    box-shadow: 2px 2px 9px 3px #eee;
+    transition: all 0.5s;
+    z-index: 999997;
+    width: 0;
+    max-width: 400px;
+}
+
+.xoo-wsc-markup-notices ul.xoo-wsc-notices li {
+    padding: 25px;
+}
+
+.xoo-wsc-markup-notices.xoo-wsc-active {
+    right: 0;
+    width: 100%;
+}
+
+.xoo-wsc-markup-notices .xoo-wsc-notice-container {
+    position: relative;
+    display: block;
+}
+.xoo-wsc-qty-price > span {
+    display: inline-block;
+    margin-right: 1px;
+}
+.xoo-wsc-sml-qty span {
+    display: inline-block;
 }

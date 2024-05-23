@@ -5,6 +5,7 @@
 .xoo-wscp-head {
     font-size: 24px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .xoo-wscp-head a {
@@ -644,7 +645,13 @@ form.xoo-as-form {
 }
 
 
+.xoo-as-setting{
+    margin-bottom: 50px!important;
+}
 
+span.xoo-asc-head {
+    margin: 0 -15px 40px!important;
+}
 
 body.rtl .xoo-wsc-sum-col {
     padding-right: 15px;
@@ -679,4 +686,135 @@ body.rtl .xoo-as-setting.xoo-as-has-preview::after {
 body.rtl .xoo-wsc-basket{
     left: 1px;
     right: auto;
+}
+
+
+
+.xoo-scbhk-field.xoo-scbhk-giftid {
+    display: none;
+}
+
+.xoo-scbar-chkpoint {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    flex-direction: column;
+}
+
+.xoo-scbhk-field {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.xoo-scbhk-field label {
+    margin-bottom: 5px;
+}
+
+.xoo-scbhk-field {
+}
+
+.xoo-scbhk-field.xoo-scb-amount input {
+}
+
+.xoo-scb-enable input {
+    margin-left: 5px;
+    top: 2px;
+    position: relative;
+}
+
+.xoo-scbhk-chkcont {
+    border: 2px dashed #777;
+    margin: 20px 0;
+    padding: 20px;
+    position: relative;
+}
+
+.xoo-scbhk-chkcont > span {
+    padding: 0 5px;
+    cursor: pointer;
+}
+
+span.xoo-scbhk-move {
+    cursor: grab;
+}
+
+.xoo-bar-points-cont.xoo-as-processing {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+span.xoo-scbhk-desc {
+    color: #777;
+    font-style: italic;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.xoo-scbhk-field.xoo-scbhk-giftid[style="display: block;"] {
+    display: flex!important;
+}
+
+.xoo-scbhk-field.xoo-scb-enable {
+    flex-direction: row;
+    align-items: center;
+}
+
+.xoo-scbhk-field.xoo-scb-enable label {
+    margin-bottom: 0px;
+}
+
+.xoo-bar-points-cont {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-direction: column;
+    max-width: 800px;
+}
+
+.xoo-scbh-del {
+    position: absolute;
+    top: 4px;
+    right: -4px;
+    font-size: 16px;
+}
+
+.xoo-scbhk-ship-title i {
+    display: block;
+}
+
+.xoo-scbhk-ship-title span {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.xoo-scbhk-shipcont .xoo-scb-amount, .xoo-scbhk-shipcont .xoo-scb-type {
+    display: none;
+}
+
+.xoo-scbhk-ship-el {
+    display: none;
+}
+
+.xoo-scbhk-shipcont .xoo-scbhk-ship-el {
+    display: block;
+}
+
+.xoo-as-field {
+    flex-grow: 1;
+}
+
+.xoo-bar-points-cont .xoo-scbhk-chkcont:first-child .xoo-scbh-del {
+    display: none;
+}
+
+.xoo-wsc-qty-price > span {
+    display: inline-block;
+    margin-right: 1px;
+}
+.xoo-wsc-sml-qty span {
+    display: inline-block;
 }

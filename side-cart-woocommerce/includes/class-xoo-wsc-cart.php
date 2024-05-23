@@ -48,21 +48,36 @@ class Xoo_Wsc_Cart{
 	}
 
 	public function prevent_cart_redirect( $value ){
-		if( $this->glSettings['m-ajax-atc'] === "yes" ) return 'no';
-		return $value;
+
+		$ajaxAtc = $this->glSettings['m-ajax-atc'];
+
+		if( $ajaxAtc !== 'no' ){
+			$value = 'no';
+		}
+
+		return $value;		
 	}
 
 	/* Add to cart is performed by woocommerce as 'add-to-cart' is passed */
 	public function add_to_cart(){
 
 		if( !isset( $_POST['add-to-cart'] ) ) return;
-		
-		if( empty( wc_get_notices( 'error' ) ) ){
+
+		if( $this->addedToCart ){
 			// trigger action for added to cart in ajax
 			do_action( 'woocommerce_ajax_added_to_cart', intval( $_POST['add-to-cart'] ) );
+			$this->get_refreshed_fragments();
 		}
+		else{
+			ob_start();
+			xoo_wsc_helper()->get_template('global/markup-notice.php');
+			$notice = ob_get_clean();
 
-		$this->get_refreshed_fragments();
+			wp_send_json(array(
+				'error' 	=> 1,
+				'notice' 	=> $notice
+			));
+		}
 
 	}
 
@@ -79,7 +94,7 @@ class Xoo_Wsc_Cart{
 
 
 
-	public function print_notices_html( $section = 'cart', $wc_cart_notices = true ){
+	public function print_notices_html( $section = 'cart', $wc_cart_notices = true, $clean = true ){
 
 		if( isset( $_POST['noticeSection'] ) && $_POST['noticeSection'] !== $section ) return;
 
@@ -104,7 +119,9 @@ class Xoo_Wsc_Cart{
 
 		echo apply_filters( 'xoo_wsc_print_notices_html', $notices_html, $notices, $section );
 		
-		$this->notices = array();
+		if( $clean ){
+			$this->notices = array();
+		}
 
 	}
 
@@ -168,9 +185,9 @@ class Xoo_Wsc_Cart{
 		xoo_wsc_helper()->get_template( 'xoo-wsc-shortcode.php' );
 		$shortcode = ob_get_clean();
 
-		$fragments['div.xoo-wsc-container'] = $container; //Cart content
-		$fragments['div.xoo-wsc-slider'] 	= $slider;// Slider
-		$fragments['div.xoo-wsc-sc-cont'] 	= $shortcode;
+		$fragments['div.xoo-wsc-container'] 		= $container; //Cart content
+		$fragments['div.xoo-wsc-slider'] 			= $slider;// Slider
+		$fragments['div.xoo-wsc-sc-cont'] 			= $shortcode;
 		
 		return $fragments;
 

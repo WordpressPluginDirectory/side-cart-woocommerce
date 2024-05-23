@@ -29,7 +29,6 @@ $headingAlign 	= $sy['sch-head-align'];
 $headFontSize 	= $sy['sch-head-fsize'];
 $headBGColor 	= $sy['sch-bgcolor'];
 $headTxtColor 	= $sy['sch-txtcolor'];
-$headBarColor 	= $sy['sch-sbcolor'];
 $headBorder		= $sy['sch-border'];
 
 /* Body */
@@ -232,9 +231,6 @@ span.xoo-wsch-close {
 	border-bottom: <?php echo $headBorder ?>;
 }
 
-.xoo-wsc-sb-bar > span{
-	background-color: <?php echo $headBarColor ?>;
-}
 
 .xoo-wsc-body{
 	background-color: <?php echo $bodyBGColor ?>;

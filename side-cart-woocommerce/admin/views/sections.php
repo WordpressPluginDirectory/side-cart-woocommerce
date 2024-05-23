@@ -28,6 +28,12 @@ $sections = array(
 		'tab' 	=> 'general',
 	),
 
+	array(
+		'title' => 'Rewards & Checkpoints Bar',
+		'id' 	=> 'sc_bar',
+		'tab' 	=> 'general',
+		'pro' 	=> 'yes'
+	),
 
 	array(
 		'title' => 'Cart Menu',

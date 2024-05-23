@@ -57,7 +57,8 @@ jQuery(document).ready(function($){
 		var data = {
 			'form': $(this).serialize(),
 			'action': 'xoo_admin_settings_save',
-			'xoo_ff_nonce': xoo_admin_params.nonce
+			'xoo_ff_nonce': xoo_admin_params.nonce,
+			'slug': xoo_admin_params.slug
 		}
 
 		$.ajax({
@@ -181,5 +182,219 @@ jQuery(document).ready(function($){
 		$sortEl.sortable( sortData );
 	} );
 
+
+	$( 'select[data-select2box="yes"]' ).each(function(index, el){
+		var $el = $(el);
+		$el.select2({
+			multiple: $el.attr('data-multiple')
+		});
+	});
+
+
+	$('.xoo-as-exim').on( 'click', function(){
+		$(this).toggleClass('xoo-as-active');
+	} );
+
+
+	//On export settings click
+	$('.xoo-as-setexport').on( 'click', function(){
+		var $form = $(this).closest('form.xoo-as-form');
+		$('.xoo-as-exim').removeClass('xoo-as-active');
+		$('body').addClass('xoo-as-exmodal-active');
+		$('.xoo-as-excont textarea').val( JSON.stringify($form.serializeArray()) ).select();
+
+		$('.xoo-as-impcont').hide();
+		$('.xoo-as-excont').show();
+	} );
+
+
+	//Close import/export modal
+	$('.xoo-as-exipclose').on( 'click', function(){
+		$('body').removeClass('xoo-as-exmodal-active');
+	} );
+
+
+
+	/*$('button.xoo-as-run-import').on( 'click', function(){
+
+		var textarea = $(this).siblings('textarea'),
+			settings = textarea.val();
+
+		if( !settings ) return;
+
+		if( !confirm( 'This will override your current settings. Are you sure?' ) ) return;
+
+		$(this).addClass('xoo-as-processing');
+
+		var data = JSON.parse(settings);
+
+		var fields = {};
+
+		$.each( data, function( index, field ){
+
+			if( fields[ field.name ] ){
+				if( Array.isArray( fields[ field.name ]  ) ){
+					fields[ field.name ].push( field.value ); 
+				}
+				else{
+					fields[ field.name ] = [
+						fields[ field.name ],
+						field.value
+					];
+				}
+			}
+			else{
+				fields[ field.name ] = field.value;
+			}
+
+		} )
+
+		console.log(fields);
+
+		$.each( fields, function( id, value ){
+
+			var $el = $('[name="'+id+'"]');
+
+			if( !$el.length ) return;
+
+			var $settingCont = $el.closest( '.xoo-as-setting' );
+
+			if( !$settingCont.length ) return;
+
+			var type = $settingCont.attr('data-setting');
+
+			if( type === 'checkbox' ){ //switch gives two values
+				value = value[1];
+			}
+
+			if( type === 'checkbox_list' || type === 'checkbox' ){
+				$settingCont.find('input[type="checkbox"]').prop('checked', false);
+			}
+			else if( type === 'radio' ){
+				$settingCont.find( 'input[type="radio"]' ).prop('checked', false);
+			}
+
+			if( Array.isArray( value ) && type !== 'select' ){
+
+				$.each( value, function( index, optionValue ){
+
+					var $option = $settingCont.find('[value="'+optionValue+'"]');
+
+					if( !$option.length ) return;
+
+					if( type === 'checkbox_list' ){
+						$option.prop('checked', true );
+					}
+
+				} );
+			
+			}
+			else{
+
+				if( type === 'checkbox' || type === 'radio'){
+					$settingCont.find('input[value="'+value+'"]').prop('checked', true);
+				}
+				else{
+					$el.val( value );
+				}
+				
+			}
+
+			$el.trigger('change');
+
+		} )
+
+		$(this).removeClass('xoo-as-processing');
+		textarea.val('');
+		$('.xoo-as-imported').addClass('xoo-as-active');
+	} );*/
+
+
+	//On import settings click
+	$('.xoo-as-setimport').on( 'click', function(){
+		$('.xoo-as-exim, .xoo-as-imported').removeClass('xoo-as-active');
+		$('.xoo-as-impcont').show();
+		$('.xoo-as-excont').hide();
+		$('body').addClass('xoo-as-exmodal-active');
+	} );
+
+
+	$('.xoo-as-run-export').click( function(){
+
+		$('.xoo-as-expdone').hide();
+
+		var options = [];
+
+		$('.xoo-as-expcheck input[type="checkbox"]:checked').each( function( index, el ){
+			var $el = $(el);
+			options.push($el.attr('value'));
+		} )
+
+		if( !options.length ) return;
+
+		var $button = $('button.xoo-as-run-export ');
+
+		$button.addClass('xoo-as-processing');
+		$button.text( 'Please wait....' );
+
+
+		var data = {
+			'action': 'xoo_admin_settings_export',
+			'xoo_ff_nonce': xoo_admin_params.nonce,
+			'slug': xoo_admin_params.slug,
+			'options': options
+		}
+
+		$.ajax({
+			url: xoo_admin_params.adminurl,
+			type: 'POST',
+			data: data,
+			success: function(response){
+				$button.text('Export Success');
+				
+
+				setTimeout(function(){
+					$button.text( 'Export' )
+				},5000)
+				$('.xoo-as-expdone').show();
+				$('.xoo-as-expdone textarea').val(JSON.stringify(response)).select();
+			}
+		});
+
+	} );
+
+	$('button.xoo-as-run-import').click( function(){
+
+		if( !confirm( 'This will override your current settings. Are you sure?' ) ) return;
+
+		var textValue 	= $('.xoo-as-impcont textarea').val(),
+			$button  	= $(this);
+
+		$button.addClass('xoo-as-processing');
+		$button.text( 'Please wait....' );
+
+		var data = {
+			'action': 'xoo_admin_settings_import',
+			'xoo_ff_nonce': xoo_admin_params.nonce,
+			'slug': xoo_admin_params.slug,
+			'import': textValue
+		}
+
+		$.ajax({
+			url: xoo_admin_params.adminurl,
+			type: 'POST',
+			data: data,
+			success: function(response){
+				$('.xoo-as-imported').addClass('xoo-as-active');
+				$('.xoo-as-impcont textarea').val('');
+				$button.text('Import Success');
+				setTimeout(function(){
+					$button.text( 'Import' );
+					location.reload();
+				},3000)
+			}
+		});
+
+	})
 
 })

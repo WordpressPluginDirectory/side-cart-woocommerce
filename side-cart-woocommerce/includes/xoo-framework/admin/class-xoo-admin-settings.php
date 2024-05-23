@@ -39,9 +39,19 @@ class Xoo_Admin{
 		return isset( $_GET['page'] ) && $_GET['page'] === $this->settings_slug;
 	}
 
+	public function is_settings_page_request(){
+		return isset( $_POST['slug'] ) && $_POST['slug'] === $this->helper->slug;
+	}
+
 	public function hooks(){
 		
-		add_action( 'wp_ajax_xoo_admin_settings_save', array( $this, 'save_settings' ), 5 );
+		if( $this->is_settings_page_request() ){
+			add_action( 'wp_ajax_xoo_admin_settings_save', array( $this, 'save_settings' ), 5 );
+			add_action( 'wp_ajax_xoo_admin_settings_export', array( $this, 'export_settings' ) );
+			add_action( 'wp_ajax_xoo_admin_settings_import', array( $this, 'import_settings' ) );
+		}
+
+
 		add_action( 'init', array( $this, 'reset_settings' ) );
 		add_action( 'init', array( $this, 'save_default_settings' ) );
 
@@ -54,6 +64,34 @@ class Xoo_Admin{
 			add_action( 'xoo_tab_page_start', array( $this, 'shortcode_info' ), 20, 2 );
 			
 		}
+	}
+
+	public function export_settings(){
+
+		$options = $_POST['options'];
+
+		$data = array();
+
+		foreach ( $options as $option_key ) {
+			$data[ $option_key ] = get_option( $option_key, true);
+		}
+
+		wp_send_json( $data );
+
+	}
+
+	public function import_settings(){
+		
+		$settings  = $_POST['import'];
+	
+		$options = json_decode( html_entity_decode( stripslashes ($settings ) ), true );
+
+		foreach ( $options as $key => $value ) {
+			update_option( $key, $value );
+		}
+			
+		die();
+
 	}
 
 	//Add info tab
@@ -143,12 +181,16 @@ class Xoo_Admin{
 		$formData = array();
 		$parseFormData = parse_str( $_POST['form'], $formData );
 
-		foreach ( $formData as $option_key => $option_data ) {
+		$formData = apply_filters( 'xoo_admin_settings_'.$this->helper->slug.'_save_data', $formData );
 
+		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_before_saving', $formData );
+
+		foreach ( $formData as $option_key => $option_data ) {
 			$option_data = stripslashes_deep( $option_data );
 			update_option( $option_key, $option_data );
-			
 		}
+
+		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_saved', $formData );
 
 		wp_send_json(array(
 			'error' 	=> 0,
@@ -162,6 +204,11 @@ class Xoo_Admin{
 	public function enqueue_scripts() {
 
 		do_action( 'xoo_as_enqueue_scripts', $this->helper->slug );
+
+		//Select2 CSS file
+	    wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', array(), '4.1.0-rc.0');
+	    //select2js
+	    wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', 'jquery', '4.1.0-rc.0');
 		
 		wp_enqueue_media(); // media gallery
 		wp_enqueue_style( 'wp-color-picker' );
@@ -171,7 +218,8 @@ class Xoo_Admin{
 
 		wp_localize_script( 'xoo-admin-js', 'xoo_admin_params', array(
 			'adminurl'  => admin_url().'admin-ajax.php',
-			'nonce' 	=> wp_create_nonce('xoo-ff-nonce')
+			'nonce' 	=> wp_create_nonce('xoo-ff-nonce'),
+			'slug' 		=> $this->helper->slug 
 		) );
 
 	}
@@ -316,7 +364,7 @@ class Xoo_Admin{
 	}
 
 
-	protected function sort_by_priority( $data = array() ){
+	public function sort_by_priority( $data = array() ){
 
 		if( !is_array( $data ) || empty( $data ) ) return $data;
 
@@ -462,6 +510,7 @@ class Xoo_Admin{
 			}
 
 		}
+
 	}
 
 
@@ -549,7 +598,6 @@ class Xoo_Admin{
 			'pro' 				=> 'no',
 			'label_class' 		=> array(),
 			'container_class' 	=> array(),
-			'custom_attributes' => array()
 		) );
 
 		extract( $field_args );
@@ -558,9 +606,20 @@ class Xoo_Admin{
 			$value = $default;
 		}
 
+		$custom_attributes = isset( $args['custom_attributes'] ) ? $args['custom_attributes'] : array();
+
 		if( $callback === 'sortable' && isset( $args['sort_options'] ) ){
 			$custom_attributes['data-options'] = $args['sort_options'];
 		}
+
+		if( $callback === 'select' && isset( $args['select2box'] ) ){
+			$custom_attributes['data-select2box'] = $args['select2box'] ? 'yes' : 'no';
+			if( isset( $args['multiple'] ) && $args['multiple'] ){
+				$custom_attributes['multiple'] = '';
+			}
+			$container_class[] = 'xoo-as-select2box';
+		}
+
 
 		$custom_attributes_html = array();
 
@@ -591,7 +650,7 @@ class Xoo_Admin{
 
 
 
-		$field_container = '<div class="%1$s">%2$s</div>';
+		$field_container = '<div class="%1$s" data-setting="%3$s">%2$s</div>';
 
 		$field = '';
 		switch ( $callback ) {
@@ -604,7 +663,7 @@ class Xoo_Admin{
 			case 'textarea':
 				$rows  	= isset( $args['rows'] ) ? $args['rows'] : 4;
 				$cols 	= isset( $args['cols'] ) ? $args['cols'] : 50;
-				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'">'.$value.'</textarea>';
+				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'" '.$custom_attributes.'>'.$value.'</textarea>';
 				break;
 
 			case 'color':
@@ -649,11 +708,16 @@ class Xoo_Admin{
 				$select 	= '<select name="%1$s" '.$custom_attributes.'>%2$s</select>';
 				$options 	= '';
 
+
 				foreach ( $args['options'] as $option_key => $option_label ) {
-					$options .= '<option value="'.$option_key.'" '.selected( $option_key, $value, false ).'>'.$option_label.'</option>';
+					$selected = is_array( $value ) ? in_array( $option_key , $value ) : $value === $option_key;
+					$selected = $selected ? 'selected' : '';
+					$options .= '<option value="'.$option_key.'" '.$selected.' data-cc="asd">'.$option_label.'</option>';
 				}
 
-				$field .= sprintf( $select, $field_id, $options );
+				$select_field_id = isset( $args['multiple'] ) && $args['multiple'] ? $field_id.'[]' : $field_id;
+
+				$field .= sprintf( $select, $select_field_id, $options );
 
 				break;
 
@@ -757,7 +821,7 @@ class Xoo_Admin{
 		$field = $label.'<div class="xoo-as-field">'.$field.'</div>';
 
 		$container_class 	= implode( ' ' , $container_class );
-		$field 				= sprintf( $field_container, $container_class, $field );
+		$field 				= sprintf( $field_container, $container_class, $field, $callback );
 
 		return apply_filters( 'xoo_admin_setting_field', $field, $field_id, $value, $args );
 
