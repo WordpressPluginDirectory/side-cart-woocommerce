@@ -251,7 +251,7 @@ ul.vertical.xoo-as-sortable-list li:last-child{
     display: flex;
     z-index: 99999;
     position: sticky;
-    max-width: 450px;
+    max-width: 420px;
     float: right;
     bottom: 0;
 }

@@ -17,6 +17,7 @@
       <key name="sct-subtotal" />
       <key name="sct-footer" />
       <key name="sct-delete" />
+      <key name="m-shop-url" />
     </key>
 
   </admin-texts>

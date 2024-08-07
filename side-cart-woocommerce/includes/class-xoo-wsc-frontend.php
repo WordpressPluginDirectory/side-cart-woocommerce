@@ -94,6 +94,12 @@ class Xoo_Wsc_Frontend{
 
 		wp_enqueue_script( 'xoo-wsc-main-js', XOO_WSC_URL.'/assets/js/xoo-wsc-main.js', array('jquery'), XOO_WSC_VERSION, array( 'strategy' => 'defer' ) ); // Main JS
 
+		$skipAjaxForData = array();
+
+		if( function_exists('WCS_ATT') ){
+			$skipAjaxForData['add-to-subscription'] = '';
+		}
+
 		$noticeMarkup = '<ul class="xoo-wsc-notices">%s</ul>';
 
 		wp_localize_script( 'xoo-wsc-main-js', 'xoo_wsc_params', array(
@@ -119,6 +125,7 @@ class Xoo_Wsc_Frontend{
 			'autoOpenCart' 			=> $glSettings['m-auto-open'],
 			'addedToCart' 			=> xoo_wsc_cart()->addedToCart,
 			'ajaxAddToCart' 		=> $ajaxAtc ? 'yes' : 'no',
+			'skipAjaxForData' 		=> $skipAjaxForData,
 			'showBasket' 			=> xoo_wsc_helper()->get_style_option('sck-enable'),
 			'flyToCart' 			=> 'no',
 			'productFlyClass' 		=> apply_filters( 'xoo_wsc_product_fly_class', '' ),
@@ -154,7 +161,7 @@ class Xoo_Wsc_Frontend{
 
 	public function basket_shortcode($atts){
 
-		if( is_admin() ) return;
+		if( is_admin() || !xoo_wsc()->isSideCartPage() ) return;
 
 		$atts = shortcode_atts( array(), $atts, 'xoo_wsc_cart');
 

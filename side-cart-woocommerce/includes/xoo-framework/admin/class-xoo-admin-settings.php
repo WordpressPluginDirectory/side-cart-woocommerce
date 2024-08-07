@@ -68,6 +68,13 @@ class Xoo_Admin{
 
 	public function export_settings(){
 
+		// Check for nonce security      
+		if ( !wp_verify_nonce( $_POST['xoo_ff_nonce'], 'xoo-ff-nonce' ) ) {
+			die('cheating');
+		}
+
+		if( !current_user_can( $this->capability ) ) return;
+
 		$options = $_POST['options'];
 
 		$data = array();
@@ -81,6 +88,13 @@ class Xoo_Admin{
 	}
 
 	public function import_settings(){
+
+		// Check for nonce security      
+		if ( !wp_verify_nonce( $_POST['xoo_ff_nonce'], 'xoo-ff-nonce' ) ) {
+			die('cheating');
+		}
+
+		if( !current_user_can( $this->capability ) ) return;
 		
 		$settings  = $_POST['import'];
 	
