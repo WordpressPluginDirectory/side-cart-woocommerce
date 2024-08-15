@@ -10,6 +10,19 @@ foreach ($menus as $menuObj ) {
 	$menuOptions[ $menuObj->slug ] = $menuObj->name;
 }
 
+if( function_exists('xoo_el') ){
+	$loginPopupTxt 		= '<a href="'.admin_url( 'admin.php?page=easy-login-woocommerce-settings' ).'" target="_blank">Plugin Settings</a>';
+}
+else{
+	$loginPopupAction 	= xoo_wsc_admin_settings()->is_plugin_installed('easy-login-woocommerce') ? 'Activate Plugin' : 'Install Plugin'; 
+	$loginPopupTxt 		= 'This feature requires our separate login/register popup plugin.<br>
+							<div class="xoo-wsc-el-links">
+								<a target="nolink" class="xoo-wsc-el-install">'.$loginPopupAction.'</a>
+								<a href="https://wordpress.org/plugins/easy-login-woocommerce/" target="_blank">Plugin Link</a>
+							</div>
+							';
+}
+
 
 $settings = array(
 
@@ -181,6 +194,17 @@ $settings = array(
 		'section_id' 	=> 'sc_footer',
 		'default' 		=> 'yes',
 	),
+
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Open Login Slider/Popup on checkout',
+		'id' 			=> 'scf-chklogin-en',
+		'section_id' 	=> 'sc_footer',
+		'default' 		=> 'no',
+		'desc' 			=> 'Ask users to login/register before checkout. You can smoothen the checkout process by collecting the data.<br>'.$loginPopupTxt
+	),
+
 
 
 	array(

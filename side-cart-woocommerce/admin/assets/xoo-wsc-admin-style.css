@@ -818,3 +818,15 @@ span.xoo-scbhk-desc {
 .xoo-wsc-sml-qty span {
     display: inline-block;
 }
+
+.xoo-as-field:has(input[name="xoo-wsc-gl-options[scf-chklogin-en]"]) .xoo-as-desc {
+    display: block;
+    margin-top: 10px;
+    line-height: 22px;
+}
+
+.xoo-wsc-el-links a {
+    text-decoration: underline;
+    cursor: pointer;
+    margin-right: 10px!important;
+}

@@ -4,6 +4,8 @@ class Xoo_Wsc_Admin_Settings{
 
 	protected static $_instance = null;
 
+	public $installedPlugins = array();
+
 	public static function get_instance(){
 		if ( is_null( self::$_instance ) ) {
 			self::$_instance = new self();
@@ -30,6 +32,9 @@ class Xoo_Wsc_Admin_Settings{
 		add_action( 'xoo_tab_page_start', array( $this, 'preview_info' ), 5 );
 
 		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'checkpoints_bar_setting_html' ), 10, 4 );
+
+		add_action( 'wp_ajax_xoo_wsc_el_install', array( $this, 'install_loginpopup' ) );
+		add_action( 'wp_ajax_xoo_wsc_el_request_just_to_init_save_settings',  array( $this, 'el_request_just_to_init_save_settings' ) );
 	}
 
 	public function preview_info($tab_id){
@@ -69,6 +74,104 @@ class Xoo_Wsc_Admin_Settings{
 		wp_enqueue_style( 'xoo-wsc-admin-fonts', XOO_WSC_URL . '/assets/css/xoo-wsc-fonts.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_style( 'xoo-wsc-admin-style', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-style.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_script( 'xoo-wsc-admin-js', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-js.js', array( 'jquery' ), XOO_WSC_VERSION, true );
+
+		wp_localize_script( 'xoo-wsc-admin-js', 'xoo_wsc_admin_params', array(
+			'adminurl'  => admin_url().'admin-ajax.php',
+			'nonce' 	=> wp_create_nonce('xoo-wsc-nonce'),
+		) );
+
+	}
+
+	public function el_request_just_to_init_save_settings(){
+		wp_die();
+	}
+
+
+	public function install_loginpopup(){
+
+		// Check for nonce security      
+		if ( !wp_verify_nonce( $_POST['xoo_wsc_nonce'], 'xoo-wsc-nonce' ) ) {
+			die('cheating');
+		}
+
+		try {
+
+			$plugin_slug = 'easy-login-woocommerce';
+
+			include_once ABSPATH . 'wp-admin/includes/file.php';
+			include_once ABSPATH . 'wp-admin/includes/misc.php';
+			include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+			if( !$this->is_plugin_installed( 'easy-login-woocommerce' ) ){
+
+				// Initialize the WP Filesystem
+				if (false === WP_Filesystem()) {
+					throw new Exception( "Could not initialize WP_Filesystem.", 'filesystem_error' ) ;
+				}
+
+				// Set the plugin URL from the WordPress repository
+				$plugin_zip_url = "https://downloads.wordpress.org/plugin/{$plugin_slug}.latest-stable.zip";
+
+				// Download the plugin ZIP file
+				$download_result = download_url($plugin_zip_url);
+
+				if (is_wp_error($download_result)) {
+					throw new Xoo_Exception( $download_result );
+				}
+
+				// Prepare for installation
+				$skin 				= new Automatic_Upgrader_Skin();
+				$plugin_upgrader 	= new Plugin_Upgrader($skin);
+				$install_result 	= $plugin_upgrader->install($plugin_zip_url);
+
+				// Clean up the downloaded file
+				unlink($download_result);
+
+				// Return the result of the installation
+				if (is_wp_error($install_result)) {
+					throw new Xoo_Exception( $install_result );
+				}
+
+				//Default setting when installed using side cart
+				if( get_option( 'xoo-el-version' ) === false ){
+
+					$firsttime_download = 'yes';
+
+					update_option( 'xoo-el-sy-options', array(
+						'sy-popup-style' 	=> 'slider',
+						'sy-popup-width' 	=> 500
+					) );
+					
+					update_option( 'xoo-el-gl-options', array(
+						'm-form-pattern' => 'single'
+					) );
+
+				}
+				
+
+			}
+
+			// Activate the plugin after installation
+			$activate_result = activate_plugin($plugin_slug . '/xoo-el-main.php');
+
+			if (is_wp_error($activate_result)) {
+				throw new Xoo_Exception( $activate_result );
+			}
+
+			wp_send_json( array(
+				'notice' 				=> 'Plugin installed successfully.<br>For now everything is already setup, but if you want to customize the settings, you can access them <a href="'.admin_url( 'admin.php?page=easy-login-woocommerce-settings' ).'" target="_blank">[here]</a>',
+				'firsttime_download' 	=> isset( $firsttime_download ) ? 'yes' : 'no'
+			) );
+
+		} catch (Xoo_Exception $e) {
+			wp_send_json( array(
+				'error' 	=> 'yes',
+				'notice' 	=> $e->getMessage()
+			) );
+		}
+
+		
 	}
 
 
@@ -104,6 +207,37 @@ class Xoo_Wsc_Admin_Settings{
 		
 	}
 
+
+	public function is_plugin_installed( $plugin_slug ){
+
+		if( isset( $this->installedPlugins[$plugin_slug] ) ){
+			return $this->installedPlugins[$plugin_slug];
+		}
+
+		$installed = false;
+
+		// Load the necessary WordPress plugin functions
+		if (!function_exists('get_plugins')) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		// Get the list of all installed plugins
+		$all_plugins = get_plugins();
+
+		// Check if the plugin is in the list of installed plugins
+		foreach ($all_plugins as $plugin_path => $plugin_data) {
+			if (strpos($plugin_path, $plugin_slug . '/') === 0) {
+				$installed = true; // Plugin is installed
+				break;
+			}
+		}
+
+
+		$this->installedPlugins[$plugin_slug] = $installed;
+
+		return $installed;
+
+	}
 
 
 	public function checkpoints_bar_setting_html( $field, $field_id, $value, $args ){

@@ -207,6 +207,8 @@ class Xoo_Wsc_Template_Args{
 		$checkoutTxt	= esc_html( self::$gl['sct-ft-chkbtn'] );
 		$buttonDesign 	= self::$sy['scf-btns-theme'];
 		$buttonClass 	=  xoo_wsc_frontend()->get_button_classes( 'array', array( 'xoo-wsc-ft-btn' ) );
+		
+		$chkoutBtnClass = !is_user_logged_in() && self::$gl['scf-chklogin-en'] === "yes" && function_exists('xoo_el') ? array_merge( $buttonClass, array( 'xoo-el-login-tgr' ) ) : $buttonClass;	
 
 		$checkoutTotal = self::$gl['scf-chkbtntotal-en'] === 'yes' ? WC()->cart->get_total() : '';
 
@@ -224,7 +226,7 @@ class Xoo_Wsc_Template_Args{
 			'checkout' 		=> array(
 				'label' => self::$gl['sct-ft-chkbtn'] . $checkoutTotal,
 				'url' 	=> self::$gl['scu-checkout'],
-				'class' => $buttonClass,
+				'class' => $chkoutBtnClass,
 			)
 		);
 

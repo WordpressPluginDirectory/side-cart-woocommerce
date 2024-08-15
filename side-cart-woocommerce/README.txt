@@ -3,8 +3,8 @@ Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
-Tested up to: 6.5
-Stable tag: 2.5.2
+Tested up to: 6.6
+Stable tag: 2.5.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,9 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 6. Change Shipping Pro
 
 == Changelog ==
+
+= 2.5.3 =
+* New - Option to login/register on checkout button click
 
 = 2.5.2 =
 * Fix - Shortcode doesn't hide on pages where basket is disabled

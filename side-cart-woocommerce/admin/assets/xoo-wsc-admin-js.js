@@ -505,5 +505,41 @@ jQuery(document).ready(function($){
 		}
 	} ).trigger('change');
 
+
+	//Install login popup plugin
+	$('.xoo-wsc-el-install').click(function(e){
+
+		e.preventDefault();
+		var $cont = $(this).closest('.xoo-wsc-el-links');
+		$cont.html( 'Installing.. Please wait..' );
+
+		$.ajax({
+			url: xoo_wsc_admin_params.adminurl,
+			type: 'POST',
+			data: {
+				action: 'xoo_wsc_el_install',
+				xoo_wsc_nonce: xoo_wsc_admin_params.nonce
+			},
+			success: function( response ){
+
+				if( response.firsttime_download ){
+					$.post(xoo_wsc_admin_params.adminurl, {
+						'action': 'xoo_wsc_el_request_just_to_init_save_settings'
+					},function(result){
+						if( response.notice ){
+							$cont.html(response.notice)
+						}
+					})
+				}
+				else{
+					if( response.notice ){
+						$cont.html(response.notice)
+					}
+				}
+				
+			}
+		})
+	})
+
 	
 })
