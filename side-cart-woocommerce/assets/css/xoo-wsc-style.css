@@ -19,7 +19,7 @@
     z-index: 999999;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 95%;
     transition: 0.5s ease-out;
 }
 

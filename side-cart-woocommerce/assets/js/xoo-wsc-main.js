@@ -11,9 +11,9 @@ jQuery(document).ready(function($){
 	};
 
 
-	class Notice{
+	var markupTimeout = null;
 
-		static markupTimeout = null;
+	class Notice{
 
 		constructor( $modal ){
 			this.$modal = $modal;
@@ -80,9 +80,9 @@ jQuery(document).ready(function($){
 
 			setTimeout(function(){$markupNotice.addClass('xoo-wsc-active')},10);
 			
-			clearTimeout(Notice.markupTimeout);
+			clearTimeout(markupTimeout);
 
-			Notice.markupTimeout = setTimeout(function(){
+			markupTimeout = setTimeout(function(){
 				$markupNotice.removeClass('xoo-wsc-active');
 			},xoo_wsc_params.notificationTime )
 		}

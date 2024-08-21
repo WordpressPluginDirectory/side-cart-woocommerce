@@ -830,3 +830,7 @@ span.xoo-scbhk-desc {
     cursor: pointer;
     margin-right: 10px!important;
 }
+
+.xoo-sc-bottom-btns{
+    max-width: 450px!important;
+}

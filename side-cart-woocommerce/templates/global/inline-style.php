@@ -154,7 +154,7 @@ else{
 <?php if( $BasketMobile !== 'yes' ): ?>
 
 @media only screen and (max-width: 600px) {
-	.xoo-wsc-basket {
+	.xoo-wsc-basket, .xoo-wsc-basket[style*='block']  {
 		display: none!important;
 	}
 }

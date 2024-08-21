@@ -144,7 +144,8 @@ class Xoo_Wsc_Admin_Settings{
 					) );
 					
 					update_option( 'xoo-el-gl-options', array(
-						'm-form-pattern' => 'single'
+						'm-form-pattern' => 'single',
+						'm-nav-pattern'  => 'links'
 					) );
 
 				}
