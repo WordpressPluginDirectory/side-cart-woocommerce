@@ -595,3 +595,7 @@ body.rtl .xoo-wsc-product dl.variation dd, body.rtl .xoo-wsc-product dl.variatio
 .xoo-wsc-sml-qty span {
     display: inline-block;
 }
+
+.xoo-wsc-markup[data-wpr-lazyrender] {
+    content-visibility: visible!important;
+}

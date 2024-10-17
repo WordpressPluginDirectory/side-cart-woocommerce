@@ -161,7 +161,7 @@ class Xoo_Wsc_Frontend{
 
 	public function basket_shortcode($atts){
 
-		if( is_admin() || !xoo_wsc()->isSideCartPage() ) return;
+		if( is_admin() || !xoo_wsc()->isSideCartPage() || defined('REST_REQUEST') && REST_REQUEST ) return;
 
 		$atts = shortcode_atts( array(), $atts, 'xoo_wsc_cart');
 

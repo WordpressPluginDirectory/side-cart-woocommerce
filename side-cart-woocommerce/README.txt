@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
 Tested up to: 6.6
-Stable tag: 2.5.4
+Stable tag: 2.5.5
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,10 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 6. Change Shipping Pro
 
 == Changelog ==
+
+= 2.5.5 =
+* Fix - WP rocket recent update hiding the side cart
+* Fix - Shortcode not working with blocks
 
 = 2.5.4 =
 * Fix - "Hide basket on mobile device" option not working
