@@ -300,7 +300,7 @@ jQuery(document).ready(function($){
 			}
 
 			if( typeof wc_cart_fragments_params === 'undefined' ){
-				$( window ).on( 'pageshow' , this.onPageShow );
+				$( window ).on( 'pageshow' , this.onPageShow.bind(this) );
 			}
 
 			if( xoo_wsc_params.triggerClass ){

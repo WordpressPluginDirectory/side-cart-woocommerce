@@ -311,6 +311,7 @@ class Xoo_Wsc_Admin_Settings{
 							<select name="<?php echo $chkpointID ?>[type]">
 								<option value="display" <?php selected( $chkpoint['type'], 'display' ) ?> >Only for display</option>
 								<option value="gift" <?php selected( $chkpoint['type'], 'gift' ) ?>>Free Gift</option>
+								<option value="discount" <?php selected( $chkpoint['type'], 'discount' ) ?>>Discount</option>
 								<option value="freeshipping" <?php selected( $chkpoint['type'], 'freeshipping' ) ?> style="display: none;">Free Shipping</option>
 							</select>
 						</div>
