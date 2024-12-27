@@ -82,4 +82,13 @@ function xoo_wsc_enable_ajax_atc_for_product( $product ){
 }
 
 
+function xoo_wsc_elementor_disable_cart( $ispage ){
+	if(  defined( 'ELEMENTOR_VERSION' ) && ( \Elementor\Plugin::$instance->editor->is_edit_mode() || \Elementor\Plugin::$instance->preview->is_preview_mode()  ) ){
+		$ispage = false;
+	}
+	return $ispage;
+}
+
+add_filter( 'xoo_wsc_is_sidecart_page', 'xoo_wsc_elementor_disable_cart' );
+
 ?>
