@@ -92,7 +92,7 @@ class Xoo_Wsc_Frontend{
 			$ajaxAtc = $glSettings['m-ajax-atc'] !== 'no';
 		}
 
-		wp_enqueue_script( 'xoo-wsc-main-js', XOO_WSC_URL.'/assets/js/xoo-wsc-main.js', array('jquery'), XOO_WSC_VERSION, array( 'strategy' => 'defer' ) ); // Main JS
+		wp_enqueue_script( 'xoo-wsc-main-js', XOO_WSC_URL.'/assets/js/xoo-wsc-main.js', array('jquery'), XOO_WSC_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) ); // Main JS
 
 		$skipAjaxForData = array();
 
