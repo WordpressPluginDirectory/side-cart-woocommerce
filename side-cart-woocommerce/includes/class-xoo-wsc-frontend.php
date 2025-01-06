@@ -28,6 +28,8 @@ class Xoo_Wsc_Frontend{
 
 		add_action( 'wp_enqueue_scripts' ,array( $this,'enqueue_styles' ) );
 		add_action( 'wp_enqueue_scripts' , array( $this,'enqueue_scripts' ), 15 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_cart_fragment' ), 999 );
+
 		add_action( 'wp_footer', array( $this, 'cart_markup' ) );
 
 		add_action( 'wp', array( $this, 'basket_menu_filter' ) );
@@ -76,6 +78,12 @@ class Xoo_Wsc_Frontend{
 
 		wp_add_inline_style( 'xoo-wsc-style', strip_tags( $inline_style . $customCSS ) );
 
+	}
+
+	public function enqueue_cart_fragment(){
+		if( get_option( 'xoo-wsc-enqueue-cartfragment' ) !== 'no' ){
+			wp_enqueue_script( 'wc-cart-fragments' );
+		}
 	}
 
 	//Enqueue javascript

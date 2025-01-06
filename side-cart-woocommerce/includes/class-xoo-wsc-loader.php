@@ -31,7 +31,7 @@ class Xoo_Wsc_Loader{
 		$this->define( "XOO_WSC_PATH", plugin_dir_path( XOO_WSC_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WSC_PLUGIN_BASENAME", plugin_basename( XOO_WSC_PLUGIN_FILE ) );
 		$this->define( "XOO_WSC_URL", untrailingslashit( plugins_url( '/', XOO_WSC_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WSC_VERSION", "2.5.8" ); //Plugin version
+		$this->define( "XOO_WSC_VERSION", "2.5.9" ); //Plugin version
 		$this->define( "XOO_WSC_LITE", true );
 	}
 
@@ -181,15 +181,21 @@ class Xoo_Wsc_Loader{
 			}
 		}
 
-		if( $db_version && version_compare( $db_version, '2.5', '<') ){
+		if( $db_version ){
 			
 			$glOptions 						= xoo_wsc_helper()->get_general_option();
-			$glOptions['scb-show'][] 		= 'product_qty';
-			$glOptions['scbp-qpdisplay'] 	= xoo_wsc_helper()->get_style_option('scbp-qpdisplay');
+
+			if( version_compare( $db_version, '2.5', '<')  ){
+				$glOptions['scb-show'][] 		= 'product_qty';
+				$glOptions['scbp-qpdisplay'] 	= xoo_wsc_helper()->get_style_option('scbp-qpdisplay');
+			}
+
+			if( version_compare( $db_version, '2.5.9', '<')  ){
+				update_option( 'xoo-wsc-enqueue-cartfragment', 'no' );
+			}
+			
 			update_option('xoo-wsc-gl-options', $glOptions );
 
-			//Update to current version
-			update_option( $version_option, XOO_WSC_VERSION);
 		}
 
 
