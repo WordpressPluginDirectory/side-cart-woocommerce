@@ -91,4 +91,13 @@ function xoo_wsc_elementor_disable_cart( $ispage ){
 
 add_filter( 'xoo_wsc_is_sidecart_page', 'xoo_wsc_elementor_disable_cart' );
 
+
+//Single product block add to cart fix
+function xoo_wsc_single_product_atc_fix(){
+	if( isset( $_POST['is-descendent-of-single-product-block'] ) && isset( $_POST['action'] ) && $_POST['action'] === 'xoo_wsc_add_to_cart' ){
+		$_POST['is-descendent-of-single-product-block'] = false;
+	}
+}
+add_action( 'init', 'xoo_wsc_single_product_atc_fix' );
+
 ?>

@@ -834,3 +834,7 @@ span.xoo-scbhk-desc {
 .xoo-sc-bottom-btns{
     max-width: 450px!important;
 }
+
+ul.xoo-as-sortable-list[data-id="xoo-wsc-sy-options[scf-paybutton-pos]"]{
+    max-width: 300px;
+}

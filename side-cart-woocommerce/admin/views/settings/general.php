@@ -26,6 +26,37 @@ else{
 
 $settings = array(
 
+	/***** Shortcode ****/
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Add to menu',
+		'id' 			=> 'shbk-menu',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> $menuOptions
+		),
+		'default' 	=> 'none',
+	),
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Show',
+		'id' 			=> 'shbk-show',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> array(
+				'icon' 			=> 'Icon',
+				'subtotal' 		=> 'Subtotal',
+				'count' 		=> 'Count',
+			)
+		),
+		'default' 	=> array(
+			'icon', 'subtotal', 'count',
+		),
+	),
+
+
 
 	/** SIDE CART HEADER **/
 
@@ -188,6 +219,25 @@ $settings = array(
 
 
 	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Payment Buttons',
+		'id' 			=> 'scf-payment-btns',
+		'section_id' 	=> 'sc_footer',
+		'args' 			=> array(
+			'options' 	=> array(
+				'paypal' 		=> 'Paypal',
+				'amazon' 		=> 'Amazon Pay',
+				'gpay' 			=> 'Google & Apple Pay',
+			),
+		),
+		'default' 	=> array(
+			'gpay'
+		),
+		'desc' 			=> '<a href="https://docs.xootix.com/side-cart-for-woocommerce#payment_buttons" target="_blank">How to setup? Documentation</a>',
+		'pro' 			=> 'yes'
+	),
+
+	array(
 		'callback' 		=> 'checkbox',
 		'title' 		=> 'Show total in checkout button',
 		'id' 			=> 'scf-chkbtntotal-en',
@@ -216,58 +266,9 @@ $settings = array(
 		'desc' 			=> 'Set footer text below under "Texts section" '
 	),
 
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Papyal Express Checkout',
-		'id' 			=> 'scf-pec-enable',
-		'section_id' 	=> 'sc_footer',
-		'default' 		=> 'no',
-		'desc' 			=> '<a href="https://wordpress.org/plugins/woocommerce-gateway-paypal-express-checkout/" target="_blank">Download paypal plugin</a>',
-		'pro' 			=> 'yes'
-	),
 
 
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Amazon Pay',
-		'id' 			=> 'scf-amaz-enable',
-		'section_id' 	=> 'sc_footer',
-		'default' 		=> 'no',
-		'desc' 			=> '<a href="https://wordpress.org/plugins/woocommerce-gateway-amazon-payments-advanced/" target="_blank">Download plugin</a><br>Amazon Pay settings: Check Amazon Pay on mini cart ',
-		'pro' 			=> 'yes'
-	),
-
-
-	/***** Shortcode ****/
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Add to menu',
-		'id' 			=> 'shbk-menu',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> $menuOptions
-		),
-		'default' 	=> 'none',
-	),
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Show',
-		'id' 			=> 'shbk-show',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> array(
-				'icon' 			=> 'Icon',
-				'subtotal' 		=> 'Subtotal',
-				'count' 		=> 'Count',
-			)
-		),
-		'default' 	=> array(
-			'icon', 'subtotal', 'count',
-		),
-	),
-
+	
 	/*** PROGRESS BAR ***/
 
 	array(

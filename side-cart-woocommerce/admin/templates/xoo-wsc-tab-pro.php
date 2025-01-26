@@ -11,13 +11,11 @@
 		<li>Update quantity</li>
 		<li>Show shipping, tax, discount, fee & other totals</li>
 		<li>Shipping calculator</li>
-		<li>Apply & display all coupons</li>
+		<li>Apply & display coupons</li>
 		<li>Increase sales by showing Cross-Sells / Up-Sells / Related products</li>
+		<li>Rewards and Checkpoints ( Offer free gifts, discounts and show free shipping bar )</li>
+		<li>Display google pay, apple pay, paypal and amazon pay buttons. Collect payment in a single click.</li>
 		<li>Show notifications on add/update/delete item</li>
-		<li>Shipping bar( Remaining amount for free shipping )</li>
-		<li>One Click Paypal and amazon pay checkout</li>
-		<li>Select different basket icon or set your own.</li>
-		<li>Header menu SHORTCODE (Use anywhere)</li>
 		<li>Additional styling options</li>
 	</ul>
 </div>

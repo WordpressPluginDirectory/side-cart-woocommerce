@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 2.5.9
+Stable tag: 2.6.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,9 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 
 == Changelog ==
 
+
+= 2.6.0 =
+* Fix - Add to cart not working for Single product block
 
 = 2.5.9 =
 * Fix - block themes fail to refresh cart

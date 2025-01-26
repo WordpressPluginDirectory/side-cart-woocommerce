@@ -820,6 +820,26 @@ $settings = array(
 
 
 	array(
+		'callback' 		=> 'sortable',
+		'title' 		=> 'Payment Button Position',
+		'id' 			=> 'scf-paybutton-pos',
+		'section_id' 	=> 'sc_footer',
+		'args' 			=> array(
+			'options' 		=> array(
+				'paypal' 	=> 'Paypal',
+				'amazon' 	=> 'Amazon',
+				'gpay'		=> 'Google & Apple Pay'
+			),
+			'display' 	=> 'vertical'
+		),
+		'default' => array( 'paypal', 'amazon', 'gpay' ),
+		'desc' 	=> 'Drag to change order.',
+		'pro' 	=> 'yes',
+	),
+
+
+
+	array(
 		'callback' 		=> 'select',
 		'title' 		=> 'Design',
 		'id' 			=> 'scf-btns-theme',
