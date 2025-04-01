@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
 Tested up to: 6.7
-Stable tag: 2.6.0
+Stable tag: 2.6.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,7 +55,7 @@ Craft your perfect side cart look with an abundance of styling choices. Achieve 
 
 Give customers full control: easily change the quantity and enjoy full transparency with detailed breakdowns of taxes, fees, and discounts for a hassle-free shopping experience.
 
-##One click paypal and amazon checkout
+##One click paypal, google pay, apple pay and amazon checkout
 
 Streamline your checkout experience: no more lengthy form-filling! Let customers make a purchase in an instant with just one click
 
@@ -77,9 +77,9 @@ Three different styles to choose from - drawer, slider and column. You can set t
 
 Customers can directly update their shipping location and get the exact shipping fee. You will no longer need a cart page to calculate the shipping value.
 
-##Rewards progress bar
+##Rewards & Checkpoints
 
-Incentivize with progress: Free gifts and free shipping, display the minimum amount required to achieve a reward on progress bar.
+Incentivize with progress: Free gifts, discounts and free shipping, display the minimum amount required to achieve a reward on progress bar.
 
 ##Cart notifications
 
@@ -118,15 +118,26 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 5. Save Location: Your wordpress directory/wp-content/languages/
 
 == Screenshots ==
-1. Side cart.
-2. Side Cart Pro
-3. Floating Basket
-4. Apply Coupon Pro
-5. Shortcode [xoo_wsc_cart]
-6. Change Shipping Pro
+1. Card Layout
+2. Card Layout - Pro
+3. Row Layout
+4. Row Layout - Pro
+5. Floating Basket
+6. Apply Coupon Pro
+7. Shortcode [xoo_wsc_cart]
+8. Change Shipping Pro
 
 == Changelog ==
 
+= 2.6.3 =
+* Improv - Login popup/slider redirects to checkout page on login success.
+* Template update - global/footer/buttons.php
+
+= 2.6.2 =
+* Fix - Card layout design 
+
+= 2.6.1 =
+* New - Card Layout
 
 = 2.6.0 =
 * Fix - Add to cart not working for Single product block

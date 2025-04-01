@@ -45,7 +45,8 @@ class Xoo_Wsc_Template_Args{
 			'emptyText' 		=> self::$gl['sct-empty'],
 			'shopBtnText' 		=> self::$gl['sct-shop-btn'],
 			'buttonClass' 		=> xoo_wsc_frontend()->get_button_classes('text'),
-			'priceFormat' 		=> self::$gl['scb-prod-price']
+			'priceFormat' 		=> self::$gl['scb-prod-price'],
+			'pattern' 			=> self::$sy['scb-playout'] === 'cards' ? 'card' : 'row'
 		);
 
 		return apply_filters( 'xoo_wsc_cart_body_args', $args );
@@ -141,8 +142,10 @@ class Xoo_Wsc_Template_Args{
 		$showPimage 		= in_array( 'product_image' , $show );
 		$showPdel 			= in_array( 'product_del', $show );
 		$showPprice 		= in_array( 'product_price' , $show );
+		$showPtotal 		= in_array( 'product_total' , $show );
+		$showPqty 			= in_array( 'product_qty', $show );
 		$showSalesCount 	= in_array( 'total_sales', $show );
-		$updateQty 			= !$_product->is_sold_individually() && self::$gl['scb-update-qty'] === "yes";
+		$updateQty 			= false;
 
 
 		if( !empty( $bundleData ) ){
@@ -157,21 +160,22 @@ class Xoo_Wsc_Template_Args{
 
 		$args = array(
 			'showPimage' 		=> $showPimage,
-			'updateQty' 		=> $updateQty,
+			'updateQty' 		=> false,
 			'showSalesCount' 	=> $showSalesCount,
 			'showPprice' 		=> $showPprice,
 			'showPdel' 			=> $showPdel,
 			'productClasses' 	=> $productClasses,
 			'showPname' 		=> in_array( 'product_name' , $show ),
-			'showPtotal' 		=> in_array( 'product_total' , $show ),
+			'showPtotal' 		=> $showPtotal,
 			'showPmeta' 		=> in_array( 'product_meta' , $show ),
-			'showPqty' 			=> in_array( 'product_qty', $show ),
+			'showPqty' 			=> $showPqty,
 			'close_icon' 		=> esc_html( self::$sy['sch-close-icon'] ),
 			'delete_icon' 		=> esc_html( self::$sy['scb-del-icon'] ),
 			'qtyPriceDisplay' 	=> self::$gl['scbp-qpdisplay'],
 			'deletePosition' 	=> self::$sy['scbp-delpos'],
 			'deleteType' 		=> self::$sy['scbp-deltype'],
-			'deleteText' 		=> self::$gl['sct-delete']
+			'deleteText' 		=> self::$gl['sct-delete'],
+			'oneLiner'  		=> self::$gl['scbp-qpdisplay'] === 'one_liner' && $showPprice && $showPtotal && $showPqty
 		);
 
 		$args = wp_parse_args( $args, $cart_item_args );
@@ -207,8 +211,11 @@ class Xoo_Wsc_Template_Args{
 		$checkoutTxt	= esc_html( self::$gl['sct-ft-chkbtn'] );
 		$buttonDesign 	= self::$sy['scf-btns-theme'];
 		$buttonClass 	=  xoo_wsc_frontend()->get_button_classes( 'array', array( 'xoo-wsc-ft-btn' ) );
+
+		$isChkoutLogin 	= !is_user_logged_in() && self::$gl['scf-chklogin-en'] === "yes" && function_exists('xoo_el');
+
 		
-		$chkoutBtnClass = !is_user_logged_in() && self::$gl['scf-chklogin-en'] === "yes" && function_exists('xoo_el') ? array_merge( $buttonClass, array( 'xoo-el-login-tgr' ) ) : $buttonClass;	
+		$chkoutBtnClass = $isChkoutLogin ? array_merge( $buttonClass, array( 'xoo-el-login-tgr' ) ) : $buttonClass;	
 
 		$checkoutTotal = self::$gl['scf-chkbtntotal-en'] === 'yes' ? WC()->cart->get_total() : '';
 
@@ -236,6 +243,10 @@ class Xoo_Wsc_Template_Args{
 
 		
 		$buttons = array_merge( array_flip( $buttonOrder ), $buttons );
+
+		if( $isChkoutLogin ){
+			$buttons['checkout']['data'] = 'data-redirect="'.$buttons['checkout']['url'].'"'; 
+		}
 
 		//Remove cart & checkout button if cart is empty
 		if( WC()->cart->is_empty() ){

@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.4.5
+ * @version 2.6.1
  */
 
 
@@ -50,7 +50,7 @@ extract( Xoo_Wsc_Template_Args::cart_body() );
 
 <?php do_action( 'xoo_wsc_before_products' ); ?>
 
-<div class="xoo-wsc-products">
+<div class="xoo-wsc-products xoo-wsc-pattern-<?php echo $pattern ?>">
 
 	<?php
 
@@ -109,10 +109,16 @@ extract( Xoo_Wsc_Template_Args::cart_body() );
 
 		$args = Xoo_Wsc_Template_Args::product( $_product, $cart_item, $cart_item_key, $cart_item_args );
 
-		xoo_wsc_helper()->get_template(
-			'global/body/product.php',
-			$args
+		$templateType = $pattern === 'card' ? 'product-card' : 'product';
+
+		$productHTML = xoo_wsc_helper()->get_template(
+			'global/body/'.$templateType.'.php',
+			$args,
+			'',
+			true
 		);
+
+		echo $pattern === 'card' ? sprintf( '<div class="xoo-wsc-product-cont">%1$s</div>', $productHTML ): $productHTML; 
 
 	}
 

@@ -27,11 +27,31 @@ class Xoo_Wsc_Admin_Settings{
 		add_action( 'xoo_tab_page_end', array( $this, 'tab_html' ), 10, 2 );
 		add_filter( 'plugin_action_links_' . XOO_WSC_PLUGIN_BASENAME, array( $this, 'plugin_action_links' ) );
 
-		add_action( 'admin_footer', array( $this, 'sidecart_preview' ) );
+		
 
-		add_action( 'xoo_tab_page_start', array( $this, 'preview_info' ), 5 );
 
-		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'checkpoints_bar_setting_html' ), 10, 4 );
+		if( xoo_wsc_helper()->admin->is_settings_page() ){
+
+			add_action( 'admin_footer', array( $this, 'sidecart_preview' ) );
+
+			add_action( 'xoo_tab_page_start', array( $this, 'preview_info' ), 5 );
+
+			add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'checkpoints_bar_setting_html' ), 10, 4 );
+
+			add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'pattern_selector_field' ), 10, 4 );
+
+
+			if( get_option('xoo-wsc-pattern-init') === false ){
+				add_action( 'xoo_tab_page_end', array( $this, 'popup_pattern_selector' ), 10, 2 );
+				add_filter('admin_body_class', array( $this, 'admin_body_class') );
+			}
+
+		}
+	
+		if( get_option('xoo-wsc-pattern-init') === false ){
+			add_action( 'xoo_admin_settings_side-cart-woocommerce_saved', array( $this, 'popup_initialised' ) );
+		}		
+		
 
 		add_action( 'wp_ajax_xoo_wsc_el_install', array( $this, 'install_loginpopup' ) );
 		add_action( 'wp_ajax_xoo_wsc_el_request_just_to_init_save_settings',  array( $this, 'el_request_just_to_init_save_settings' ) );
@@ -70,7 +90,14 @@ class Xoo_Wsc_Admin_Settings{
 
 
 	public function enqueue_custom_scripts( $slug ){
+		
 		if( $slug !== 'side-cart-woocommerce' ) return;
+
+		
+		wp_enqueue_style( 'xoo-wsc-magic', XOO_WSC_URL.'/library/magic/dist/magic.min.css', array(), '1.0' );
+		wp_enqueue_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js', array(), XOO_WSC_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+		
+
 		wp_enqueue_style( 'xoo-wsc-admin-fonts', XOO_WSC_URL . '/assets/css/xoo-wsc-fonts.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_style( 'xoo-wsc-admin-style', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-style.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_script( 'xoo-wsc-admin-js', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-js.js', array( 'jquery' ), XOO_WSC_VERSION, true );
@@ -78,6 +105,7 @@ class Xoo_Wsc_Admin_Settings{
 		wp_localize_script( 'xoo-wsc-admin-js', 'xoo_wsc_admin_params', array(
 			'adminurl'  => admin_url().'admin-ajax.php',
 			'nonce' 	=> wp_create_nonce('xoo-wsc-nonce'),
+			'isMobile' 	=> wp_is_mobile() ? 'yes' : 'no'
 		) );
 
 	}
@@ -238,6 +266,48 @@ class Xoo_Wsc_Admin_Settings{
 
 		return $installed;
 
+	}
+
+	public function popup_pattern_selector( $tab_id, $tab_data ){
+		if( $tab_id !== 'general' ) return;
+		?>
+		<div class="xoo-wsc-admin-popup">
+			<div class="xoo-wsc-adpop">
+				<?php $this->pattern_selector_field_html(); ?>
+				<span class="xoo-wsc-adpopup-head">Choose your Product Layout</span>
+				<span>You can change this later from "Style -> Side Cart Body"</span>
+				<button type="button" class="xoo-wsc-adpopup-go button-primary button">Let's Go!</button>
+			</div>
+			<div class="xoo-wsc-adpop-opac"></div>
+		</div>
+		<?php
+	}
+
+
+	public function pattern_selector_field_html(){
+		?>
+		<div class="xoo-wsc-pattern-cont">
+			<img class="xoo-wsc-patimg" src="<?php echo XOO_WSC_URL; ?>/admin/assets/images/pattern-card.jpg ?>" data-pattern="cards">
+			<img class="xoo-wsc-patimg" src="<?php echo XOO_WSC_URL; ?>/admin/assets/images/pattern-row.jpg ?>" data-pattern="rows" >
+		</div>
+		<?php
+	}
+
+	public function admin_body_class( $classes ){
+		$classes .= ' xoo-wsc-adpopup-active';
+		return $classes;
+	}
+
+	public function popup_initialised(){
+		update_option( 'xoo-wsc-pattern-init', 'yes' );
+	}
+
+	public function pattern_selector_field( $field, $field_id, $value, $args ){
+		if( $field_id !== 'xoo-wsc-sy-options[scb-playout]' ) return $field;
+		ob_start();
+		$this->pattern_selector_field_html();
+		$customField = ob_get_clean();
+		return $field. $customField;
 	}
 
 

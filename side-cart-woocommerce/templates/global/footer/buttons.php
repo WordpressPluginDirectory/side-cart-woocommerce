@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.4
+ * @version 2.6.3
  */
 
 
@@ -22,7 +22,7 @@ extract( Xoo_Wsc_Template_Args::footer_buttons() );
 
 do_action( 'xoo_wsc_before_footer_btns' );
 
-$buttonHTML = '<a href="%1$s" class="%2$s">%3$s</a>';
+$buttonHTML = '<a href="%1$s" class="%2$s" %4$s>%3$s</a>';
 
 ?>
 <div class="xoo-wsc-ft-buttons-cont">
@@ -36,7 +36,8 @@ $buttonHTML = '<a href="%1$s" class="%2$s">%3$s</a>';
 			$buttonHTML,
 			esc_url( $button_data['url'] ),
 			implode( ' ', $button_data['class'] ),
-			wp_kses_post( $button_data['label'] )
+			wp_kses_post( $button_data['label'] ),
+			isset( $button_data['data'] ) ? wp_kses_post( $button_data['data'] ) : '',
 		);
 
 	} ?>

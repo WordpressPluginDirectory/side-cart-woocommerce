@@ -312,6 +312,8 @@ jQuery(document).ready(function($){
 				$(document.body).on( 'updated_shipping_method', this.refreshMyFragments.bind(this) );
 			}
 
+			this.initMasonryLayout();
+
 		}
 
 		toggleCart(e){
@@ -510,8 +512,21 @@ jQuery(document).ready(function($){
 		onCartUpdate(){
 			super.onCartUpdate();
 			this.showBasket();
+			this.initMasonryLayout();
 		}
 
+
+		initMasonryLayout(){
+			if( xoo_wsc_params.productLayout !== 'cards' ) return;
+			$('.xoo-wsc-products.xoo-wsc-pattern-card').masonry({
+				// options
+				itemSelector: '.xoo-wsc-product-cont',
+				columnWidth: '.xoo-wsc-product-cont', /* Each column takes 50% */
+				percentPosition: true
+			});
+		}
+
+		
 		showBasket(){
 
 			var $basket = $('.xoo-wsc-basket'),
@@ -541,5 +556,60 @@ jQuery(document).ready(function($){
 
 
 	var cart 	= new Cart( $('.xoo-wsc-modal') );
+
+
+	var AnimateCard = {
+
+		type: xoo_wsc_params.cardAnimate.type,
+		duration: xoo_wsc_params.cardAnimate.duration,
+
+		init: function(){
+
+			var onEvent = xoo_wsc_params.cardAnimate.event === 'back_hover' ? 'mouseenter' : 'click';
+		
+			$('body').on( onEvent, '.xoo-wsc-has-back', this.animate );
+			$('body').on( 'mouseleave', '.xoo-wsc-has-back', this.reverseAnimate );
+
+		},
+		animate: function(e){
+
+			if( e.target.classList.contains('xoo-wsc-smr-del') ) return;
+
+			var $img = $(this).find('.xoo-wsc-img-col');
+
+			if( !$img.hasClass('xoo-wsc-caniming') ){
+				e.preventDefault();
+			}
+			else{
+				return;
+			}
+
+			$img.attr('data-exclasses', $img.attr('class') );
+
+			$img.removeClass()
+			$img.addClass($img.attr('data-exclasses'));
+
+			$img.addClass( 'xoo-wsc-caniming' + ' ' + AnimateCard.type );
+
+		},
+		reverseAnimate: function(){
+
+			var $img = $(this).find('.xoo-wsc-img-col');
+
+			if( !$img.hasClass( 'xoo-wsc-caniming' ) ) return;
+
+			$img.addClass(AnimateCard.type+'Return');
+
+			AnimateCard.clear = setTimeout(function(){
+				$img.removeClass().addClass( $img.attr('data-exclasses') );
+			}, AnimateCard.duration * 1000);
+
+		}
+	}
+
+	if( xoo_wsc_params.cardAnimate.enable === "yes" ){
+		AnimateCard.init();
+	}
+
 
 })

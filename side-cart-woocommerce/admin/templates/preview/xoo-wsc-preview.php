@@ -7,6 +7,9 @@ $products = wc_get_products( array(
 
 $productHTML = empty( $products ) ? 'Please create a product' :  '';
 
+$numberOfProducts = count($products);
+$totalQty = 0;
+
 foreach ($products as $product) {
 
 	$variable 	= false;
@@ -23,6 +26,8 @@ foreach ($products as $product) {
 	
 	$qty = rand(1,10);
 
+	$totalQty += $qty;
+
 	$productData = array(
 		'product_thumbnail' 	=> $product->get_image(),
 		'product_name' 			=> $product->get_title(),
@@ -34,7 +39,7 @@ foreach ($products as $product) {
 	);
 
 
-	$productHTML .= xoo_wsc_helper()->get_template( 'xoo-wsc-product-preview.php', $productData, XOO_WSC_PATH.'/admin/templates/preview', true );
+	$productHTML .= xoo_wsc_helper()->get_template( 'xoo-wsc-product-preview.php', array( 'productData' => $productData ), XOO_WSC_PATH.'/admin/templates/preview', true );
 }
 
 
@@ -45,32 +50,45 @@ foreach ($products as $product) {
 
 <script type="text/html" id="tmpl-xoo-as-preview">
 
-	<div class="xoo-wsc-container">
+	<div class="xoo-wsc-markup">
+		<div class="xoo-wsc-modal">
+			<div class="xoo-wsc-container">
 
-		<div class="xoo-wsc-basket">
+				<# if ( data.basket.show ) { #>
 
-			<span class="xoo-wsc-items-count">5</span>
-			
-			<span class="xoo-wsc-bki {{{data.basketIcon}}}"></span>
+					<div class="xoo-wsc-basket">
 
-		</div>
+						<span class="xoo-wsc-items-count">
+							<# if ( data.basket.countType === "quantity" ) { #>
+								<?php echo $totalQty; ?>
+							<# }else{ #>
+								<?php echo $numberOfProducts; ?>
+							<# } #>
+						</span>
+						
+						<span class="xoo-wsc-bki {{{data.basket.icon}}}"></span>
 
-		<div class="xoo-wsc-header">
-			<?php xoo_wsc_helper()->get_template( 'xoo-wsc-header-preview.php', array(), XOO_WSC_PATH.'/admin/templates/preview' ); ?>
-		</div>
+					</div>
+
+				<# } #>
+
+				<div class="xoo-wsc-header">
+					<?php xoo_wsc_helper()->get_template( 'xoo-wsc-header-preview.php', array(), XOO_WSC_PATH.'/admin/templates/preview' ); ?>
+				</div>
 
 
-		<div class="xoo-wsc-body">
+				<div class="xoo-wsc-body">
 
-			<div class="xoo-wsc-products">
-				<?php echo $productHTML; ?>
+					<div class="xoo-wsc-products xoo-wsc-pattern-<# if (data.product.layout === 'cards') { #>card<# } else { #>row<# } #>">
+						<?php echo $productHTML; ?>
+					</div>
+
+				</div>
+
+				<div class="xoo-wsc-footer">
+					<?php xoo_wsc_helper()->get_template( 'xoo-wsc-footer-preview.php', array(), XOO_WSC_PATH.'/admin/templates/preview' ); ?>
+				</div>
 			</div>
-
-		</div>
-
-		<div class="xoo-wsc-footer">
-			<?php xoo_wsc_helper()->get_template( 'xoo-wsc-footer-preview.php', array(), XOO_WSC_PATH.'/admin/templates/preview' ); ?>
 		</div>
 	</div>
-
 </script>

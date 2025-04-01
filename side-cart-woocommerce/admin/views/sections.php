@@ -47,7 +47,7 @@ $sections = array(
 		'title' => 'Texts',
 		'id' 	=> 'texts',
 		'tab' 	=> 'general',
-		'desc' 	=> 'Leave text empty to remove element'
+		'desc' 	=> '*Leave text empty to remove element*'
 	),
 
 	array(
@@ -97,17 +97,9 @@ $sections = array(
 	),
 
 	array(
-		'title' => 'Product - Card layout',
-		'id' 	=> 'scb_productcard',
-		'tab' 	=> 'style',
-		'desc' 	=> 'Show your product items as cards',
-		'pro' 	=> 'yes'
-	),
-
-	array(
 		'title' => 'Product - Row layout',
 		'id' 	=> 'scb_product',
-		'tab' 	=> 'style', 
+		'tab' 	=> 'style',
 	),
 
 
@@ -116,6 +108,14 @@ $sections = array(
 		'id' 	=> 'scb_qty',
 		'tab' 	=> 'style',
 		'pro' 	=> 'yes'
+	),
+
+
+	array(
+		'title' => '🏷️ Product - Card layout 🏷️ ',
+		'id' 	=> 'scb_productcard',
+		'tab' 	=> 'style',
+		'desc' 	=> 'Show your product items as cards'
 	),
 
 	array(

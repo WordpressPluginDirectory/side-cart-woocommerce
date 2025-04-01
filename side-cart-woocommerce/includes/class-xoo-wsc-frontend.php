@@ -9,6 +9,7 @@ class Xoo_Wsc_Frontend{
 
 	protected static $_instance = null;
 	public $glSettings;
+	public $sySettings;
 	public $template_args = array();
 
 
@@ -21,6 +22,7 @@ class Xoo_Wsc_Frontend{
 
 	public function __construct(){
 		$this->glSettings = xoo_wsc_helper()->get_general_option();
+		$this->sySettings = xoo_wsc_helper()->get_style_option();
 		$this->hooks();
 	}
 
@@ -58,6 +60,11 @@ class Xoo_Wsc_Frontend{
 
 		if( !xoo_wsc()->isSideCartPage() ) return;
 
+		if( $this->sySettings['scb-playout'] === "cards" ){
+			wp_enqueue_style( 'xoo-wsc-magic', XOO_WSC_URL.'/library/magic/dist/magic.min.css', array(), '1.0' );
+			wp_enqueue_script( 'xoo-wsc-masonry', XOO_WSC_URL.'/library/masonry/masonry.js', array(), '1.0', array( 'strategy' => 'defer', 'in_footer' => true ) );
+		}
+
 		//Fonts
 		wp_enqueue_style( 'xoo-wsc-fonts', XOO_WSC_URL.'/assets/css/xoo-wsc-fonts.css', array(), XOO_WSC_VERSION );
 
@@ -92,6 +99,7 @@ class Xoo_Wsc_Frontend{
 		if( !xoo_wsc()->isSideCartPage() ) return;
 
 		$glSettings = $this->glSettings;
+		$sySettings = $this->sySettings;
 
 		if( is_product() ){
 			$ajaxAtc = xoo_wsc_enable_ajax_atc_for_product( get_the_id() );
@@ -140,6 +148,13 @@ class Xoo_Wsc_Frontend{
 			'refreshCart' 			=> xoo_wsc_helper()->get_advanced_option('m-refresh-cart'),
 			'fetchDelay' 			=> apply_filters( 'xoo_wsc_cart_fetch_delay', 200 ),
 			'triggerClass' 			=> xoo_wsc_helper()->get_advanced_option('m-trigger-class'),
+			'productLayout' 		=> $this->sySettings['scb-playout'],
+			'cardAnimate' 			=> array(
+				'enable' 	=> $sySettings['scbp-card-visible'] !== 'all_on_front' && !empty( $sySettings['scbp-card-back'] ) ? 'yes' : 'no',
+				'type' 		=> $sySettings['scbp-card-anim-type'],
+				'event' 	=> $sySettings['scbp-card-visible'],
+				'duration' 	=> $sySettings['scbp-card-anim-time'],
+			),
 		) );
 	}
 

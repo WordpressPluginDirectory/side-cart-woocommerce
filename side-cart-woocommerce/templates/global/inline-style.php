@@ -37,6 +37,23 @@ $bodyBGColor 	= $sy['scb-bgcolor'];
 $bodyTxtColor 	= $sy['scb-txtcolor'];
 
 
+/* Product Card */
+$bpCardCount 		= (int) $sy['scbp-card-count'];
+$bpCardImgColor 	= $sy['scbp-card-img-color'];
+$bpCardFrtColor 	= $sy['scbp-card-front-color'];
+$bpCardBckColor 	= $sy['scbp-card-back-color'];
+$bpCardBckTxtColor 	= $sy['scbp-card-backtxt-color'];
+$bpCardTxtColor 	= $sy['scbp-card-txtcolor'];
+$bpCardBorder 		= $sy['scbp-card-border'];
+$bPCardimgwidth		= (int) $sy['scbp-card-imgw'];
+$bPCardimgheight	= (int) $sy['scbp-card-imgh'];
+$bPCardpadding 		= $sy['scbp-card-padding'];
+$bpCardAnimTim 		= $sy['scbp-card-anim-time'];
+$bPCardShadow		= $sy['scbp-card-shadow'];
+$bPCardRadTop		= $sy['scbp-card-radius-top'];
+$bPCardRadBtm		= $sy['scbp-card-radius-btm'];
+
+
 /*Product Row */
 $bpVarFormat 	= $sy['scbp-var-format'];
 $bpDisplay 		= $sy['scbp-display'];
@@ -236,24 +253,17 @@ span.xoo-wsch-close {
 	background-color: <?php echo $bodyBGColor ?>;
 }
 
-.xoo-wsc-body, .xoo-wsc-body span.amount, .xoo-wsc-body a{
+.xoo-wsc-products:not(.xoo-wsc-pattern-card), .xoo-wsc-products:not(.xoo-wsc-pattern-card) span.amount, .xoo-wsc-products:not(.xoo-wsc-pattern-card) a{
 	font-size: <?php echo $bodyFontSize ?>px;
 	color: <?php echo $bodyTxtColor ?>;
 }
 
-.xoo-wsc-product{
+.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-product{
 	padding: <?php echo $bPpadding ?>;
 	margin: <?php echo $bPmargin ?>;
 	border-radius: <?php echo $bPradius ?>px;
 	box-shadow: <?php echo $bPshadow ?>;
 	background-color: <?php echo $bpBgColor ?>;
-}
-
-.xoo-wsc-img-col{
-	width: <?php echo $bPimgwidth ?>%;
-}
-.xoo-wsc-sum-col{
-	width: <?php echo 100-$bPimgwidth ?>%;
 }
 
 <?php if( $bpDisplay === 'stretched' ): ?>
@@ -279,7 +289,7 @@ span.xoo-wsch-close {
 
 .xoo-wsc-sc-bki{
 	font-size: <?php echo $SCbasketSize ?>px;
-	color: <?php echo $SCbasketSize ?>;
+	color: <?php echo $SCbasketColor ?>;
 }
 .xoo-wsc-sc-cont{
 	color: <?php echo $SCtxtColor ?>;
@@ -294,3 +304,82 @@ span.xoo-wsch-close {
 .xoo-wsc-product dl.variation {
 	display: <?php echo $bpVarFormat === 'one_line' ? 'flex' : 'block' ?>;
 }
+
+
+.xoo-wsc-product-cont{
+	padding: <?php echo $bPCardpadding ?>;
+}
+
+.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-img-col{
+	width: <?php echo $bPimgwidth ?>%;
+}
+
+.xoo-wsc-pattern-card .xoo-wsc-img-col img{
+	max-width: <?php echo $bPCardimgwidth ?>%;
+	height: <?php echo ($bPCardimgheight > 0 ? $bPCardimgheight.'px' : 'auto') ?>;
+}
+
+.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-sum-col{
+	width: <?php echo 100-$bPimgwidth ?>%;
+}
+
+.xoo-wsc-pattern-card .xoo-wsc-product-cont{
+	width: <?php echo 100/$bpCardCount ?>% 
+}
+
+<?php if( $bpCardCount > 1 ): ?>
+@media only screen and (max-width: 600px) {
+	.xoo-wsc-pattern-card .xoo-wsc-product-cont  {
+		width: 50%;
+	}
+}
+
+<?php endif; ?>
+
+.xoo-wsc-pattern-card .xoo-wsc-product{
+	border: <?php echo $bpCardBorder ?>;
+	box-shadow: <?php echo $bPCardShadow ?>;
+}
+
+<?php if( $bPCardimgwidth < 100 ): ?>
+.xoo-wsc-pattern-card .xoo-wsc-img-col{
+	background-color: <?php echo $bpCardImgColor ?>;
+}
+<?php endif; ?>
+
+.xoo-wsc-sm-front{
+	background-color: <?php echo $bpCardFrtColor ?>;
+}
+.xoo-wsc-pattern-card, .xoo-wsc-sm-front{
+	border-bottom-left-radius: <?php echo $bPCardRadBtm; ?>px;
+	border-bottom-right-radius: <?php echo $bPCardRadBtm; ?>px;
+}
+.xoo-wsc-pattern-card, .xoo-wsc-img-col img, .xoo-wsc-img-col, .xoo-wsc-sm-back-cont{
+	border-top-left-radius: <?php echo $bPCardRadTop; ?>px;
+	border-top-right-radius: <?php echo $bPCardRadTop; ?>px;
+}
+.xoo-wsc-sm-back{
+	background-color: <?php echo $bpCardBckColor ?>;
+}
+.xoo-wsc-pattern-card, .xoo-wsc-pattern-card a, .xoo-wsc-pattern-card .amount{
+	font-size: <?php echo $bodyFontSize ?>px;
+}
+
+.xoo-wsc-sm-front, .xoo-wsc-sm-front a, .xoo-wsc-sm-front .amount{
+	color: <?php echo $bpCardTxtColor ?>;
+}
+
+.xoo-wsc-sm-back, .xoo-wsc-sm-back a, .xoo-wsc-sm-back .amount{
+	color: <?php echo $bpCardBckTxtColor ?>;
+}
+
+
+.magictime {
+    animation-duration: <?php echo $bpCardAnimTim ?>s;
+}
+
+<?php if( wp_is_mobile() && $sy['scb-playout'] === 'cards' && $sy['scbp-card-visible'] === 'back_hover' ) :?>
+.xoo-wsc-img-col a{
+	pointer-events: none;
+}
+<?php endif; ?>

@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.5
+ * @version 2.6.1
  */
 
 
@@ -26,28 +26,28 @@ $oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal &&
 
 	<?php do_action( 'xoo_wsc_product_start', $_product, $cart_item_key ); ?>
 
-		<div class="xoo-wsc-img-col">
+		<?php if( $showPimage ): ?>
 
-			<?php if( $showPimage ): ?>
+			<div class="xoo-wsc-img-col">
 
 				<?php echo $thumbnail; ?>
 
-			<?php endif; ?>
+				<?php if( $showPdel && $deletePosition === 'image' ): ?>
 
-			<?php if( $showPdel && $deletePosition === 'image' ): ?>
+					<?php if( $deleteType === 'icon' ): ?>
+						<span class="xoo-wsc-smr-del <?php echo $delete_icon ?>"></span>
+					<?php else: ?>
+						<span class="xoo-wsc-smr-del xoo-wsc-del-txt"><?php echo $deleteText ?></span>
+					<?php endif; ?>
 
-				<?php if( $deleteType === 'icon' ): ?>
-					<span class="xoo-wsc-smr-del <?php echo $delete_icon ?>"></span>
-				<?php else: ?>
-					<span class="xoo-wsc-smr-del xoo-wsc-del-txt"><?php echo $deleteText ?></span>
 				<?php endif; ?>
 
-			<?php endif; ?>
 
+				<?php do_action( 'xoo_wsc_product_image_col', $_product, $cart_item_key ); ?>
 
-			<?php do_action( 'xoo_wsc_product_image_col', $_product, $cart_item_key ); ?>
+			</div>
 
-		</div>
+		<?php endif; ?>
 
 
 	<div class="xoo-wsc-sum-col">
