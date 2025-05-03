@@ -114,7 +114,7 @@ ul.xoo-sc-tabs li.xoo-sct-active {
 form.xoo-as-form {
     margin-top: 0;
     background-color: #fff;
-    padding: 30px 15px;
+    padding: 10px 30px 15px;
 }
 
 .xoo-as-setting {
@@ -639,4 +639,57 @@ body.rtl .xoo-sc-bottom-btns > *:last-child {
 body.rtl .xoo-as-label {
     margin-right: 20px;
     margin-left: 30px;
+}
+
+.xoo-sc-sections {
+    position: sticky;
+    top: 61px;
+    display: flex;
+    background-color: #fff;
+    z-index: 9999;
+    flex-wrap: wrap;
+    padding: 4px 10px;
+    border-radius: 5px;
+    justify-content: center;
+    width: max-content;
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.xoo-sc-sections a {
+    margin: 4px 9px;
+    text-decoration: none;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+.xoo-as-field input[type="color"],
+.xoo-as-field input[type="date"],
+.xoo-as-field input[type="datetime-local"],
+.xoo-as-field input[type="datetime"],
+.xoo-as-field input[type="email"],
+.xoo-as-field input[type="month"],
+.xoo-as-field input[type="number"],
+.xoo-as-field input[type="password"],
+.xoo-as-field input[type="search"],
+.xoo-as-field input[type="tel"],
+.xoo-as-field input[type="text"],
+.xoo-as-field input[type="time"],
+.xoo-as-field input[type="url"],
+.xoo-as-field input[type="week"],
+.xoo-as-field select,
+.xoo-as-field textarea  {
+    width: 100%;
+    max-width: max-content;
+}
+
+.xoo-as-break .xoo-as-setting {
+    flex-wrap: wrap;
+}
+
+.xoo-as-break .xoo-as-field {
+    margin-top: 20px;
+    width: 100%;
 }

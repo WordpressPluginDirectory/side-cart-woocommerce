@@ -397,4 +397,18 @@ jQuery(document).ready(function($){
 
 	})
 
+
+	$(window).resize(function(){
+
+		$form = $('form.xoo-as-form');
+		if( !$form.length ) return
+
+		if( $form.innerWidth() <= 700 ){
+			$form.addClass('xoo-as-break');
+		}
+		else{
+			$form.removeClass('xoo-as-break');
+		}
+	}).trigger('change');
+
 })

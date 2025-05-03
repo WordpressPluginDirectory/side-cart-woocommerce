@@ -57,11 +57,6 @@ $sections = array(
 	),
 
 
-	array(
-		'title' => 'Basket',
-		'id' 	=> 'basket',
-		'tab' 	=> 'general',
-	),
 
 	array(
 		'title' => 'Suggested Products',

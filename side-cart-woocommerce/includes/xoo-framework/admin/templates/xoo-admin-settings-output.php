@@ -1,6 +1,7 @@
 <?php
 	
 $options = apply_filters( 'xoo_aff_export_options', $adminObj->tabs, $adminObj->helper->slug );
+$sections = $adminObj->sections;
 
 
 ?>
@@ -17,6 +18,19 @@ $options = apply_filters( 'xoo_aff_export_options', $adminObj->tabs, $adminObj->
 
 		<?php foreach( $tabs as $tab_id => $tab_data ): ?>
 			<div class="xoo-sc-tab-content <?php if( $tab_data['pro'] === 'yes' ) echo 'xoo-as-is-pro'; ?>" data-tab="<?php echo esc_attr( $tab_id ); ?>">
+
+				<?php
+				if( isset( $sections[ $tab_id ] ) && count($sections[ $tab_id ]) > 3 ){
+					echo '<div class="xoo-sc-sections">';
+					foreach ( $sections[$tab_id] as $section_id => $section_data ) {
+						if( isset( $section_data['pro'] ) && $section_data['pro'] === 'yes' ) continue;
+						echo '<a href="#'.$tab_id.'_'.$section_id.'">'.$section_data['title'].'</a>';
+					}
+					echo '</div>';
+				}
+
+				?>
+
 				<?php do_action( 'xoo_tab_page_start', $tab_id, $tab_data ); ?>
 				<?php $adminObj->create_settings_html( $tab_id ); ?>
 				<?php do_action( 'xoo_tab_page_end', $tab_id, $tab_data ); ?>

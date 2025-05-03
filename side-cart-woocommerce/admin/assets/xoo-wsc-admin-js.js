@@ -712,15 +712,22 @@ jQuery(document).ready(function($){
 	$('select[name="xoo-wsc-sy-options[scb-playout]"]').on('change', function(){
 
 		var $rowSection 	= $('.xoo-ass-style-scb_product'),
-			$cardSection 	= $('.xoo-ass-style-scb_productcard');
+			$cardSection 	= $('.xoo-ass-style-scb_productcard'),
+			$cardlink 		= $('a[href="#style_scb_productcard"]'),
+			$rowlink 		= $('a[href="#style_scb_product"]');
+
 
 		if( $(this).val() === 'rows' ){
 			$rowSection.show();
 			$cardSection.hide();
+			$cardlink.hide();
+			$rowlink.show();
 		}
 		else{
 			$rowSection.hide();
 			$cardSection.show();
+			$rowlink.hide();
+			$cardlink.show();
 		}
 	}).trigger('change');
 
@@ -820,6 +827,7 @@ jQuery(document).ready(function($){
 				$collapse.trigger('click');
 			}
 		}
+		$(window).trigger('resize');
 	}).trigger('change');
 
 

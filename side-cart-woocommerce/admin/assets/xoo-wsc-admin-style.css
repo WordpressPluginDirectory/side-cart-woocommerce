@@ -664,7 +664,7 @@ form.xoo-as-form {
 
 .xoo-as-preview-info {
     display: block;
-    margin: -15px 0 8px 0;
+    margin: 0 0 15px 0;
     font-style: italic;
     color: #777;
 }
@@ -1079,7 +1079,7 @@ select[name="xoo-wsc-sy-options[scb-playout]"] {
     justify-content: center;
     margin-bottom: 30px;
 }
-.xoo-wsc-adpopup-active .xoo-sc-tabs, .xoo-wsc-adpopup-active .xoo-sc-bottom-btns {
+.xoo-wsc-adpopup-active .xoo-sc-tabs, .xoo-wsc-adpopup-active .xoo-sc-bottom-btns, .xoo-wsc-adpopup-active .xoo-sc-sections {
     display: none;
 }
 

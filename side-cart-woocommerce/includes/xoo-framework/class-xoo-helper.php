@@ -2,12 +2,18 @@
 
 class Xoo_Helper{
 
-	public $slug, $path;
+	public $slug, $path, $helperArgs;
 	public $admin;
 
-	public function __construct( $slug, $path ){
-		$this->slug 	= $slug;
-		$this->path 	= $path;
+	public function __construct( $slug, $path, $helperArgs = array() ){
+
+		$this->slug 		= $slug;
+		$this->path 		= $path;
+		$this->helperArgs 	= wp_parse_args( $helperArgs, array(
+			'pluginFile' 	=> '',
+			'pluginName' 	=> ''
+		) );
+
 		$this->set_constants();
 		$this->includes(); 
 		$this->hooks();
@@ -16,7 +22,7 @@ class Xoo_Helper{
 
 	public function set_constants(){
 		$this->define( 'XOO_FW_URL', untrailingslashit(plugin_dir_url( XOO_FW_DIR .'/'.basename( XOO_FW_DIR ) ) ) );
-		$this->define( 'XOO_FW_VERSION', '1.2' );
+		$this->define( 'XOO_FW_VERSION', '1.5' );
 	}
 
 	public function define( $name, $value ){
@@ -34,6 +40,11 @@ class Xoo_Helper{
 	public function hooks(){
 		add_action( 'init', array( $this, 'internationalize' ) );
 		add_action( 'admin_init', array( $this, 'time_to_update_theme_templates_data' ) );
+	}
+
+
+	public function get_usage_data(){
+		return array();
 	}
 
 
@@ -307,6 +318,73 @@ class Xoo_Helper{
 			$html .= 'Default: '.$value;
 		}
 		return $html;
+	}
+
+
+	//array( $field_id => $_FILES[id] )
+	public function upload_files_as_attachment( $fieldsHavingFiles ){
+
+		$attachmentIDS = array();
+
+		if( !empty( $fieldsHavingFiles ) ){
+
+			// These files need to be included as dependencies when on the front end.
+			require_once( ABSPATH . 'wp-admin/includes/image.php' );
+			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+			foreach ( $fieldsHavingFiles as $field_id => $files ) {
+
+				foreach ( $files as $file ) {
+
+					$_FILES = array( $field_id => $file );
+
+					// Let WordPress handle the upload.
+					// Remember, 'wpcfu_file' is the name of our file input in our form above.
+					$attachment_id = media_handle_upload( $field_id, 0 );
+
+					if ( is_wp_error( $attachment_id ) ) {
+						
+						//delete previously attached files
+						foreach ($attachmentIDS as $field_id => $ids) {
+							foreach ($ids as $id) {
+								wp_delete_attachment( $id );
+							}	
+						}
+
+						return new WP_Error( 'failed', __( 'Some files failed to upload', 'easy-login-woocommerce' ). ' - ' . $file['name'] . '('.$attachment_id->get_error_message().')' );
+					} 
+					else{
+						$attachmentIDS[ $field_id ][] = $attachment_id;
+					}
+				}
+
+			}
+
+		}
+
+		return $attachmentIDS;
+
+	}
+
+
+	/**
+	 * What type of request is this?
+	 *
+	 * @param  string $type admin, ajax, cron or frontend.
+	 * @return bool
+	 */
+	public function is_request( $type ) {
+		switch ( $type ) {
+			case 'admin':
+				return is_admin();
+			case 'ajax':
+				return defined( 'DOING_AJAX' );
+			case 'cron':
+				return defined( 'DOING_CRON' );
+			case 'frontend':
+				return ( ! is_admin() || defined( 'DOING_AJAX' ) ) && ! defined( 'DOING_CRON' );
+		}
 	}
 
 }

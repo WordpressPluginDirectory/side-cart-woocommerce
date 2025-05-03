@@ -8,7 +8,9 @@
 			<div>
 				<span class="xoo-sc-name"><?php echo esc_html( $data['shortcode'] ) ?></span> - <span class="xoo-sc-desc"><?php echo esc_html( $data['desc'] ) ?></span>
 			</div>
-			<span class="xoo-sc-example">Eg: <?php echo esc_html( $data['example'] ) ?></span>
+			<?php if( isset( $data['example'] ) ): ?>
+				<span class="xoo-sc-example">Eg: <?php echo esc_html( $data['example'] ) ?></span>
+			<?php endif; ?>
 
 			<?php if( isset( $data['atts'] ) ): ?>
 				<table class="xoo-sc-table">
