@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/xootix
 Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 2.6.5
+Stable tag: 2.6.6
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,11 @@ Customers can directly update their shipping location and get the exact shipping
 
 Incentivize with progress: Free gifts, discounts and free shipping, display the minimum amount required to achieve a reward on progress bar.
 
+
+##Save For Later
+
+With the "Save for Later" feature built right into your side cart, customers can move items out of their cart and into a personalized save list — without losing track of them. It’s perfect for shoppers who are still deciding, letting them organize their cart while keeping products just a click away.
+
 ##Cart notifications
 
 Deliver real-time notifications with every cart update, ensuring users stay informed and engaged
@@ -128,6 +133,9 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 8. Change Shipping Pro
 
 == Changelog ==
+
+= 2.6.6 =
+* Fix - Deprecated warning wc_current_theme_is_fse_theme
 
 = 2.6.5 =
 * Settings UI update

@@ -1282,6 +1282,109 @@ $settings = array(
 	),
 
 
+	/** Saved For Later **/
+
+
+	array(
+		'callback' 		=> 'radio',
+		'title' 		=> 'Save For Later Icon',
+		'id' 			=> 'sl-icon',
+		'section_id' 	=> 'saved_for_later',
+		'args' 			=> array(
+			'options' 	=> array(
+				'xoo-wsc-icon-heart1' 			=> 'xoo-wsc-icon-heart1',
+				'xoo-wsc-icon-heart'  			=> 'xoo-wsc-icon-heart',
+				'xoo-wsc-icon-bookmark-o' 		=> 'xoo-wsc-icon-bookmark-o',
+				'xoo-wsc-icon-bookmark1' 		=> 'xoo-wsc-icon-bookmark1',
+				'xoo-wsc-icon-cloud-download' 	=> 'xoo-wsc-icon-cloud-download',
+				'xoo-wsc-icon-download3'  		=> 'xoo-wsc-icon-download3',
+			),
+			'has_asset'  => true,
+			'asset_type' => 'icon'
+		),
+		'default' 	=> 'xoo-wsc-icon-heart1',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Style',
+		'id' 			=> 'sl-style',
+		'section_id' 	=> 'saved_for_later',
+		'args' 			=> array(
+			'options' 	=> array(
+				'wide' 		=> 'Wide',
+				'column' 	=> 'Column'
+			),
+		),
+		'default' 	=> 'wide',
+		'pro' 			=> 'yes'
+	),
+
+
+		array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Number of products per column',
+		'id' 			=> 'sl-col-items',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> 2,
+	),
+
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Image Width',
+		'id' 			=> 'sl-imgw',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> '80',
+		'desc' 			=> 'value in px',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Font Size',
+		'id' 			=> 'sl-fsize',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> '16',
+		'desc' 			=> 'Size in px',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Container Background Color',
+		'id' 			=> 'sl-bgcolor',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> '#eee',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Product Background Color',
+		'id' 			=> 'sl-prd-bgcolor',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> '#fff',
+		'pro' 			=> 'yes'
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Product Text Color',
+		'id' 			=> 'sl-prd-txtcolor',
+		'section_id' 	=> 'saved_for_later',
+		'default' 		=> '#000',
+		'pro' 			=> 'yes'
+	),
+
+
 	/***** Shortcode ****/
 
 	array(

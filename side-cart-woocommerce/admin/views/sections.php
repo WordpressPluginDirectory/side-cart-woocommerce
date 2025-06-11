@@ -65,6 +65,15 @@ $sections = array(
 		'pro' 	=> 'yes'
 	),
 
+	array(
+		'title' => 'Save For Later',
+		'id' 	=> 'save_for_later',
+		'tab' 	=> 'general',
+		'desc' 	=> 'Allow users to save items in their cart for later purchase.',
+		'pro' 	=> 'yes'
+	),
+
+
 	/* Style TAB Sections */
 	array(
 		'title' => 'Main',
@@ -131,6 +140,15 @@ $sections = array(
 		'tab' 	=> 'style',
 		'pro' 	=> 'yes'
 	),
+
+
+	array(
+		'title' => 'Saved for Later',
+		'id' 	=> 'saved_for_later',
+		'tab' 	=> 'style',
+		'pro' 	=> 'yes'
+	),
+
 
 
 	array(

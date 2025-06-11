@@ -69,14 +69,15 @@ $settings = array(
 			'options' 	=> array(
 				'notifications' => 'Notifications',
 				'basket' 		=> 'Basket Icon',
-				'close' 		=> 'Close Icon'
+				'close' 		=> 'Close Icon',
+				'save' 			=> 'Save for Later Icon',
 			),
 		),
 		'default' 	=> array(
-			'notifications', 'basket', 'close'
+			'notifications', 'basket', 'close', 'save'
 		),
 		'pro' => array(
-			'notifications', 'shipping_bar'
+			'notifications', 'shipping_bar', 'save'
 		)
 	),
 
@@ -466,6 +467,45 @@ $settings = array(
 		'pro' 			=> 'yes'
 	),
 
+
+	/** Save For Later **/
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Enable',
+		'id' 			=> 'sl-enable',
+		'section_id' 	=> 'save_for_later',
+		'default' 		=> 'yes',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Disable for guest users',
+		'id' 			=> 'sl-disable-guest',
+		'section_id' 	=> 'save_for_later',
+		'default' 		=> 'no',
+		'desc' 			=> 'Only allow logged in users to access "Save for Later". <br>You can also open login slider on icon click.'.$loginPopupTxt,
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Show',
+		'id' 			=> 'sl-show',
+		'section_id' 	=> 'save_for_later',
+		'args' 			=> array(
+			'options' 	=> array(
+				'image' 	=> 'Product Image',
+				'title' 	=> 'Product Title',
+				'price' 	=> 'Product Price',
+				'addtocart' => 'Move to cart button',
+			),
+		),
+		'default' 	=> array(
+			'image', 'price', 'addtocart', 'title'
+		),
+		'pro' 			=> 'yes'
+	),
 
 
 	/** MAIN **/
