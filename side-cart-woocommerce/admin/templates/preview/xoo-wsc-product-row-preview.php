@@ -1,3 +1,58 @@
+<!-- Delete HTML -->
+<?php ob_start(); ?>
+
+<# if ( data.product.showPdel ) { #>
+
+	<# if ( "icon" === data.product.deleteType ) { #>
+		<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
+	<# }else{ #>
+		<span class="xoo-wsc-smr-del xoo-wsc-del-txt">{{data.product.deleteText}}</span>
+	<# } #>
+
+<# } #>
+
+<?php $deleteHTML = ob_get_clean(); ?>
+
+<?php $priceSavingsHTML = $totalSavingsHTML = ''; ?>
+
+<?php if( isset( $savings ) ): ?>
+
+	<?php ob_start(); ?>
+
+	<# if ( data.product.showPriceSavings ) { #>
+
+		<div class="xoo-wsc-psavings">
+			<# if ( data.product.savingsUnit === "amount" ) { #>
+				<?php echo $savings['price_amount'] ?>
+			<# }else{ #>
+				<?php echo $savings['price_perc'] ?>
+			<# } #>
+		</div>
+
+	<# } #>
+
+	<?php $priceSavingsHTML = ob_get_clean(); ?>
+
+
+	<?php ob_start(); ?>
+
+	<# if ( data.product.showTotalSavings ) { #>
+
+		<div class="xoo-wsc-psavings">
+			<# if ( data.product.savingsUnit === "amount" ) { #>
+				<?php echo $savings['total_amount'] ?>
+			<# }else{ #>
+				<?php echo $savings['price_perc'] ?>
+			<# } #>
+		</div>
+
+	<# } #>
+
+	<?php $totalSavingsHTML = ob_get_clean(); ?>
+
+<?php endif; ?>
+
+
 <div class="xoo-wsc-product">
 
 	<# if ( data.product.showPImage ) { #>
@@ -6,13 +61,9 @@
 			<?php echo $product_thumbnail; ?>
 			
 
-			<# if ( data.product.showPdel && "image" === data.product.deletePosition ) { #>
+			<# if ( "image" === data.product.deletePosition ) { #>
 
-				<# if ( "icon" === data.product.deleteType ) { #>
-					<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
-				<# }else{ #>
-					<span class="xoo-wsc-smr-del xoo-wsc-del-txt">{{data.product.deleteText}}</span>
-				<# } #>
+				<?php echo $deleteHTML ?>
 
 			<# } #>
 
@@ -51,22 +102,30 @@
 						<span><?php echo $product_subtotal ?></span>
 					</div>
 
+					<?php echo $totalSavingsHTML; ?>
+
 				<# }else{ #>
 
 					<# if ( data.product.showPqty ) { #>
 						<span class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <?php echo $product_quantity; ?></span>
 					<# } #>
 
-					<# if ( data.product.showPprice ) { #>
-						<div class="xoo-wsc-pprice">
-							<?php echo __( 'Price: ', 'side-cart-woocommerce' ); ?>
-								<# if( data.product.priceType === "actual" ){ #>
-								<?php echo $product_price; ?>
-							<# }else{ #>
-								<?php echo $product_sale_price ?>
-							<# } #>
-						</div>
-					<# } #>
+					<div class="xoo-wsc-priceBox">
+
+						<?php echo $priceSavingsHTML; ?>
+
+						<# if ( data.product.showPprice ) { #>
+							<div class="xoo-wsc-pprice">
+								<?php echo __( 'Price: ', 'side-cart-woocommerce' ); ?>
+									<# if( data.product.priceType === "actual" ){ #>
+									<?php echo $product_price; ?>
+								<# }else{ #>
+									<?php echo $product_sale_price ?>
+								<# } #>
+							</div>
+						<# } #>
+
+					</div>
 
 				<# } #>
 
@@ -78,14 +137,14 @@
 
 			<div class="xoo-wsc-sm-right">
 
-				<# if ( data.product.showPdel && "default" === data.product.deletePosition ) { #>
+				<# if ( "default" === data.product.deletePosition ) { #>
 
-					<# if ( "icon" === data.product.deleteType  ) { #>
-						<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
-					<# }else{ #>
-						<span class="xoo-wsc-smr-del xoo-wsc-del-txt">{{data.product.deleteText}}</span>
-					<# } #>
+					<?php echo $deleteHTML ?>
 
+				<# } #>
+
+				<# if ( !data.product.oneLiner ) { #>
+					<?php echo $totalSavingsHTML; ?>
 				<# } #>
 
 				<# if ( data.product.showPtotal && !data.product.oneLiner ) { #>

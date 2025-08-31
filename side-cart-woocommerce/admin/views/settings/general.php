@@ -37,6 +37,7 @@ $settings = array(
 			'options' 	=> $menuOptions
 		),
 		'default' 	=> 'none',
+		'desc' 			=> 'Adds the basket to your menu'
 	),
 
 	array(
@@ -56,6 +57,21 @@ $settings = array(
 		),
 	),
 
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Hide when cart is empty',
+		'id' 			=> 'shbk-hide',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> array(
+				'icon' 			=> 'Icon',
+				'subtotal' 		=> 'Subtotal',
+				'count' 		=> 'Count',
+			)
+		),
+		'default' 	=> array(),
+	),
 
 
 	/** SIDE CART HEADER **/
@@ -102,23 +118,53 @@ $settings = array(
 		'section_id' 	=> 'sc_body',
 		'args' 			=> array(
 			'options' 	=> array(
-				'total_sales' 	=> 'Product Sales Count',
-				'product_image' => 'Product Image',
-				'product_name' 	=> 'Product Name',
-				'product_price' => 'Product Price',
-				'product_qty' 	=> 'Product Quantity',
-				'product_total' => 'Product Total',
-				'product_meta' 	=> 'Product Meta ( Variations )',
-				'product_link' 	=> 'Link to Product Page',
-				'product_del'	=> 'Delete Product',
+				'total_sales' 			=> 'Product Sales Count',
+				'product_image' 		=> 'Product Image',
+				'product_name' 			=> 'Product Name',
+				'product_price' 		=> 'Product Price',
+				'product_qty' 			=> 'Product Quantity',
+				'product_total' 		=> 'Product Total',
+				'product_meta' 			=> 'Product Meta ( Variations )',
+				'product_link' 			=> 'Link to Product Page',
+				'product_del'			=> 'Delete Product',
+				'product_price_save' 	=> 'Product Price Savings (On Sale)',
+				'product_total_save' 	=> 'Product Total Savings (On Sale X Qty)',
 			),
 		),
 		'default' 	=> array(
-			'total_sales', 'product_price', 'product_qty', 'product_total', 'product_name', 'product_link', 'product_del', 'product_image', 'product_meta'
+			'total_sales', 'product_price', 'product_qty', 'product_total', 'product_name', 'product_link', 'product_del', 'product_image', 'product_meta','product_total_save'
 		),
 		'pro' => array(
 			'total_sales'
 		)
+	),
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Show Product Savings in',
+		'id' 			=> 'scb-prod-savings',
+		'section_id' 	=> 'sc_body',
+		'args' 			=> array(
+			'options' 	=> array(
+				'perc' 		=> 'In Percentage',
+				'amount'	=> 'In amount',
+			),
+		),
+		'default' 	=> 'amount',
+	),
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Product Price',
+		'id' 			=> 'scb-prod-price',
+		'section_id' 	=> 'sc_body',
+		'args' 			=> array(
+			'options' 	=> array(
+				'actual' 	=> 'Show only actual price',
+				'sale'		=> 'Show regular and sale price',
+			),
+		),
+		'default' 	=> 'sale',
 	),
 
 
@@ -133,7 +179,7 @@ $settings = array(
 				'separate' 	=> 'Show separately',
 			),
 		),
-		'default' 		=> 'one_liner',
+		'default' 		=> 'separate',
 		'desc' 			=> '"One line" works when quantity, price and total are enabled'
 	),
 
@@ -161,20 +207,6 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Product Price',
-		'id' 			=> 'scb-prod-price',
-		'section_id' 	=> 'sc_body',
-		'args' 			=> array(
-			'options' 	=> array(
-				'actual' 	=> 'Show only actual price',
-				'sale'		=> 'Show regular and sale price',
-			),
-		),
-		'default' 	=> 'actual',
-	),
-
-	array(
-		'callback' 		=> 'select',
 		'title' 		=> 'Show Variation in product title',
 		'id' 			=> 'scb-pname-var',
 		'section_id' 	=> 'sc_body',
@@ -199,6 +231,7 @@ $settings = array(
 		'section_id' 	=> 'sc_footer',
 		'args' 			=> array(
 			'options' 	=> array(
+				'savings' 		=> 'Total Savings',
 				'subtotal' 		=> 'Subtotal',
 				'discount' 		=> 'Discount',
 				'tax' 			=> 'Tax',
@@ -211,7 +244,7 @@ $settings = array(
 			),
 		),
 		'default' 	=> array(
-			'subtotal', 'discount', 'tax', 'shipping', 'shipping_calc', 'fee', 'total', 'coupon', 'order_notes'
+			'savings','subtotal', 'discount', 'tax', 'shipping', 'shipping_calc', 'fee', 'total', 'coupon', 'order_notes'
 		),
 		'pro' 		=> array(
 			'discount', 'tax', 'shipping', 'shipping_calc', 'fee', 'total', 'coupon', 'empty_cart'
@@ -249,7 +282,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'checkbox',
-		'title' 		=> 'Open Login Slider/Popup on checkout',
+		'title' 		=> 'Open Login Slider/Popup on checkout click',
 		'id' 			=> 'scf-chklogin-en',
 		'section_id' 	=> 'sc_footer',
 		'default' 		=> 'no',
@@ -267,110 +300,6 @@ $settings = array(
 		'desc' 			=> 'Set footer text below under "Texts section" '
 	),
 
-
-
-	
-	/*** PROGRESS BAR ***/
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Enable',
-		'id' 			=> 'scbar-en',
-		'section_id' 	=> 'sc_bar',
-		'default' 		=> 'yes',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Use cart total',
-		'id' 			=> 'scbar-total',
-		'section_id' 	=> 'sc_bar',
-		'args' 			=> array(
-			'options' 	=> array(
-				'total'			=> 'Total',
-				'subtotal' 		=> 'Subtotal',
-				'subtotal_tax' 	=> 'Subtotal including Tax'
-			),
-		),
-		'default' 	=> 'subtotal_tax',
-		'desc' 		=> 'The cart value to be used to calculate the remaining amount',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Bar Location',
-		'id' 			=> 'scbar-pos',
-		'section_id' 	=> 'sc_bar',
-		'args' 			=> array(
-			'options' 	=> array(
-				'xoo_wsc_header_end'  	=> 'Header',
-				'xoo_wsc_body_start' 	=> 'Before Products',
-				'xoo_wsc_body_end' 		=> 'After Products',
-				'xoo_wsc_footer_start' 	=> 'Footer Start',
-				'xoo_wsc_footer_end' 	=> 'Footer end',
-			),
-		),
-		'default' 	=> 'xoo_wsc_body_start',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Divide bar',
-		'id' 			=> 'scbar-divide',
-		'section_id' 	=> 'sc_bar',
-		'args' 			=> array(
-			'options' 	=> array(
-				'equal'	=> 'Equally',
-				'prop' 	=> 'Proportionately',
-			),
-		),
-		'default' 	=> 'equal',
-		'pro' 		=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Show',
-		'id' 			=> 'scbar-show',
-		'section_id' 	=> 'sc_bar',
-		'args' 			=> array(
-			'options' 	=> array(
-				'remaining' 	=> 'Remaining Text',
-				'title' 		=> 'Title',
-				'amount' 		=> 'Amount'
-			),
-		),
-		'default' 	=> array(
-			'remaining', 'title', 'amount'
-		),
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'custombardata',
-		'title' 		=> 'Checkpoints',
-		'id' 			=> 'scbar-data',
-		'section_id' 	=> 'sc_bar',
-		'default' 		=> '',
-		'pro' 			=> 'yes'
-	),
-
-	array(
-		'callback' 		=> 'text',
-		'title' 		=> 'Completed Text',
-		'id' 			=> 'scbar-comptext',
-		'section_id' 	=> 'sc_bar',
-		'default' 		=> 'Congrats! you have unlocked all achievements.',
-		'pro' 			=> 'yes'
-	),
 
 
 	/*** SUGGESTED PRODUCTS ***/
@@ -703,7 +632,16 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'text',
-		'title' 		=> 'Subtotal',
+		'title' 		=> 'Footer Savings',
+		'id' 			=> 'sct-savings',
+		'section_id' 	=> 'texts',
+		'default' 		=> 'Your savings on this order are',
+	),
+
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Footer Subtotal',
 		'id' 			=> 'sct-subtotal',
 		'section_id' 	=> 'texts',
 		'default' 		=> 'Subtotal',

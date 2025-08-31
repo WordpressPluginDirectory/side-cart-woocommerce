@@ -30,6 +30,8 @@ $headFontSize 	= $sy['sch-head-fsize'];
 $headBGColor 	= $sy['sch-bgcolor'];
 $headTxtColor 	= $sy['sch-txtcolor'];
 $headBorder		= $sy['sch-border'];
+$headIconSize 	= $sy['sch-basket-fsize'];
+$headCountSize 	= $sy['sch-count-size'];
 
 /* Body */
 $bodyFontSize 	= $sy['scb-fsize'];
@@ -183,11 +185,11 @@ else{
 }
 
 .xoo-wsc-items-count{
-	<?php echo $countPosition === 'top_right' || $countPosition === 'top_left' ? 'top' : 'bottom' ?>: -12px;
-	<?php echo $countPosition === 'top_right' || $countPosition === 'bottom_right' ? 'right' : 'left' ?>: -12px;
+	<?php echo $countPosition === 'top_right' || $countPosition === 'top_left' ? 'top' : 'bottom' ?>: -9px;
+	<?php echo $countPosition === 'top_right' || $countPosition === 'bottom_right' ? 'right' : 'left' ?>: -8px;
 }
 
-.xoo-wsc-items-count{
+.xoo-wsc-items-count, .xoo-wsch-items-count{
 	background-color: <?php echo $countBG ?>;
 	color: <?php echo $countColor ?>;
 }
@@ -383,3 +385,38 @@ span.xoo-wsch-close {
 	pointer-events: none;
 }
 <?php endif; ?>
+
+<?php
+
+if( WC()->cart->get_cart_contents_count() === 0 ){
+
+	$shortcodeEls = xoo_wsc_frontend()->shortcodeEls;
+
+	$hideEls = array();
+
+	foreach ($gl['shbk-hide'] as $scElement ) {
+		if( isset( $shortcodeEls[ $scElement ] ) ){
+			$hideEls[] = $shortcodeEls[ $scElement ];
+		}
+	}
+
+	if( !empty( $hideEls ) ){
+		?>
+		<?php echo implode(',', $hideEls ); ?>{
+			display: none;
+		}
+		<?php
+	}
+}
+
+?>
+
+span.xoo-wsch-items-count{
+	height: <?php echo $headCountSize ?>px;
+	line-height: <?php echo $headCountSize ?>px;
+	width: <?php echo $headCountSize ?>px;
+}
+
+span.xoo-wsch-icon{
+	font-size: <?php echo $headIconSize; ?>px
+}

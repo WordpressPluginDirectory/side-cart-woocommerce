@@ -11,6 +11,11 @@ class Xoo_Wsc_Frontend{
 	public $glSettings;
 	public $sySettings;
 	public $template_args = array();
+	public $shortcodeEls = array(
+		'subtotal' 	=> '.xoo-wsc-sc-subt',
+		'count' 	=> '.xoo-wsc-sc-count',
+		'icon' 		=> '.xoo-wsc-sc-bki'
+	);
 
 
 	public static function get_instance(){
@@ -155,6 +160,8 @@ class Xoo_Wsc_Frontend{
 				'event' 	=> $sySettings['scbp-card-visible'],
 				'duration' 	=> $sySettings['scbp-card-anim-time'],
 			),
+			'menuCartHideOnEmpty' 	=> $glSettings['shbk-hide'],
+			'shortcodeEls' 			=> $this->shortcodeEls
 		) );
 	}
 

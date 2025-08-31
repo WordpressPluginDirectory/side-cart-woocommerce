@@ -214,7 +214,24 @@ class Xoo_Wsc_Cart{
 
 		if( WC()->cart->is_empty() ) return $totals;
 
-		$showSubtotal 	= in_array( 'subtotal', xoo_wsc_helper()->get_general_option('scf-show') );
+		$show = $this->glSettings['scf-show'];
+
+		$showSubtotal 	= in_array( 'subtotal', $show );
+		$showSavings 	= in_array( 'savings', $show );
+
+		if( $showSavings ){
+
+			$savings = $this->get_cart_total_savings();
+
+			if( $savings ){
+				$totals['savings'] = array(
+					'label' 	=> $this->glSettings['sct-savings'],
+					'value' 	=> wc_price( $savings ),
+					'action' 	=> 'less'
+				);
+			}
+
+		}
 
 		if( $showSubtotal ){
 			$totals['subtotal'] = array(
@@ -327,6 +344,106 @@ class Xoo_Wsc_Cart{
 		return !empty( $isBundle ) ? array_values( array_intersect_key( $bundleItems , $cart_item ) )[0] : $isBundle;
 
 	}
+
+
+	public function get_cart_total_savings(){
+		$savings = $this->get_cart_total_product_savings();
+		return apply_filters( 'xoo_wsc_cart_savings', $savings  );
+	}
+
+	public function get_cart_total_product_savings() {
+
+    	$savings = 0;
+
+		foreach ( WC()->cart->get_cart() as $cart_item ) {
+
+			$product = $cart_item['data'];
+
+			// Regular price (could be variable/simple product)
+			$regular_price = (float) $product->get_regular_price();
+			$sale_price    = (float) $product->get_price();
+
+			// If discounted
+			if ( $regular_price > $sale_price ) {
+			$savings += ( $regular_price - $sale_price ) * $cart_item['quantity'];
+			}
+		}
+
+    	return apply_filters( 'xoo_wsc_cart_total_product_savings', $savings );
+	}
+
+
+	public function get_cart_item_savings( $cart_item ){
+
+		$cart_item_key = $cart_item['key'];
+
+		$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
+
+		$price_savings 	= $total_savings = 0;
+
+		$data = array();
+
+		$product_regular_price 		= wc_prices_include_tax() ? wc_get_price_including_tax( $_product, [ 'price' => $_product->get_regular_price() ] ) : wc_get_price_excluding_tax( $_product, [ 'price' => $_product->get_regular_price() ] );
+
+		$product_price         		= wc_prices_include_tax() ? wc_get_price_including_tax( $_product, [ 'price' => $_product->get_price() ] ) : wc_get_price_excluding_tax( $_product, [ 'price' => $_product->get_price() ] );
+
+
+		$price_savings = $this->get_savings_data( $product_price, $product_regular_price );
+		
+		if( !empty( $price_savings ) ){
+			$data['price'] = $price_savings;
+		}
+
+
+		$product_regular_total 		= $product_regular_price * $cart_item['quantity'];
+		$product_subtotal 			= $product_price * $cart_item['quantity'];
+
+		$total_savings = $this->get_savings_data( $product_subtotal, $product_regular_total );
+
+		if( !empty( $total_savings ) ){
+			$data['total'] = $total_savings;
+		}
+
+		
+		return apply_filters( 'xoo_wsc_cart_item_savings', $data, $cart_item );
+
+		
+	}
+
+
+	public function get_savings_data( $new_amount, $base_amount, $unit = '' ){
+
+		$return 	= array();
+		$savings 	= 0;
+
+		if( $base_amount > $new_amount ){
+			$savings = $base_amount - $new_amount;
+		}
+
+		if( $savings ){
+
+			if( !$unit ){
+				$unit = $this->glSettings['scb-prod-savings'];
+			}
+
+			if( $unit === 'amount' ){
+				$price_savings_text = wc_price( $savings );
+				
+			}
+			else{
+				$price_savings_text = '<span>'.round( ($savings/$base_amount) * 100 ) .'%</span>';
+			}
+
+			$return['value'] 	= $savings;
+			$return['text'] 	= sprintf( __( '<span %1$s>Save</span> %2$s', 'side-cart-woocommerce' ), 'class="xoo-wsc-psavlabel"', $price_savings_text  );
+
+		}
+
+		return $return;
+
+		
+	}
+
 
 }
 

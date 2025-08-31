@@ -23,8 +23,8 @@ $sections = $adminObj->sections;
 				if( isset( $sections[ $tab_id ] ) && count($sections[ $tab_id ]) > 3 ){
 					echo '<div class="xoo-sc-sections">';
 					foreach ( $sections[$tab_id] as $section_id => $section_data ) {
-						if( isset( $section_data['pro'] ) && $section_data['pro'] === 'yes' ) continue;
-						echo '<a href="#'.$tab_id.'_'.$section_id.'">'.$section_data['title'].'</a>';
+						$ispro = ( isset( $section_data['pro'] ) && $section_data['pro'] === 'yes' ) ? 'class="xoo-wsc-sec-pro"' : '';
+						echo '<a href="#'.$tab_id.'_'.$section_id.'" '.$ispro.'>'.$section_data['title'].'</a>';
 					}
 					echo '</div>';
 				}

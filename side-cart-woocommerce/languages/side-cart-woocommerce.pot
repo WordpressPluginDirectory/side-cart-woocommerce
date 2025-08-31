@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-05-23 11:00+0530\n"
+"POT-Creation-Date: 2025-08-31 15:26+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -15,14 +15,23 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;esc_attr_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/templates/preview/xoo-wsc-product-preview.php:57
-#: templates/global/body/product.php:84
-msgid "Qty:"
+#: admin/templates/preview/xoo-wsc-product-card-preview.php:3
+#: templates/global/body/product-card.php:29
+msgid "View"
 msgstr ""
 
-#: admin/templates/preview/xoo-wsc-product-preview.php:62
-#: templates/global/body/product.php:89
+#: admin/templates/preview/xoo-wsc-product-card-preview.php:10
+#: admin/templates/preview/xoo-wsc-product-row-preview.php:119
+#: templates/global/body/product-card.php:61
+#: templates/global/body/product.php:129
 msgid "Price: "
+msgstr ""
+
+#: admin/templates/preview/xoo-wsc-product-card-preview.php:106
+#: admin/templates/preview/xoo-wsc-product-row-preview.php:110
+#: templates/global/body/product-card.php:105
+#: templates/global/body/product.php:120
+msgid "Qty:"
 msgstr ""
 
 #: includes/class-xoo-wsc-cart.php:151
@@ -37,19 +46,24 @@ msgstr ""
 msgid "Item updated"
 msgstr ""
 
-#: includes/class-xoo-wsc-frontend.php:109
+#: includes/class-xoo-wsc-cart.php:438
+#, php-format
+msgid "<span %1$s>Save</span> %2$s"
+msgstr ""
+
+#: includes/class-xoo-wsc-frontend.php:136
 msgid "Only %s% in stock"
 msgstr ""
 
-#: includes/class-xoo-wsc-frontend.php:110
+#: includes/class-xoo-wsc-frontend.php:137
 msgid "Quantity can only be purchased in multiple of %s%"
 msgstr ""
 
-#: includes/class-xoo-wsc-frontend.php:111
+#: includes/class-xoo-wsc-frontend.php:138
 msgid "Please use checkout form to calculate shipping"
 msgstr ""
 
-#: includes/class-xoo-wsc-frontend.php:112
+#: includes/class-xoo-wsc-frontend.php:139
 msgid "Please enter promo code"
 msgstr ""
 

@@ -40,7 +40,16 @@ extract( Xoo_Wsc_Template_Args::cart_container() );
 
 		<?php do_action( 'xoo_wsc_header_start' ); ?>
 
-		<?php xoo_wsc_helper()->get_template( 'xoo-wsc-header.php' ); ?>
+		<?php
+
+		if( $oldHeaderLayout ){
+			xoo_wsc_helper()->get_template( 'xoo-wsc-header-old.php' );
+		}
+		else{
+			xoo_wsc_helper()->get_template( 'xoo-wsc-header.php' );
+		}
+
+		?>
 
 		<?php do_action( 'xoo_wsc_header_end' ); ?>
 

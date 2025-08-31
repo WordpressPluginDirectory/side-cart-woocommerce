@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.6.2
+ * @version 2.7.1
  */
 
 
@@ -27,10 +27,42 @@ $nameHTML 		= $showPname ? sprintf( '<span class="xoo-wsc-pname">%1$s</span>', $
 $totalHTML 		= $showPtotal && !$oneLiner ? sprintf( '<span class="xoo-wsc-card-ptotal">%1$s</span>', $product_subtotal ) : '';
 $metaHTML 		= $showPmeta ? $product_meta : '';
 $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $product_permalink, '<i class="xoo-wsc-icon-external-link"></i>'. __( 'View', 'side-cart-woocommerce' ) );
-$priceHTML 		= $showPprice && !$oneLiner ? sprintf( '<span class="xoo-wsc-card-price">%1$s</span>', __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ) : '';
-
 
 ?>
+
+<?php ob_start(); ?>
+
+<?php if( $priceSavingsText ): ?>
+
+	<div class="xoo-wsc-psavings">
+		<?php echo $priceSavingsText ?>
+	</div>
+
+<?php endif; ?>
+
+<?php $priceSavingsHTML = ob_get_clean(); ?>
+
+<?php ob_start(); ?>
+
+<?php if( $totalSavingsText ): ?>
+
+	<div class="xoo-wsc-psavings">
+		<?php echo $totalSavingsText ?>
+	</div>
+
+<?php endif; ?>
+
+<?php $totalSavingsHTML = ob_get_clean(); ?>
+
+<!-- Price HTML  -->
+<?php ob_start(); ?>
+<?php if ( $showPprice && !$oneLiner ): ?>
+	<div class="xoo-wsc-card-price">
+		<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
+	</div>
+<?php endif; ?>
+<?php $priceHTML = ob_get_clean(); ?>
+
 
 <?php ob_start(); //Delete HTML ?>
 
@@ -91,7 +123,9 @@ $priceHTML 		= $showPprice && !$oneLiner ? sprintf( '<span class="xoo-wsc-card-p
 <?php echo in_array( 'meta', $details ) ? $metaHTML : '' ?>
 <?php echo in_array( 'link', $details ) ? $viewLinkHTML : '' ?>
 <?php echo in_array( 'price', $details ) ? $priceHTML : '' ?>
+<?php echo in_array( 'price_save', $details ) ? $priceSavingsHTML : '' ?>
 <?php echo in_array( 'qty', $details ) ? $qtyHTML : '' ?>
+<?php echo in_array( 'total_save', $details ) ? $totalSavingsHTML : '' ?>
 <?php do_action( 'xoo_wsc_product_card_back', $_product, $cart_item_key ); ?>
 <?php $backHTML = ob_get_clean(); ?>
 
@@ -150,8 +184,10 @@ $productClasses 	= apply_filters( 'xoo_wsc_product_class', $productClasses, $_pr
 
 		<?php echo $allFront || !in_array( 'name', $details ) ? $nameHTML : '' ?>
 		<?php echo $allFront || !in_array( 'price', $details ) ? $priceHTML : '' ?>
+		<?php echo $allFront || !in_array( 'price_save', $details ) ? $priceSavingsHTML : '' ?>
 		<?php echo $allFront || !in_array( 'meta', $details ) ? $metaHTML : '' ?>
 		<?php echo $allFront || !in_array( 'qty', $details ) ? $qtyHTML : '' ?>
+		<?php echo $allFront || !in_array( 'total_save', $details ) ? $totalSavingsHTML : '' ?>
 
 		<?php do_action( 'xoo_wsc_product_card_front', $_product, $cart_item_key ); ?>
 		

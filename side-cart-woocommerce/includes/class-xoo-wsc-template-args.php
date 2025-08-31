@@ -22,6 +22,7 @@ class Xoo_Wsc_Template_Args{
 			'showCount' 			=> self::$sy['sck-show-count'],
 			'basketIcon' 			=> esc_html( self::$sy['sck-basket-icon'] ),
 			'customBasketIcon' 		=> esc_html( self::$sy['sck-cust-icon'] ),
+			'oldHeaderLayout' 		=> get_option( 'xoo-wsc-old-header-layout',true ) === "yes" && self::$sy['sch-new-layout'] !== "yes"
 		);
 
 
@@ -75,6 +76,8 @@ class Xoo_Wsc_Template_Args{
 			'showBasket' 		=> in_array( 'basket' , $show ),
 			'showCloseIcon' 	=> in_array( 'close', $show ),
 			'close_icon' 		=> esc_html( self::$sy['sch-close-icon'] ),
+			'basketIcon' 		=> esc_html( self::$sy['sck-basket-icon'] ),
+			'headerLayout' 		=> self::$sy['sch-layout'],
 		);
 
 		return apply_filters( 'xoo_wsc_cart_header_args', $args );
@@ -145,6 +148,8 @@ class Xoo_Wsc_Template_Args{
 		$showPtotal 		= in_array( 'product_total' , $show );
 		$showPqty 			= in_array( 'product_qty', $show );
 		$showSalesCount 	= in_array( 'total_sales', $show );
+		$showPPriceSavings 	= in_array( 'product_price_save' , $show );
+		$showPTotalSavings 	= in_array( 'product_total_save' , $show );
 		$updateQty 			= false;
 
 
@@ -155,6 +160,24 @@ class Xoo_Wsc_Template_Args{
 			$updateQty 			= $bundleData['qtyUpdate'];
 			$showPprice 		= $showSalesCount = false;
 			$showPdel 			= !$bundleData['delete'] ? false : $showPdel;
+			$showPPriceSavings 	= $showPTotalSavings ? false : $showPPriceSavings;
+		}
+
+		$priceSavingsText = $totalSavingsText = '';
+
+		//Savings
+		if( $showPTotalSavings || $showPPriceSavings ){
+
+			$savings = xoo_wsc_cart()->get_cart_item_savings( $cart_item );
+
+			if( isset( $savings['price'] ) && $showPPriceSavings ){
+				$priceSavingsText = $savings['price']['text'];
+			}
+
+			if( isset( $savings['total'] ) && $showPTotalSavings ){
+				$totalSavingsText = $savings['total']['text'];
+			}
+
 		}
 
 
@@ -175,7 +198,9 @@ class Xoo_Wsc_Template_Args{
 			'deletePosition' 	=> self::$sy['scbp-delpos'],
 			'deleteType' 		=> self::$sy['scbp-deltype'],
 			'deleteText' 		=> self::$gl['sct-delete'],
-			'oneLiner'  		=> self::$gl['scbp-qpdisplay'] === 'one_liner' && $showPprice && $showPtotal && $showPqty
+			'oneLiner'  		=> self::$gl['scbp-qpdisplay'] === 'one_liner' && $showPprice && $showPtotal && $showPqty,
+			'priceSavingsText' 	=> $priceSavingsText,
+			'totalSavingsText' 	=> $totalSavingsText,
 		);
 
 		$args = wp_parse_args( $args, $cart_item_args );

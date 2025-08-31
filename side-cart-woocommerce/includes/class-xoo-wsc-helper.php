@@ -23,6 +23,11 @@ class Xoo_Wsc_Helper extends Xoo_Helper{
 		return $this->get_option( 'xoo-wsc-av-options', $subkey );
 	}
 
+	public function get_rewards_option( $subkey = '' ){
+		return $this->get_option( 'xoo-wsc-rewards-options', $subkey );
+	}
+
+
 	public function box_shadow_desc($value){
 		$html = '<a href="https://box-shadow.dev/" target="__blank">Preview & click on "Show code" -> copy value</a>';
 		if( $value ){
@@ -50,7 +55,7 @@ class Xoo_Wsc_Helper extends Xoo_Helper{
 function xoo_wsc_helper(){
 	return Xoo_Wsc_Helper::get_instance( 'side-cart-woocommerce', XOO_WSC_PATH, array(
 		'pluginFile' => XOO_WSC_PLUGIN_FILE,
-		'pluginName' =>	'Woocommerce Side Cart' 
+		'pluginName' =>	'Woocommerce Side Cart',
 	) );
 }
 xoo_wsc_helper();

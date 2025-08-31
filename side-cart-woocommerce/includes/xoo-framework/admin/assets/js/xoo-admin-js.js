@@ -411,4 +411,43 @@ jQuery(document).ready(function($){
 		}
 	}).trigger('change');
 
+	$('img.xoo-as-patimg').on('click', function(){
+
+		var $cont 		= $(this).closest('.xoo-as-pattern-cont'),
+			$checkbox  	= $(this).siblings('input[type="checkbox"]'),
+			hasMultiple = $cont.data('multiple') === "yes",
+			isRequired 	= $cont.data('required') === "yes"; 
+
+		if( hasMultiple ){
+			if( isRequired && $cont.find('input[type="checkbox"]:checked').length === 1 && $checkbox.is(':checked')  ) return; //cannot uncheck last checked option if required
+			$(this).toggleClass('xoo-as-patactive');
+			$checkbox.prop('checked', function (i, val) { //toggle
+				return !val;
+			}).trigger('change');
+		}
+		else{
+			$cont.find('img.xoo-as-patimg').removeClass('xoo-as-patactive');
+			$(this).addClass('xoo-as-patactive');
+			$cont.find('input[type="checkbox"]').prop('checked', false).trigger('change');
+			$checkbox.prop('checked',true).trigger('change');
+		}
+
+	});
+
+	$('.xoo-as-patcheckbox').each(function(index, el){
+		var $el = $(el);
+		if( $el.prop('checked') ){
+			$el.siblings('img.xoo-as-patimg').addClass('xoo-as-patactive');
+		}
+	});
+
+	$('.xoo-as-info-hover').hover(
+		function() {
+			$(this).closest('.xoo-as-pattern-cont').find('.xoo-as-info[data-key="'+$(this).data('key')+'"]').show();
+		},
+		function() {
+			$('.xoo-as-info').hide();
+		}
+	);
+
 })

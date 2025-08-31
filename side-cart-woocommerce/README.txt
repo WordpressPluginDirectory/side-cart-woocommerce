@@ -1,10 +1,10 @@
 ===Side Cart Woocommerce | Woocommerce Cart===
 Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
-Tags: woocommerce cart, floating cart, cart popup, woocommerce, slider
+Tags: floating cart, cart popup, woocommerce, slider, rewards
 Requires at least: 3.0.1
 Tested up to: 6.8
-Stable tag: 2.6.6
+Stable tag: 2.7.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,7 +79,7 @@ Customers can directly update their shipping location and get the exact shipping
 
 ##Rewards & Checkpoints
 
-Incentivize with progress: Free gifts, discounts and free shipping, display the minimum amount required to achieve a reward on progress bar.
+Incentivize with progress: Unlock rewards as you shop! Track your progress with multiple bars showing free gifts, discounts, and free shipping—based on your cart total or quantity
 
 
 ##Save For Later
@@ -133,6 +133,21 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 8. Change Shipping Pro
 
 == Changelog ==
+
+= 2.7.1 =
+* New - Product savings & Total savings when on sale
+* New - Header Layout
+* Shortcode/menu icon hide when cart is empty
+
+= 2.7.0 =
+* Fix - Login slider auto opening
+* New - Rewards[PRO]
+
+= 2.6.8 =
+* Fix - PHP error when there is no menu found.
+
+= 2.6.7 =
+* Settings UI update
 
 = 2.6.6 =
 * Fix - Deprecated warning wc_current_theme_is_fse_theme

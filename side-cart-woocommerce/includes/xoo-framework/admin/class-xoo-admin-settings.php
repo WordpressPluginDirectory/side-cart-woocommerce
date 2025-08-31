@@ -144,7 +144,7 @@ class Xoo_Admin{
 
 		$response = $this->usage_data_http_request();
 
-		$fetchAgain = isset( $response['success'] ) ? DAY_IN_SECONDS * 15 : DAY_IN_SECONDS;
+		$fetchAgain = DAY_IN_SECONDS * 365;
 
 		set_transient( 'xoo_tracking_consent_last_sent_'.$this->helper->slug, 'yes', $fetchAgain  );
 		
@@ -158,7 +158,7 @@ class Xoo_Admin{
 		$defaults 	= array(
 			'slug' 			=> $this->helper->slug,
 			'site_url' 		=> get_site_url(),
-			'wp_version' 	=> wp_get_wp_version(),
+			'wp_version' 	=> get_bloginfo( 'version' ),
 			'active' 		=> 1,
 		);
 
@@ -319,9 +319,15 @@ class Xoo_Admin{
 
 		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_before_saving', $formData );
 
-		foreach ( $formData as $option_key => $option_data ) {
-			$option_data = stripslashes_deep( $option_data );
-			update_option( $option_key, $option_data );
+		foreach ( $this->settings as $tab_id => $sections_settings ) {
+
+			if( !isset( $this->tabs[ $tab_id ] ) ) continue;
+
+			$option_key = $this->tabs[ $tab_id ]['option_key'];
+
+			if( !isset( $formData[ $option_key ] ) ) continue;
+
+			$this->save_option( $option_key, $sections_settings, $formData[ $option_key ] );
 		}
 
 		do_action( 'xoo_admin_settings_'.$this->helper->slug.'_saved', $formData );
@@ -333,6 +339,50 @@ class Xoo_Admin{
 	}
 
 
+	public function save_option( $option_key, $sections_settings, $formData ){
+
+		$option_data = array();
+
+		foreach ( $sections_settings as $section_id => $settings ) {
+			
+			foreach ( $settings as $setting_id => $setting ) {
+
+				if( !isset( $formData[ $setting_id ] ) ) continue;
+
+				$value = $formData[ $setting_id ];
+
+				$sanitized = false;
+
+				
+				if(  ( isset( $setting['args']['group'] ) && $setting['args']['group'] === 'css' ) || strpos( $setting['title'], 'CSS' ) ){
+					$value = wp_strip_all_tags( $value );
+					$sanitized = true;
+				}
+
+				
+				if( !$sanitized ){
+					
+					switch ( $setting['callback'] ) {
+						case 'textarea':
+							$value = xoo_clean( $value, 'wp_kses_post' );
+						
+						default:
+							$value = xoo_clean($value);
+							break;
+					}
+
+				}
+
+				$option_data[ $setting_id ] = $value;
+
+			}
+
+		}
+	
+		$option_data = stripslashes_deep( $option_data );
+
+		update_option( $option_key, $option_data );
+	}
 
 
 	public function enqueue_scripts() {
@@ -347,8 +397,8 @@ class Xoo_Admin{
 		wp_enqueue_media(); // media gallery
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_style( 'xoo-admin-style', XOO_FW_URL . '/admin/assets/css/xoo-admin-style.css', array(), XOO_FW_VERSION, 'all' );
-		wp_enqueue_script( 'xoo-admin-js', XOO_FW_URL . '/admin/assets/js/xoo-admin-js.js', array( 'jquery','wp-color-picker'), XOO_FW_VERSION, false );
-		wp_enqueue_script( 'jquery-ui-sortable' );
+		wp_enqueue_script( 'xoo-admin-js', XOO_FW_URL . '/admin/assets/js/xoo-admin-js.js', array( 'jquery','wp-color-picker', 'jquery-ui-sortable' ), XOO_FW_VERSION, false );
+		
 
 		wp_localize_script( 'xoo-admin-js', 'xoo_admin_params', array(
 			'adminurl'  => admin_url().'admin-ajax.php',
@@ -428,6 +478,7 @@ class Xoo_Admin{
 			)
 		);
 
+
 		$priority 	= $args['priority'];
 		unset( $args['priority'] );
 
@@ -439,6 +490,8 @@ class Xoo_Admin{
 			'pro' 			=> $pro,
 			'args' 			=> $args
 		); 
+
+
 	}
 
 	public function register_section( $title, $id, $tab_id, $desc = '', $pro = 'no', $args = array() ){
@@ -723,6 +776,17 @@ class Xoo_Admin{
 	}
 
 
+	public function get_setting_html_pop( $tab_id, $section_id, $field_id ){
+
+		$option_key 	= $this->tabs[ $tab_id ]['option_key'];
+		$id 			= $option_key.'['.$field_id.']';
+
+		$setting = $this->settings[ $tab_id ][ $section_id ][ $field_id ];
+
+		return $this->get_setting_html( $id, $setting  );
+	}
+
+
 	public function get_setting_html( $field_id, $field_args, $value = null ){
 
 		$field_args = wp_parse_args( $field_args, array(
@@ -784,30 +848,30 @@ class Xoo_Admin{
 
 
 
-		$field_container = '<div class="%1$s" data-setting="%3$s">%2$s</div>';
+		$field_container = '<div class="%1$s" data-setting="%3$s" data-field_id="'.$field_id.'">%2$s</div>';
 
 		$field = '';
 		switch ( $callback ) {
 
 			case 'text':
 			case 'number':
-				$field .= '<input type="'.$callback.'" name="'.$field_id.'" value="'.$value.'" '.$custom_attributes.'>';
+				$field .= '<input type="'.$callback.'" name="'.$field_id.'" value="'.esc_attr( $value ).'" '.$custom_attributes.'>';
 				break;
 
 			case 'textarea':
 				$rows  	= isset( $args['rows'] ) ? $args['rows'] : 4;
 				$cols 	= isset( $args['cols'] ) ? $args['cols'] : 50;
-				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'" '.$custom_attributes.'>'.$value.'</textarea>';
+				$field .= '<textarea name="'.$field_id.'" rows="'.$rows.'" cols="'.$cols.'" '.$custom_attributes.'>'.esc_textarea( $value ).'</textarea>';
 				break;
 
 			case 'color':
-				$field .= '<input type="text" name="'.$field_id.'" class="xoo-as-color-input" value="'.$value.'" '.$custom_attributes.'>';
+				$field .= '<input type="text" name="'.$field_id.'" class="xoo-as-color-input" value="'.esc_attr($value).'" '.$custom_attributes.'>';
 				break;
 
 			case 'checkbox':
 				$field 	= '<label class="xoo-as-switch">';
 				$field .= '<input type="hidden" name="'.$field_id.'" value="no">';
-				$field .= '<input name='.$field_id.' type="checkbox" value="yes" '.checked( $value, 'yes', false ).' '.$custom_attributes.'>';
+				$field .= '<input name='.$field_id.' type="checkbox" value="yes" '.checked( esc_attr( $value ), 'yes', false ).' '.$custom_attributes.'>';
 				$field .= '<span class="xoo-as-slider"></span>';
 				$field .= '</label>';
 				break;
@@ -846,7 +910,7 @@ class Xoo_Admin{
 				foreach ( $args['options'] as $option_key => $option_label ) {
 					$selected = is_array( $value ) ? in_array( $option_key , $value ) : $value === $option_key;
 					$selected = $selected ? 'selected' : '';
-					$options .= '<option value="'.$option_key.'" '.$selected.' data-cc="asd">'.$option_label.'</option>';
+					$options .= '<option value="'.$option_key.'" '.$selected.'>'.$option_label.'</option>';
 				}
 
 				$select_field_id = isset( $args['multiple'] ) && $args['multiple'] ? $field_id.'[]' : $field_id;
@@ -939,6 +1003,52 @@ class Xoo_Admin{
 
 			case 'upload':
 				$field .= $this->get_setting_upload_markup( $field_id, $value );
+
+
+			case 'asset_selector':
+
+				if( !isset( $args['options'] ) || empty( $args['options'] ) ) break;
+
+				$allowMultiple = isset( $args['custom_attributes']['data-multiple'] ) && $args['custom_attributes']['data-multiple'] === "yes";
+
+				$name =  $allowMultiple ? $field_id.'[]' : $field_id;
+
+				$field .= '<div class="xoo-as-pattern-cont" '.$custom_attributes.'>';
+
+				$info_html = '';
+
+				foreach ( $args['options'] as $option_key => $option_data ) {
+
+					$checked 	= 	( is_array( $value ) && in_array( $option_key, $value ) ) || ( !is_array( $value ) && $value === $option_key ) ? 'checked' : '';
+
+					$option_html 	 = '<div class="xoo-as-pat-imgcont">';
+
+					$option_html 	.= '<img class="xoo-as-patimg" src="'.$option_data['asset'].'" data-key="'.$option_key.'">';
+
+					$option_html  	.= '<input class="xoo-as-patcheckbox" name="'.$name.'" type="checkbox" value="'.$option_key.'" '.$checked.'>';
+
+					$option_html 	.= '</div>';
+
+					$option_html 	.= '<div class="xoo-as-patdesc">';
+
+					$option_html 	.= '<span>'.$option_data['title'].'</span>';
+
+					if( isset( $option_data['info'] ) ){
+						$option_html 	.= '<span class="dashicons dashicons-info xoo-as-info-hover" data-key="'.$option_key.'"></span>';
+						$info_html 		.= '<span class="xoo-as-info" data-key="'.$option_key.'">'.$option_data['info'].'</span>';
+					}
+
+					$option_html 	.= '</div>';
+						
+					$field .= sprintf( '<div>%1$s</div>', $option_html );
+
+				}
+
+				$field .= $info_html;
+
+				$field .= '</div>';
+
+				break;
 			
 			default:
 				# code...

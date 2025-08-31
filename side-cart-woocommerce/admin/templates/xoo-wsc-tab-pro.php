@@ -1,22 +1,68 @@
+<?php
+
+$imgPath = XOO_WSC_URL . '/admin/assets/images/pro/';
+
+?>
+
 <div class="xoo-wsc-premium">
-	<div class="xoo-wscp-head">
-		<span>Premium</span>
-		<a href="https://xootix.com/plugins/side-cart-for-woocommerce">BUY NOW</a>
-		<a href="https://demo.xootix.com/side-cart-for-woocommerce/">DEMO</a>
+
+	<span class="xoo-wscp-pin"></span>
+	<span class="xoo-wscp-pin"></span>
+
+	<div class="xoo-wscp-one">
+		<img src="<?php echo $imgPath.'/crown.png' ?>">
+		<div>
+			<span>The #1 Cart plugin for WooCommerce</span>
+			<span>most downloaded and highest rated</span>
+		</div>
 	</div>
 
-	<h3>More than just a Cart</h3>
+	<div class="xoo-wscp-head">
+		<div>
+			<span>Premium</span>
+			<span>The Ultimate Cart Experience</span>
+		</div>
+		<div>
+			<a href="https://xootix.com/plugins/side-cart-for-woocommerce">BUY NOW</a>
+			<a href="https://demo.xootix.com/side-cart-for-woocommerce/">DEMO</a>
+		</div>
+	</div>
 
-	<ul class="xoo-wscp-features">
-		<li>Update quantity</li>
-		<li>Show shipping, tax, discount, fee & other totals</li>
-		<li>Shipping calculator</li>
-		<li>Apply & display coupons</li>
-		<li>Increase sales by showing Cross-Sells / Up-Sells / Related products</li>
-		<li>Rewards and Checkpoints ( Offer free gifts, discounts and show free shipping bar )</li>
-		<li>Display google pay, apple pay, paypal and amazon pay buttons. Collect payment in a single click.</li>
-		<li>Save For Later - Don’t lose your items — save them for later!</li>
-		<li>Show notifications on add/update/delete item</li>
-		<li>Additional styling options</li>
-	</ul>
+	<div class="xoo-wscp-list">
+
+		<div>
+			<span><img src="<?php echo $imgPath.'/sales.png' ?>">Boost Sales & Engagement</span>
+			<ul>
+				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>"> Display cross-sells, up-sells & related products or custom product IDs</li>
+				<li><img src="<?php echo $imgPath.'/rewards.png' ?>">Rewards - Add multiple progress bars & checkpoints (free gifts, discounts, shipping bar)</li>
+			</ul>
+		</div>
+
+		<div>
+			<span><img src="<?php echo $imgPath.'/box.png' ?>"> Shipping & Checkout</span>
+			<ul>
+				<li><img src="<?php echo $imgPath.'/calculator.png' ?>"> Built-in shipping calculator</li>
+				<li><img src="<?php echo $imgPath.'/credit.png' ?>"> One-click checkout: Google Pay, Apple Pay, PayPal, Amazon Pay</li>
+			</ul>
+		</div>
+
+		
+		<div>
+			<span><img src="<?php echo $imgPath.'/settings.png' ?>">Cart Enhancements</span>
+			<ul>
+				<li><img src="<?php echo $imgPath.'/coupons.png' ?>"> Apply & display discount coupons</li>
+				<li><img src="<?php echo $imgPath.'/wishlist.png' ?>"> Save cart items for later</li>
+				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>"> Update item quantity directly in cart</li>
+				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>"> Show shipping, tax, discounts, fees & other totals</li>
+				<li><img src="<?php echo $imgPath.'/checkmark.png' ?>"> Show real-time notifications on add/update/delete actions</li>
+				<li><img src="<?php echo $imgPath.'/paint-palette.png' ?>"> Additional styling and design options</li>
+			</ul>
+		</div>
+
+
+	</div>
+
+	
+
+	
 </div>

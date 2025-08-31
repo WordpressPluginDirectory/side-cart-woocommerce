@@ -31,7 +31,7 @@ class Xoo_Wsc_Loader{
 		$this->define( "XOO_WSC_PATH", plugin_dir_path( XOO_WSC_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WSC_PLUGIN_BASENAME", plugin_basename( XOO_WSC_PLUGIN_FILE ) );
 		$this->define( "XOO_WSC_URL", untrailingslashit( plugins_url( '/', XOO_WSC_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WSC_VERSION", "2.6.6" ); //Plugin version
+		$this->define( "XOO_WSC_VERSION", "2.7.1" ); //Plugin version
 		$this->define( "XOO_WSC_LITE", true );
 	}
 
@@ -206,6 +206,18 @@ class Xoo_Wsc_Loader{
 			if( version_compare( $db_version, '2.6.4', '<')  ){
 				update_option('xoo_tracking_consent_side-cart-woocommerce', 'no' );
 			}
+
+			if( version_compare( $db_version, '2.7.1', '<')  ){
+				$glOptions['shbk-hide'] 		= array();
+				$syOptions['sch-new-layout'] 	= 'no';
+				$syOptions['sch-layout']  		= array();
+				$syOptions['sch-count-size']  	= 20;
+				$syOptions['sch-basket-fsize']	= 30;
+				$glOptions['shbk-hide'] 		= array();
+				update_option( 'xoo-wsc-old-header-layout', 'yes' );
+			}
+
+			
 			
 			update_option('xoo-wsc-gl-options', $glOptions );
 			update_option('xoo-wsc-sy-options', $syOptions );

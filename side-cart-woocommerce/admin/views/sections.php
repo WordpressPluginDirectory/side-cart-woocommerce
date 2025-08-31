@@ -29,14 +29,7 @@ $sections = array(
 	),
 
 	array(
-		'title' => 'Rewards & Checkpoints Bar',
-		'id' 	=> 'sc_bar',
-		'tab' 	=> 'general',
-		'pro' 	=> 'yes'
-	),
-
-	array(
-		'title' => 'Cart Menu',
+		'title' => 'Cart Menu/ Shortcode',
 		'id' 	=> 'sh_bk',
 		'tab' 	=> 'general',
 		'desc' 	=> 'You can also use shortcode [xoo_wsc_cart] to generate basket icon anywhere.'
@@ -156,6 +149,13 @@ $sections = array(
 		'id' 	=> 'sh_bk',
 		'tab' 	=> 'style',
 		'desc' 	=> 'Use shortcode [xoo_wsc_cart] to generate basket icon anywhere.'
+	),
+
+	/* Rewards TAB Sections */
+	array(
+		'title' => 'Global Settings',
+		'id' 	=> 'general',
+		'tab' 	=> 'rewards',
 	),
 
 	/* Custom CSS TAB Sections */

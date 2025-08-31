@@ -4,18 +4,7 @@ $subtotal = wc_price(100);
 
 ?>
 
-<div class="xoo-wsc-ft-totals">
-
-	<# if ( data.footer.subtotal ) { #>
-	
-	<div class="xoo-wsc-ft-amt">
-		<span class="xoo-wsc-ft-amt-label">{{data.footer.subtotalLabel}}</span>
-		<span class="xoo-wsc-ft-amt-value"><?php echo $subtotal ?></span>
-	</div>
-
-	<# } #>
-
-</div>
+<?php echo $footer_template ?>
 
 <# if ( data.footer.footerTxt ) { #>
 <span class="xoo-wsc-footer-txt">{{{data.footer.footerTxt}}}</span>

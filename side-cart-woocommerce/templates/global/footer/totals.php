@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.1
+ * @version 2.7.1
  */
 
 
@@ -25,7 +25,7 @@ extract( Xoo_Wsc_Template_Args::footer_totals() );
 
 <div class="xoo-wsc-ft-totals">
 	<?php foreach( $totals as $key => $data ): ?>
-		<div class="xoo-wsc-ft-amt xoo-wsc-ft-amt-<?php echo $key; ?> <?php echo isset( $data['action'] ) ? $data['action'] : '' ?>">
+		<div class="xoo-wsc-ft-amt xoo-wsc-ft-amt-<?php echo $key; ?> <?php echo isset( $data['action'] ) ? 'xoo-wsc-'.$data['action'] : '' ?>">
 			<span class="xoo-wsc-ft-amt-label"><?php echo $data['label'] ?></span>
 			<span class="xoo-wsc-ft-amt-value"><?php echo $data['value'] ?></span>
 		</div>

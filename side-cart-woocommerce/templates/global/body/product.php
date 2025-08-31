@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.6.1
+ * @version 2.7.1
  */
 
 
@@ -22,6 +22,44 @@ $oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal &&
 
 ?>
 
+<?php ob_start(); ?>
+
+<?php if( $showPdel ): ?>
+
+	<?php if( $deleteType === 'icon' ): ?>
+		<span class="xoo-wsc-smr-del <?php echo $delete_icon ?>"></span>
+	<?php else: ?>
+		<span class="xoo-wsc-smr-del xoo-wsc-del-txt"><?php echo $deleteText ?></span>
+	<?php endif; ?>
+
+<?php endif; ?>
+
+<?php $deleteHTML = ob_get_clean(); ?>
+
+<?php ob_start(); ?>
+
+<?php if( $priceSavingsText ): ?>
+
+	<div class="xoo-wsc-psavings">
+		<?php echo $priceSavingsText ?>
+	</div>
+
+<?php endif; ?>
+
+<?php $priceSavingsHTML = ob_get_clean(); ?>
+
+<?php ob_start(); ?>
+
+<?php if( $totalSavingsText ): ?>
+
+	<div class="xoo-wsc-psavings">
+		<?php echo $totalSavingsText ?>
+	</div>
+
+<?php endif; ?>
+
+<?php $totalSavingsHTML = ob_get_clean(); ?>
+
 <div data-key="<?php echo $cart_item_key ?>" class="<?php echo implode( ' ', $productClasses ) ?>">
 
 	<?php do_action( 'xoo_wsc_product_start', $_product, $cart_item_key ); ?>
@@ -32,13 +70,9 @@ $oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal &&
 
 				<?php echo $thumbnail; ?>
 
-				<?php if( $showPdel && $deletePosition === 'image' ): ?>
+				<?php if( $deletePosition === 'image' ): ?>
 
-					<?php if( $deleteType === 'icon' ): ?>
-						<span class="xoo-wsc-smr-del <?php echo $delete_icon ?>"></span>
-					<?php else: ?>
-						<span class="xoo-wsc-smr-del xoo-wsc-del-txt"><?php echo $deleteText ?></span>
-					<?php endif; ?>
+					<?php echo $deleteHTML ?>
 
 				<?php endif; ?>
 
@@ -78,17 +112,25 @@ $oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal &&
 						<span><?php echo $product_subtotal ?></span>
 					</div>
 
+					<?php echo $totalSavingsHTML; ?>
+
 				<?php else: ?>
 
 					<?php if( $showPqty ): ?>
 						<div class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <span><?php echo $cart_item['quantity']; ?></span></div>
 					<?php endif; ?>
 
-					<?php if( $showPprice ): ?>
-						<div class="xoo-wsc-pprice">
-							<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
-						</div>
-					<?php endif; ?>
+					<div class="xoo-wsc-priceBox">
+
+						<?php echo $priceSavingsHTML; ?>
+
+						<?php if( $showPprice ): ?>
+							<div class="xoo-wsc-pprice">
+								<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
+							</div>
+						<?php endif; ?>
+
+					</div>
 
 				<?php endif; ?>
 
@@ -98,14 +140,14 @@ $oneLiner  		= $qtyPriceDisplay === 'one_liner' && $showPprice && $showPtotal &&
 
 			<div class="xoo-wsc-sm-right">
 
-				<?php if( $showPdel && $deletePosition === 'default' ): ?>
+				<?php if( $deletePosition === 'default' ): ?>
 
-					<?php if( $deleteType === 'icon' ): ?>
-						<span class="xoo-wsc-smr-del <?php echo $delete_icon ?>"></span>
-					<?php else: ?>
-						<span class="xoo-wsc-smr-del xoo-wsc-del-txt"><?php echo $deleteText ?></span>
-					<?php endif; ?>
+					<?php echo $deleteHTML ?>
 
+				<?php endif; ?>
+
+				<?php if( !$oneLiner ): ?>
+					<?php echo $totalSavingsHTML; ?>
 				<?php endif; ?>
 
 				<?php if( $showPtotal && !$oneLiner ): ?>

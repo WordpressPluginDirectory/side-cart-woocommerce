@@ -41,3 +41,17 @@ if ( ! function_exists( 'xoo_recursive_parse_args' ) ) {
 		return $new_args;
     }
 }
+
+if( !function_exists( 'xoo_clean' ) ){
+
+	function xoo_clean( $var, $func = 'sanitize_text_field' ) {
+
+		if ( is_array( $var ) ) {
+			return array_map( 'xoo_clean', $var );
+		} else {
+			return is_scalar( $var ) ? call_user_func($func, $var ) : $var;
+		}
+
+	}
+
+}

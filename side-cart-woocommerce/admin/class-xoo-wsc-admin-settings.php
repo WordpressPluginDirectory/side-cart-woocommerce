@@ -36,15 +36,14 @@ class Xoo_Wsc_Admin_Settings{
 
 			add_action( 'xoo_tab_page_start', array( $this, 'preview_info' ), 5 );
 
-			add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'checkpoints_bar_setting_html' ), 10, 4 );
-
-			add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'pattern_selector_field' ), 10, 4 );
-
 
 			if( get_option('xoo-wsc-pattern-init') === false ){
 				add_action( 'xoo_tab_page_end', array( $this, 'popup_pattern_selector' ), 10, 2 );
 				add_filter('admin_body_class', array( $this, 'admin_body_class') );
 			}
+
+			add_action( 'xoo_tab_page_start', array( $this, 'rewards_html' ) );
+			add_action( 'admin_footer', array( $this, 'rewards_preview' ) );
 
 		}
 	
@@ -55,6 +54,57 @@ class Xoo_Wsc_Admin_Settings{
 
 		add_action( 'wp_ajax_xoo_wsc_el_install', array( $this, 'install_loginpopup' ) );
 		add_action( 'wp_ajax_xoo_wsc_el_request_just_to_init_save_settings',  array( $this, 'el_request_just_to_init_save_settings' ) );
+
+		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'header_layout_setting_html' ), 10, 4 );
+
+		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'toggle_old_header_layout_setting' ), 10, 4 );
+
+	}
+
+
+	public function toggle_old_header_layout_setting( $field, $field_id, $value, $args ){
+		if( $field_id === 'xoo-wsc-sy-options[sch-new-layout]' && get_option( 'xoo-wsc-old-header-layout',true ) !== "yes" ){
+			$field = '';
+		}
+		return $field;
+	}
+
+
+	public function product_search_fill_defaults(){
+
+		if ( !wp_verify_nonce( $_POST['xoo_wsc_nonce'], 'xoo-wsc-nonce' ) ) {
+			die('cheating');
+		}
+
+		$product_ids = $_POST['product_ids'];
+
+		if( !$product_ids || empty( $product_ids ) ) return;
+
+		$optionsHTML = '';
+
+		foreach ( $product_ids as $product_id ) {
+			$product = wc_get_product( $product_id );
+			if ( is_object( $product ) ) {
+				$optionsHTML .= '<option value="' . esc_attr( $product_id ) . '"' . selected( true, true, false ) . '>' . esc_html( wp_strip_all_tags( $product->get_formatted_name() ) ) . '</option>';
+			}
+		}
+
+		echo $optionsHTML;
+		
+		die();
+
+	}
+
+	public function rewards_preview(){
+		if( !xoo_wsc_helper()->admin->is_settings_page() ) return;
+		$base_id = 'xoo-wsc-rewards-options[bars][%$]';
+		include XOO_WSC_PATH.'/admin/templates/rewards/progressbar.php';
+		include XOO_WSC_PATH.'/admin/templates/rewards/checkpoint.php';
+	}
+
+	public function rewards_html($tab_id){
+		if( $tab_id !== 'rewards' ) return;
+		include XOO_WSC_PATH.'/admin/templates/xoo-wsc-rewards.php';
 	}
 
 	public function preview_info($tab_id){
@@ -93,19 +143,86 @@ class Xoo_Wsc_Admin_Settings{
 		
 		if( $slug !== 'side-cart-woocommerce' ) return;
 
+		wp_enqueue_style( 'xoo-aff-fa', XOO_WSC_URL.'/library/fontawesome5/css/all.min.css' ); //Font Awesome
+		wp_enqueue_style( 'xoo-aff-fa-picker', XOO_WSC_URL.'/library/fontawesome-iconpicker/dist/css/fontawesome-iconpicker.min.css', array(), '1.0', 'all' ); //Font Awesome Icon Picker
+		wp_enqueue_script( 'xoo-aff-fa-pickers', XOO_WSC_URL.'/library/fontawesome-iconpicker/dist/js/fontawesome-iconpicker.js', array( 'jquery'), '1.0', false );
+		wp_enqueue_script('wc-enhanced-select'); // For product search
+
 		
 		wp_enqueue_style( 'xoo-wsc-magic', XOO_WSC_URL.'/library/magic/dist/magic.min.css', array(), '1.0' );
 		wp_enqueue_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js', array(), XOO_WSC_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+		wp_enqueue_script( 'xoo-wsc-serializejson', XOO_WSC_URL . '/admin/assets/xoo-wsc-serializejson.js', array( 'jquery' ), '1.0', true );
 		
 
 		wp_enqueue_style( 'xoo-wsc-admin-fonts', XOO_WSC_URL . '/assets/css/xoo-wsc-fonts.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_style( 'xoo-wsc-admin-style', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-style.css', array(), XOO_WSC_VERSION );
-		wp_enqueue_script( 'xoo-wsc-admin-js', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-js.js', array( 'jquery' ), XOO_WSC_VERSION, true );
+		wp_enqueue_script( 'xoo-wsc-admin-js', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-js.js', array( 'jquery', 'jquery-ui-sortable', 'wc-enhanced-select' ), XOO_WSC_VERSION, true );
 
 		wp_localize_script( 'xoo-wsc-admin-js', 'xoo_wsc_admin_params', array(
 			'adminurl'  => admin_url().'admin-ajax.php',
 			'nonce' 	=> wp_create_nonce('xoo-wsc-nonce'),
-			'isMobile' 	=> wp_is_mobile() ? 'yes' : 'no'
+			'isMobile' 	=> wp_is_mobile() ? 'yes' : 'no',
+			'hasMenu' 	=> !empty( wp_get_nav_menus() ),
+			'bars' 		 => xoo_wsc_helper()->get_rewards_option('bars'),
+			'barDefaults' => array(
+				'settings' => array(
+					'barTitle' 				=> 'Progress bar [%^]',
+					'enable' 				=> 'yes',
+					'barValue' 				=> 'subtotal',
+					'location' 				=> 'xoo_wsc_body_start',
+					'show' 					=> array( 'remaining', 'amount', 'title', 'icon' ),
+					'comptxt' 				=> "🎉 Congratulations, you've unlocked all rewards.",
+					'emptyColor' 			=> '#eee',
+					'filledColor' 			=> '#444',
+					'textColor' 			=> '#000',
+					'iconColor' 			=> '#444',
+					'iconBGColor' 			=> '#fff',
+					'iconBorder' 			=> '2px solid #eee',
+					'iconColorFilled' 		=> '#fff',
+					'iconBGColorFilled' 	=> '#444',
+					'iconBorderFilled'		=> '4px solid #eee',
+					'overrideDiscount' 		=> 'yes' 
+				),
+				'checkpoints' => array(
+					'freeshipping' => array(
+						'enable' 	=> 'yes',
+						'title' 	=> 'Free Shipping',
+						'icon' 		=> 'fas fa-truck',
+						'iconFilled' => 'fas fa-check',
+						'amount' 	=> 10,
+						'remaining' => "You're [value] away from Free Shipping",
+					),
+					'gift' => array(
+						'enable' 	=> 'yes',
+						'title' 	=> 'Free Gift',
+						'icon' 		=> 'fas fa-gift',
+						'iconFilled' => 'fas fa-check',
+						'amount' 	=> 15,
+						'remaining' => "You're [value] away from a Free Gift",
+						'gift_qty' 	=> 1,
+						'gift_ids' 	=> '',
+					),
+					'discount' => array(
+						'enable' 	=> 'yes',
+						'title' 	=> '10% Discount',
+						'icon' 		=> 'fas fa-dollar-sign',
+						'iconFilled' => 'fas fa-check',
+						'amount' 	=> 20,
+						'discount' 	=> 10,
+						'remaining' => "You're [value] away from 10% Discount"
+					),
+					'display' 	=> array(
+						'enable' 	=> 'yes',
+						'title' 	=> 'Custom Reward',
+						'icon' 		=> 'fas fa-gift',
+						'iconFilled' => 'fas fa-check',
+						'amount' 	=> 25,
+						'remaining' => "You're [value] away from ..."
+					),
+
+				) 
+			),
+			'hasOldheader' => get_option( 'xoo-wsc-old-header-layout',true ) === "yes"
 		) );
 
 	}
@@ -168,13 +285,16 @@ class Xoo_Wsc_Admin_Settings{
 
 					update_option( 'xoo-el-sy-options', array(
 						'sy-popup-style' 	=> 'slider',
-						'sy-popup-width' 	=> 500
+						'sy-popup-width' 	=> 500,
 					) );
 					
 					update_option( 'xoo-el-gl-options', array(
-						'm-form-pattern' => 'single',
-						'm-nav-pattern'  => 'links'
+						'm-form-pattern' 	=> 'single',
+						'm-nav-pattern'  	=> 'links',
+						'ao-enable' 		=> 'no'
 					) );
+
+					update_option('xoo-el-settings-init', 'yes');
 
 				}
 				
@@ -189,7 +309,7 @@ class Xoo_Wsc_Admin_Settings{
 			}
 
 			wp_send_json( array(
-				'notice' 				=> 'Plugin installed successfully.<br>For now everything is already setup, but if you want to customize the settings, you can access them <a href="'.admin_url( 'admin.php?page=easy-login-woocommerce-settings' ).'" target="_blank">[here]</a>',
+				'notice' 				=> 'Plugin installed successfully. To test, visit your website as a guest user, add any product to cart and then click on "Checkout button" in side cart<br>If you want to customize the settings, you can access them <a href="'.admin_url( 'admin.php?page=easy-login-woocommerce-settings' ).'" target="_blank">[here]</a>',
 				'firsttime_download' 	=> isset( $firsttime_download ) ? 'yes' : 'no'
 			) );
 
@@ -273,9 +393,18 @@ class Xoo_Wsc_Admin_Settings{
 		?>
 		<div class="xoo-wsc-admin-popup">
 			<div class="xoo-wsc-adpop">
-				<?php $this->pattern_selector_field_html(); ?>
-				<span class="xoo-wsc-adpopup-head">Choose your Product Layout</span>
-				<span>You can change this later from "Style -> Side Cart Body"</span>
+
+				<div>
+					<span class="xoo-wsc-adpopup-head">Choose your Product Layout</span>
+					<?php echo xoo_wsc_helper()->admin->get_setting_html_pop( 'style', 'sc_body', 'scb-playout' ); ?>
+					<span>You can change this later from "Style"</span>
+				</div>
+
+				<div>
+					<span class="xoo-wsc-adpopup-head">Quantity & Price Display</span>
+					<?php echo xoo_wsc_helper()->admin->get_setting_html_pop( 'general', 'sc_body', 'scbp-qpdisplay' ); ?>
+				</div>
+
 				<button type="button" class="xoo-wsc-adpopup-go button-primary button">Let's Go!</button>
 			</div>
 			<div class="xoo-wsc-adpop-opac"></div>
@@ -283,15 +412,6 @@ class Xoo_Wsc_Admin_Settings{
 		<?php
 	}
 
-
-	public function pattern_selector_field_html(){
-		?>
-		<div class="xoo-wsc-pattern-cont">
-			<img class="xoo-wsc-patimg" src="<?php echo XOO_WSC_URL; ?>/admin/assets/images/pattern-card.jpg ?>" data-pattern="cards">
-			<img class="xoo-wsc-patimg" src="<?php echo XOO_WSC_URL; ?>/admin/assets/images/pattern-row.jpg ?>" data-pattern="rows" >
-		</div>
-		<?php
-	}
 
 	public function admin_body_class( $classes ){
 		$classes .= ' xoo-wsc-adpopup-active';
@@ -302,105 +422,66 @@ class Xoo_Wsc_Admin_Settings{
 		update_option( 'xoo-wsc-pattern-init', 'yes' );
 	}
 
-	public function pattern_selector_field( $field, $field_id, $value, $args ){
-		if( $field_id !== 'xoo-wsc-sy-options[scb-playout]' ) return $field;
-		ob_start();
-		$this->pattern_selector_field_html();
-		$customField = ob_get_clean();
-		return $field. $customField;
+
+	public function bar_selectedoptions( $name, $options ){
+		foreach ( $options as $option_value => $title) {
+			?>
+			<option value="<?php echo $option_value ?>" {{ data.<?php echo $name; ?> == '<?php echo $option_value ?>' ? 'selected' : '' }} ><?php echo $title ?></option>
+			<?php
+		}
 	}
 
 
-	public function checkpoints_bar_setting_html( $field, $field_id, $value, $args ){
+	public function header_layout_setting_html( $field, $field_id, $value, $args ){
 
-		if( $field_id !== 'xoo-wsc-gl-options[scbar-data]' ) return $field;
+		if( $field_id !== 'xoo-wsc-sy-options[sch-layout]' ) return $field;
 
-		$default = array(
-			array(
-				'enable' 		=> 'yes',
-				'amount' 		=> 100,
-				'remaining'		=> "You're [amount] away from free gift",
-				'title' 		=> "Free Gift",
-				'type'			=> 'gift',
-				'gift_ids' 		=> '',
-				'gift_qty' 		=> 1,
-			)
+		$defaults = array(
+			'left' 		=> array( 'basket', 'heading' ),
+			'center' 	=> array(),
+			'right'		=> array( 'save', 'close' ),
 		);
 
-		$value = !is_array( $value ) ? $default : $value;
+		if( !$value || empty($value) ){
+			$value = $defaults;
+		}
+		else{
+			$defaults = array_map(function() {
+			    return array();
+			}, $defaults);
+			
+			$value = xoo_recursive_parse_args( $value, $defaults );
+		}
 
-		$chkpointID = $field_id.'[%$]';
+		
+
+		$html = array(
+			'basket' 	=> '<span class="xoo-wsc-icon-shopping-bag1 xoo-wschl-icon"></span>',
+			'heading' 	=> 'Heading',
+			'save' 		=> '<span class="xoo-wsc-icon-heart1 xoo-wschl-icon"></span>',
+			'close' 	=> '<span class="xoo-wsc-icon-del1 xoo-wschl-icon"></span>',
+		);
 
 		ob_start();
 
 		?>
 
-		<button class="button button-primary xoo-scbchk-add" type="button">Add Checkpoint</button>
-		<button class="button button-primary xoo-scbchk-add xoo-scbhk-add-ship" type="button">Add Free Shipping Checkpoint</button>
+		<div class="xoo-wsch-layout-cont xoo-as-setting xoo-as-has-preview">
 
-		<div class="xoo-bar-points-cont" data-idholder="<?php echo $chkpointID; ?>">
+			<?php foreach ($value as $location => $elements ): ?>
 
-			<?php foreach ( $value as $index => $chkpoint ): ?>
+				<div>
+					<span><?php echo $location; ?></span>
+					<ul id="xooWscH-<?php echo $location; ?>" class="xooWscHconnectedSortable" data-name="<?php echo $location; ?>">
 
-				<div class="xoo-scbhk-chkcont <?php echo $chkpoint['type'] === 'freeshipping' ? 'xoo-scbhk-shipcont' : '' ?>">
+						<?php foreach( $elements as $element ): ?>
+							<li>
+								<?php echo $html[ $element ] ?>
+								<input type="hidden" name="xoo-wsc-sy-options[sch-layout][<?php echo $location ?>][]" value="<?php echo $element ?>">
+							</li>
 
-					
-					<div class="xoo-scbhk-ship-el xoo-scbhk-ship-title">
-						<span>Free Shipping</span>
-						<i>The amount is fetched from Free shipping method ( woocommerce shipping settings ).<br> Please make sure you have a free shipping method available for customers' location.<br><a href="https://docs.xootix.com/side-cart-for-woocommerce/#shippingbar" target="__blank">Read more</a></i><br>
-					</div>
-					
-
-					<div class="xoo-scbar-chkpoint">
-					
-						<div class="xoo-scbhk-field xoo-scb-enable">
-							<label>Enable</label>
-							<input type="hidden" name="<?php echo $chkpointID ?>[enable]" value="no">
-							<input type="checkbox" value="yes" name="<?php echo $chkpointID ?>[enable]" <?php if( $chkpoint['enable'] === 'yes' ) echo 'checked'; ?> >
-						</div>
-
-						<div class="xoo-scbhk-field xoo-scb-comp">
-							<label>Title</label>
-							<input type="text" name="<?php echo $chkpointID ?>[title]" value="<?php esc_attr_e( $chkpoint['title'] ) ?>">
-						</div>
-
-						<div class="xoo-scbhk-field xoo-scb-amount">
-							<label>Amount</label>
-							<input type="number" name="<?php echo $chkpointID ?>[amount]" value="<?php esc_attr_e( $chkpoint['amount'] ) ?>">
-						</div>
-
-						<div class="xoo-scbhk-field xoo-scb-rem">
-							<label>Remaining Text</label>
-							<input type="text" name="<?php echo $chkpointID ?>[remaining]" value="<?php esc_attr_e( $chkpoint['remaining'] ) ?>">
-							<span class="xoo-scbhk-desc">[amount] is the remaining amount to unlock this checkpoint</span>
-						</div>
-
-
-						<div class="xoo-scbhk-field xoo-scb-type">
-							<label>Type</label>
-							<select name="<?php echo $chkpointID ?>[type]">
-								<option value="display" <?php selected( $chkpoint['type'], 'display' ) ?> >Only for display</option>
-								<option value="gift" <?php selected( $chkpoint['type'], 'gift' ) ?>>Free Gift</option>
-								<option value="discount" <?php selected( $chkpoint['type'], 'discount' ) ?>>Discount</option>
-								<option value="freeshipping" <?php selected( $chkpoint['type'], 'freeshipping' ) ?> style="display: none;">Free Shipping</option>
-							</select>
-						</div>
-
-						<div class="xoo-scbhk-field xoo-scbhk-giftid xoo-scbhk-gift">
-							<label>Free Gift Product ID(s)</label>
-							<input type="text" name="<?php echo $chkpointID ?>[gift_ids]" value="<?php esc_attr_e( $chkpoint['gift_ids'] ) ?>">
-							<span class="xoo-scbhk-desc">Add product ID(s) to be given as free gift. (Separated by commas)</span>
-						</div>
-
-						<div class="xoo-scbhk-field xoo-scbhk-giftqty xoo-scbhk-gift">
-							<label>Gift Quantity</label>
-							<input type="number" name="<?php echo $chkpointID ?>[gift_qty]" value="<?php esc_attr_e( $chkpoint['gift_qty'] ) ?>">
-						</div>
-
-					</div>
-
-					<span class="dashicons dashicons-no-alt xoo-scbh-del"></span>
-
+						<?php endforeach; ?>
+					</ul>
 				</div>
 
 			<?php endforeach; ?>

@@ -118,8 +118,9 @@ jQuery(document).ready(function($){
 
 
 		setFormValues: function(){
-			var values 		= this.$form.serializeArray();
-			this.formValues = this.objectifyForm(values);
+			//var values 		= this.$form.serializeArray();
+			//this.formValues = this.objectifyForm(values);
+			this.formValues = this.$form.serializeJSON();
 		},
 
 		build: function(){
@@ -210,7 +211,7 @@ jQuery(document).ready(function($){
 			if( !this.previewSettingsRecorded ){
 				this.settingsInPreview.push( option+'['+key+']' )
 			}
-			return Customizer.formValues[ option+'['+key+']' ];
+			return Customizer.formValues[option][key];
 		},
 
 
@@ -250,8 +251,11 @@ jQuery(document).ready(function($){
 				'display': 	 		this.sy('sck-show-count') === 'yes' ? 'block' : 'none',
 				'background-color': this.sy('sck-count-bg'),
 				'color': 			this.sy('sck-count-color'),
-				[basketPosition === 'top_right' || basketPosition === 'top_left' ? 'top' : 'bottom']: '-12px',
-				[basketPosition === 'top_right' || basketPosition === 'bottom_right' ? 'right' : 'left']: '-12px'
+				[basketPosition === 'top_right' || basketPosition === 'top_left' ? 'top' : 'bottom']: '-9px',
+				[basketPosition === 'top_right' || basketPosition === 'bottom_right' ? 'right' : 'left']: '-8px',
+				'height': 			this.sy('sck-count-size','px'),
+				'line-height': 		this.sy('sck-count-size','px'),
+				'width': 			this.sy('sck-count-size','px')
 			}
 
 			var container = {
@@ -259,6 +263,15 @@ jQuery(document).ready(function($){
 				'right': 					'-'+this.sy('scm-width','px'),
 				'font-family': 				this.sy('scm-font'),
 				[this.sy('sck-position')]: 	'0'
+			}
+
+			var headerCloseIcon = {
+				'font-size': 					this.sy('sch-close-fsize','px'),
+				[this.sy('sch-close-align')]: 	'10px'
+			}
+
+			var headerTop = {
+				'justify-content': this.sy('sch-head-align')
 			}
 
 			if( this.sy('scm-height') === 'full' ){
@@ -280,14 +293,6 @@ jQuery(document).ready(function($){
 				'font-size': this.sy('sch-head-fsize','px')
 			}
 
-			var headerCloseIcon = {
-				'font-size': 					this.sy('sch-close-fsize','px'),
-				[this.sy('sch-close-align')]: 	'10px'
-			}
-
-			var headerTop = {
-				'justify-content': this.sy('sch-head-align')
-			}
 
 			var body = {
 				'background-color': this.sy('scb-bgcolor'),
@@ -435,7 +440,22 @@ jQuery(document).ready(function($){
 				'.xoo-wsc-footer': footer,
 				'.xoo-wsc-footer, .xoo-wsc-footer a, .xoo-wsc-footer .amount': footerFSize,
 				'.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-product': product,
-				'.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-img-col': productImgCol
+				'.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-img-col': productImgCol,
+				'.xoo-wsch-items-count, .xoo-wsch-save-count': {
+					'background-color': this.sy('sck-count-bg'),
+					'color': 			this.sy('sck-count-color')
+				},
+				'.xoo-wsch-new span.xoo-wsch-close': {
+					'font-size': this.sy('sch-close-fsize','px')
+				},
+				'span.xoo-wsch-bki': {
+					'font-size': this.sy('sch-basket-fsize','px')
+				},
+				'span.xoo-wsch-items-count': {
+					'width': this.sy('sch-count-size','px'),
+					'height': this.sy('sch-count-size','px'),
+					'line-height': this.sy('sch-count-size','px')
+				}
 			}
 
 			var gridCols = 'auto';
@@ -494,7 +514,7 @@ jQuery(document).ready(function($){
 
 			if( !this.previewSettingsRecorded ){
 				$.each( this.settingsInPreview, function( index, name ){
-					var $input = $('[name="'+name+'"]').parents('.xoo-as-setting');
+					var $input = $('[name="'+name+'"]').closest('.xoo-as-setting');
 					if( !$input.length ) return true;
 					$input.addClass( 'xoo-as-has-preview' );
 				} );
@@ -520,7 +540,9 @@ jQuery(document).ready(function($){
 					showBasketIcon: 			this.gl('sch-show').includes('basket'),
 					showCloseIcon: 				this.gl('sch-show').includes('close'),
 					closeIcon: 					this.sy('sch-close-icon'),
-					heading: 					this.gl('sct-cart-heading')
+					heading: 					this.gl('sct-cart-heading'),
+					layout: 					this.sy('sch-layout'),
+					oldLayout: 					xoo_wsc_admin_params.hasOldheader && this.sy('sch-new-layout') !== "yes"
 				},
 				product: {
 					layout: 				this.sy('scb-playout'),
@@ -532,6 +554,9 @@ jQuery(document).ready(function($){
 					showPmeta: 				this.gl('scb-show').includes('product_meta'),
 					showPprice: 			this.gl('scb-show').includes('product_price'),
 					showPqty: 				this.gl('scb-show').includes('product_qty'),
+					showPriceSavings: 		this.gl('scb-show').includes('product_price_save'),
+					showTotalSavings: 		this.gl('scb-show').includes('product_total_save'),
+					savingsUnit:  			this.gl('scb-prod-savings'),
 					qtyPriceDisplay: 		this.gl('scbp-qpdisplay'),
 					deletePosition: 		this.sy('scbp-delpos'),
 					deleteText: 			this.gl('sct-delete'),
@@ -542,19 +567,25 @@ jQuery(document).ready(function($){
 				},
 				card: {
 					backShow: {
-						name: 	this.sy('scbp-card-back').includes('name'),
-						price: 	this.sy('scbp-card-back').includes('price'),
-						qty: 	this.sy('scbp-card-back').includes('qty'),
-						total: 	this.sy('scbp-card-back').includes('total'),
-						meta: 	this.sy('scbp-card-back').includes('meta'),
-						link: 	this.sy('scbp-card-back').includes('link'),
+						name: 					this.sy('scbp-card-back').includes('name'),
+						price: 					this.sy('scbp-card-back').includes('price'),
+						qty: 					this.sy('scbp-card-back').includes('qty'),
+						total: 					this.sy('scbp-card-back').includes('total'),
+						meta: 					this.sy('scbp-card-back').includes('meta'),
+						link: 					this.sy('scbp-card-back').includes('link'),
+						price_save: 			this.sy('scbp-card-back').includes('price_save'),
+						total_save: 			this.sy('scbp-card-back').includes('total_save'),
 					},
 					visibility: this.sy('scbp-card-visible'),
 					hasBack: this.sy('scbp-card-visible') !== 'all_on_front' && (this.sy('scbp-card-back').length > 1)
 				},
 				footer: {
-					subtotal: 			this.gl('scf-show').includes('subtotal'),
+					totals: {
+						savings: 	this.gl('scf-show').includes('savings'),
+						subtotal: 	this.gl('scf-show').includes('subtotal'),
+					},
 					subtotalLabel: 		this.gl('sct-subtotal'),
+					savingLabel: 		this.gl('sct-savings'),
 					footerTxt: 			this.gl('sct-footer'),
 					checkoutTotal: 		this.gl('scf-chkbtntotal-en'),
 					buttonsPosition: 	this.sy('scf-button-pos'),
@@ -591,71 +622,6 @@ jQuery(document).ready(function($){
 
 	SideCart.init();
 
-
-	function barToggleShipButton(){
-
-		var hasFreeShipping = false,
-			$button 		= $('button.xoo-scbchk-add.xoo-scbhk-add-ship');
-
-		$('.xoo-scbhk-chkcont').each(function(index,el){
-			if( $(el).find( '.xoo-scb-type select' ).val() === 'freeshipping' ){
-				hasFreeShipping = true;
-				return true;
-			}
-		})
-
-		if( hasFreeShipping ){
-			$button.hide();
-		}
-		else{
-			$button.show();
-		}
-	}
-
-	barToggleShipButton();
-
-
-	$('button.xoo-scbchk-add').click( function(){
-		var $cont = $('.xoo-bar-points-cont').append( $('.xoo-bar-points-cont .xoo-scbhk-chkcont:last-child').clone() );
-		
-		var $addedCheckpoint 	= $cont.find( '.xoo-scbhk-chkcont:last-child' ),
-			$pointType 			= $addedCheckpoint.find('.xoo-scb-type select');
-
-		$pointType.find('option').removeAttr('selected');	
-
-		if( $(this).hasClass('xoo-scbhk-add-ship') ){
-			$addedCheckpoint.addClass('xoo-scbhk-shipcont');
-			$pointType.find('option[value="freeshipping"]').attr('selected', 'selected');
-		}
-		else{
-			$addedCheckpoint.removeClass('xoo-scbhk-shipcont');
-			$pointType.find('option:first-child').attr('selected', 'selected');
-		}
-		$pointType.trigger('change');
-		barToggleShipButton();
-	} );
-
-
-	$('body').on( 'click', '.xoo-scbh-del', function(){
-		$(this).closest('.xoo-scbhk-chkcont').remove();
-		barToggleShipButton();
-	} );
-
-
-	$('body').on( 'change', '.xoo-scb-type select', function(){
-
-		var $giftField = $(this).closest('.xoo-scbar-chkpoint').find('.xoo-scbhk-gift');
-
-		if( $(this).val() === 'gift' ){
-			$giftField.show();
-		}
-		else{
-			$giftField.hide();
-		}
-
-	} );
-
-	$('.xoo-scb-type select').trigger('change');
 
 
 	$('select[name="xoo-wsc-gl-options[m-ajax-atc]"]').on( 'change', function(){
@@ -709,15 +675,14 @@ jQuery(document).ready(function($){
 
 
 	//Hide/show product row and layout settings section
-	$('select[name="xoo-wsc-sy-options[scb-playout]"]').on('change', function(){
+	$('input[name="xoo-wsc-sy-options[scb-playout]"]').on('change', function(){
 
 		var $rowSection 	= $('.xoo-ass-style-scb_product'),
 			$cardSection 	= $('.xoo-ass-style-scb_productcard'),
 			$cardlink 		= $('a[href="#style_scb_productcard"]'),
 			$rowlink 		= $('a[href="#style_scb_product"]');
 
-
-		if( $(this).val() === 'rows' ){
+		if( $(this).val() === 'rows' && $(this).prop('checked') ){
 			$rowSection.show();
 			$cardSection.hide();
 			$cardlink.hide();
@@ -729,7 +694,9 @@ jQuery(document).ready(function($){
 			$rowlink.hide();
 			$cardlink.show();
 		}
-	}).trigger('change');
+	});
+
+	$('input[name="xoo-wsc-sy-options[scb-playout]"]:checked').trigger('change');
 
 
 	//Hide product elements for card layout depending on the items enabled/disabled
@@ -831,27 +798,386 @@ jQuery(document).ready(function($){
 	}).trigger('change');
 
 
-	$('img.xoo-wsc-patimg').on('click', function(){
-
-		$('img.xoo-wsc-patimg').removeClass('xoo-wsc-patactive');
-
-		$(this).addClass('xoo-wsc-patactive')
-
-		$('select[name="xoo-wsc-sy-options[scb-playout]"]').val( $(this).data('pattern') ).trigger('change');
-		
-	});
-
-
-	$('img.xoo-wsc-patimg[data-pattern="'+$('select[name="xoo-wsc-sy-options[scb-playout]"]').val()+'"]').addClass('xoo-wsc-patactive');
 
 	Customizer.pageLoading = false;
 	Customizer.build();
 
 
-	$('button.xoo-wsc-adpopup-go').on('click', function(){
-		$('body').removeClass('xoo-wsc-adpopup-active');
-		$('.xoo-wsc-admin-popup').remove();
-		$('img.xoo-wsc-patimg[data-pattern="'+$('select[name="xoo-wsc-sy-options[scb-playout]"]').val()+'"]').addClass('xoo-wsc-patactive');
+	$('.xoo-wsc-admin-popup img.xoo-as-patimg').on('click', function(){
+
+		var $cont 		= $(this).closest('.xoo-as-setting'),
+			fieldID 	= $cont.data('field_id'),
+			key			= $(this).data('key'),
+			$formField 	= $('.xoo-as-setting[data-field_id="'+fieldID+'"]').not($cont);
+
+
+		if( $formField.length ){
+			$formField.find( 'img.xoo-as-patimg[data-key="'+key+'"]' ).trigger('click');
+		}
+
+
+	})
+
+
+	$('.xoo-wsc-admin-popup select[name="xoo-wsc-gl-options[scbp-qpdisplay]"]').on('change', function(){
+		$('select[name="xoo-wsc-gl-options[scbp-qpdisplay]"]').not(this).val($(this).val()).trigger('change');
 	});
+
+
+
+	 $('button.xoo-wsc-adpopup-go').on('click', function(){
+
+	 	$('body').removeClass('xoo-wsc-adpopup-active');
+
+		$('.xoo-wsc-admin-popup').remove();
+
+
+		$('html, body').animate({ scrollTop: 0 }, 0);
+	});
+	
+
+	$('ul[id^="xooWscH-"]').sortable({
+      connectWith: ".xooWscHconnectedSortable",
+       axis: "x",
+       update: function(event, ui) {
+
+       	if( ui.sender ){
+
+	       	var newName = ui.item.find('input').attr('name').replace(
+	       		'['+ui.sender.data('name')+']',
+	       		'['+ui.item.closest('ul').data('name')+']'
+	       	);
+
+	       	ui.item.find('input').attr('name',newName);
+	    }
+
+	    ui.item.find('input').trigger('change');
+
+       }
+    }).disableSelection();
+
+
+	$('body').on('click', '.xoo-wsc-acc-head', function(){
+
+		var $container 	= $(this).closest('.xoo-wsc-accordion'),
+			$content 	= $container.children('.xoo-wsc-acc-cont');
+
+		$container.toggleClass('xoo-wsc-acc-active');
+	})
+
+
+
+    var Rewards = {
+
+		templateBar: '',
+		templateCheckpoint: '',
+		barInputNames: {},
+		$cont: $('.xoo-wsc-rewards-cont'),
+
+		init: function(){
+			this.initTemplates();
+			this.events(); 
+			this.createSettingsOnLoad();
+		},
+
+		barNumbering: function(){
+			$.each( $('.xoo-wsc-bar'), function( index, el ){
+				var $el 		= $(el),
+					$titleInput = $el.find('.xoo-wsc-bar-title-input');
+				$titleInput.val( $titleInput.val().replace( '[%^]','#'+ (index + 1) ) ).trigger('input');
+			} )
+		},
+
+		createSettingsOnLoad(){
+			var bars = xoo_wsc_admin_params.bars;
+			if( !bars ) return;
+			$.each( bars, function( index, barData ){
+
+				$bar 	= $(Rewards.templateBar(barData.settings));
+
+				$('.xoo-wsc-bars').append($bar);
+
+				if( barData.checkpoints ){
+					$.each( barData.checkpoints, function( index, checkpointData ){
+						var $checkpoint = $(Rewards.templateCheckpoint(checkpointData));
+						$bar.find('.xoo-wsc-bar-checkpoints').append($checkpoint);
+					} );
+				}
+
+				$bar.find('select.xoo-wsc-bar-barValue').trigger('change');
+				
+			} )
+
+			Rewards.onBarAdd();
+			Rewards.initProductSearchBox();
+		},
+
+
+		onBarAdd: function(){
+			Rewards.initSortable();
+			Rewards.initColorPicker();
+			Rewards.barNumbering();
+		},
+
+
+		addBar: function(){
+
+			$('.xoo-wsc-bar').removeClass('xoo-wsc-acc-active');
+
+			var $bar = $(Rewards.templateBar(xoo_wsc_admin_params.barDefaults.settings));
+	
+			$('.xoo-wsc-bars').append($bar);
+
+			$bar.addClass('xoo-wsc-acc-active');
+
+			Rewards.onBarAdd();
+
+			
+		},
+
+		events: function(){
+			$('button.xoo-wsc-add-bar').on('click', Rewards.addBar );
+			$('body').on('click', 'button.xoo-wsc-bar-add-chkpoint', Rewards.addBarCheckpoint );
+			$('body').on('click', '.xoo-wsc-bar-delete', Rewards.deleteBar);
+			$('body').on('click', '.xoo-wsc-checkpoint-delete', Rewards.deleteCheckpoint);
+			$('body').on('click', '.xoo-wsc-bar-chkpoint > .xoo-wsc-acc-head', Rewards.onCheckPointToggle );
+			$('body').on( 'input', '.xoo-wsc-chkpoint-title-input', Rewards.onCheckPointTitleChange );
+			$('body').on( 'input', '.xoo-wsc-bar-title-input', Rewards.onBarTitleChange );
+			$('body').on( 'change', 'select.xoo-wsc-bar-barValue', Rewards.onBarValueChange );
+
+			$('button.xoo-as-form-save').on( 'click', Rewards.beforeSettingsSave );
+			$(document).ajaxComplete(Rewards.onSettingsSave);
+			
+		},
+
+
+		onBarValueChange: function(){
+			var $bar 						= $(this).closest('.xoo-wsc-bar'),
+				$checkPointSelector 		= $bar.find('.xoo-wsc-checkpoint-selector select'),
+				$checkPointSelectorShipping = $checkPointSelector.find('option[value="freeshipping"]'),
+				$freeShippingCheckpoint 	= $bar.find('.xoo-wsc-bar-chkpoint[data-type="freeshipping"]');
+
+
+			if( $(this).val() === 'quantity' ){
+				$checkPointSelectorShipping.add($freeShippingCheckpoint).hide();
+				$checkPointSelector.val('discount').trigger('change');
+			}
+			else{
+				$checkPointSelectorShipping.add($freeShippingCheckpoint).show();
+			}
+		},
+
+		onCheckPointTitleChange: function(){
+			$(this).closest('.xoo-wsc-bar-chkpoint').find('.xoo-wsc-chkpoint-title').text($(this).val());
+		},
+
+		onBarTitleChange: function(){
+			var $bar = $(this).closest('.xoo-wsc-bar');
+			$bar.find('.xoo-wsc-bar-title').text($(this).val());
+		},
+
+		onCheckPointToggle: function(){
+			var $checkpoint = $(this).closest('.xoo-wsc-bar-chkpoint');
+			Rewards.initIconPicker( $checkpoint );
+			Rewards.productSearchFillDefaultValues( $checkpoint );
+		},
+
+
+		productSearchFillDefaultValues( $checkpoint ){
+
+			$.each( $checkpoint.find('.xoo-wsc-bar-prodsearch'), function( index, el ){
+
+				var $searchCont 	= $(el),
+					$defaultCont 	= $searchCont.find('.xoo-wsc-barpsearch-defaults');
+
+				if( !$defaultCont.length ) return true;
+
+				var $defaultInputs  = $defaultCont.find('input'),
+					$searchSelect 	= $searchCont.find('select.wc-product-search'),
+					defaultValues 	= [] ;
+
+				if( !$defaultInputs.length ) return true;
+
+				let productIDs = $defaultInputs.map(function(){
+				    return $(this).val();
+				}).get();
+
+				$searchCont.addClass('xoo-as-processing');
+
+				$.ajax({
+					url: xoo_wsc_admin_params.adminurl,
+					type: 'POST',
+					data: {
+						action: 'xoo_wsc_product_search_fill_defaults',
+						product_ids: productIDs,
+						xoo_wsc_nonce: xoo_wsc_admin_params.nonce
+					},
+					success: function( response ){
+						$searchSelect.html(response);
+						$defaultCont.remove();
+						$searchCont.removeClass('xoo-as-processing');
+					}
+				})
+
+			} );
+
+
+		},
+
+		onSettingsSave: function(event,xhr,options){
+
+			if( $(event.target.activeElement).hasClass('xoo-as-form-save') ){
+
+				$.each( Rewards.barInputNames, function( newName, oldName ){
+					$('[name="'+newName+'"]').attr('name', oldName);
+				})
+
+				Rewards.barInputNames = {};
+
+				Rewards.$cont.removeClass('xoo-as-processing');
+
+			}
+		},
+
+		beforeSettingsSave: function(){
+
+			var $cont 	= Rewards.$cont,
+				id 		= '[%$]';
+
+			$cont.addClass('xoo-as-processing');
+
+			$('.xoo-wsc-bar').each( function(index, el){
+				
+				$(el).find('[name*="' + id + '"]').each( function(i, inel){
+
+					var name 	= $(inel).attr('name'),
+						newName = name.replace( '[%$]', '['+index+']' );
+
+					if( name.includes('[%#]') ){
+						var checkPointIndex = $(inel).closest('.xoo-wsc-bar-chkpoint').index();
+						newName = newName.replace('[%#]', '['+checkPointIndex+']' );
+					}
+
+					Rewards.barInputNames[newName] = name;
+
+					$(inel).attr('name' , newName );
+
+					if( name === id+'[id]' ){
+						$(inel).val( 'id_'+index );
+					}
+
+				} );
+
+
+			} );
+		},
+
+
+		initColorPicker: function(){
+			$('.xoo-wsc-barColorPicker input:not(.wp-color-picker)').wpColorPicker({
+				change: function(event, ui){
+					$(event.target).val(ui.color.toString()).trigger('change')
+				}
+			});
+		},
+
+
+		initSortable: function(){
+			$('.xoo-wsc-bars').sortable({
+				handle: '.xoo-wsc-bar-head'
+			});
+		},
+
+		initTemplates: function(){
+			this.templateBar 		= wp.template('xoo-as-bar');
+			this.templateCheckpoint = wp.template('xoo-as-chkpoint');
+		},
+
+		
+
+		deleteBar: function(e){
+			if( !confirm( 'Are you sure you want to delete this progress bar and all its checkpoints?' ) ){
+				e.preventDefault();
+				return;
+			}
+			$(this).closest('.xoo-wsc-bar').remove();
+		},
+
+		deleteCheckpoint: function(e){
+			$(this).closest('.xoo-wsc-bar-chkpoint').remove();
+			e.stopImmediatePropagation();
+		},
+
+		addBarCheckpoint: function(){
+
+			var $bar 			= $(this).closest('.xoo-wsc-bar'),
+				$type  			= $bar.find('.xoo-wsc-checkpoint-selector select');
+
+			var checkpointData 	= {
+				type: $type.val(),
+			}
+
+			checkpointData = $.extend( xoo_wsc_admin_params.barDefaults.checkpoints[checkpointData.type], checkpointData );
+
+			$bar.find('.xoo-wsc-bar-chkpoint').removeClass('xoo-wsc-acc-active');
+
+			var $checkpoint = $(Rewards.templateCheckpoint(checkpointData));
+
+			$bar.find('.xoo-wsc-bar-checkpoints').append($checkpoint);
+
+			$checkpoint.addClass('xoo-wsc-acc-active');
+
+			Rewards.initIconPicker( $checkpoint );
+			Rewards.initProductSearchBox();
+
+
+		},
+
+		initProductSearchBox(){
+			$( document.body ).trigger( 'wc-enhanced-select-init' );
+		},
+
+		initIconPicker( $checkpoint ){
+
+			$checkpoint.find('.xoo-wsc-bar-icon:not(.iconpicker-input)').iconpicker({
+				hideOnSelect: true,
+			}).on('iconpickerSelected', function(e){
+			  $(e.target).next().attr('class',e.iconpickerValue || $(e.target).val() );
+			}).trigger('iconpickerSelected');
+			
+		}
+
+	}
+
+	Rewards.init();
+
+	$(document).on('click', '.iconpicker-item', function(e) {
+	    e.preventDefault(); // stops "#" from being written
+	});
+
+
+	var $changeNewHeaderLayoutOption = $('input[name="xoo-wsc-sy-options[sch-new-layout]"]');
+
+	if( $changeNewHeaderLayoutOption.length ){
+
+		var $newLayoutSetting = $('.xoo-as-setting[data-field_id="xoo-wsc-sy-options[sch-layout]"] , .xoo-as-setting[data-field_id="xoo-wsc-sy-options[sch-count-size]"], .xoo-as-setting[data-field_id="xoo-wsc-sy-options[sch-count-size]"]'),
+				$prevLayoutSettings = $('.xoo-as-setting[data-field_id="xoo-wsc-sy-options[sch-head-align]"], .xoo-as-setting[data-field_id="xoo-wsc-sy-options[sch-close-align]"]');
+
+		$changeNewHeaderLayoutOption.on( 'change', function(){
+
+			if( $(this).prop('checked') ){
+				$newLayoutSetting.show();
+				$prevLayoutSettings.hide();
+			}
+			else{
+				$newLayoutSetting.hide();
+				$prevLayoutSettings.show();
+			}
+
+		} ).trigger('change');
+
+	}
+
+	
 	
 })

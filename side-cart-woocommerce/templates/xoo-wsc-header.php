@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.4.4
+ * @version 2.7.1
  */
 
 
@@ -19,27 +19,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 extract( Xoo_Wsc_Template_Args::cart_header() );
 
+$headingHTML = $basketHTML = $closeHTML = $saveHTML = '';
+
 ?>
 
-<div class="xoo-wsch-top">
+
+<?php ob_start(); ?>
+
+<?php if( $showBasket ): ?>
+
+<div class="xoo-wsch-basket">
+
+	<span class="xoo-wsch-bki <?php echo esc_html($basketIcon) ?> xoo-wsch-icon"></span>
+	
+	<span class="xoo-wsch-items-count"><?php echo xoo_wsc_cart()->get_cart_count() ?></span>
+</div>
+<?php endif; ?>
+
+<?php $basketHTML = ob_get_clean(); ?>
+
+
+
+<?php ob_start(); ?>
+
+<?php if( $heading ): ?>
+	<span class="xoo-wsch-text"><?php echo $heading ?></span>
+<?php endif; ?>
+
+<?php $headingHTML = ob_get_clean(); ?>
+
+
+
+<?php ob_start(); ?>
+
+<?php if( $showCloseIcon ): ?>
+	<span class="xoo-wsch-close <?php echo  $close_icon ?> xoo-wsch-icon"></span>
+<?php endif; ?>
+<?php $closeHTML = ob_get_clean(); ?>
+
+
+<div class="xoo-wsch-top xoo-wsch-new">
 
 	<?php if( $showNotifications ): ?>
 		<?php xoo_wsc_cart()->print_notices_html( 'cart' ); ?>
-	<?php endif; ?>
+	<?php endif; ?>	
 
-	<?php if( $showBasket ): ?>
-		<div class="xoo-wsch-basket">
-			<span class="xoo-wscb-icon xoo-wsc-icon-bag2"></span>
-			<span class="xoo-wscb-count"><?php echo xoo_wsc_cart()->get_cart_count() ?></span>
+	<?php foreach ( $headerLayout as $section => $elements ): ?>
+		
+		<div class="xoo-wsch-section xoo-wsch-sec-<?php echo $section ?>">
+			<?php foreach ( $elements as $element ){
+				echo ${$element.'HTML'};
+			}
+			?>
 		</div>
-	<?php endif; ?>
 
-	<?php if( $heading ): ?>
-		<span class="xoo-wsch-text"><?php echo $heading ?></span>
-	<?php endif; ?>
 
-	<?php if( $showCloseIcon ): ?>
-		<span class="xoo-wsch-close <?php echo $close_icon ?>"></span>
-	<?php endif; ?>
+	<?php endforeach; ?>
 
 </div>

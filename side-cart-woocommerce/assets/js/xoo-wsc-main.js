@@ -511,7 +511,7 @@ jQuery(document).ready(function($){
 
 		onCartUpdate(){
 			super.onCartUpdate();
-			this.showBasket();
+			this.toggleBasket();
 			this.initMasonryLayout();
 		}
 
@@ -527,16 +527,17 @@ jQuery(document).ready(function($){
 		}
 
 		
-		showBasket(){
+		toggleBasket(){
 
-			var $basket = $('.xoo-wsc-basket'),
-				show 	= xoo_wsc_params.showBasket;
+			var $basket 	= $('.xoo-wsc-basket'),
+				show 		= xoo_wsc_params.showBasket,
+				hasProducts = this.$modal.find('.xoo-wsc-product').length;
 
 			if( show === "always_show" ){
 				$basket.show();	
 			}
 			else if( show === "hide_empty" ){
-				if( this.$modal.find('.xoo-wsc-product').length ){
+				if( hasProducts){
 					$basket.show();
 				}
 				else{
@@ -545,6 +546,27 @@ jQuery(document).ready(function($){
 			}
 			else{
 				$basket.hide();
+			}
+
+			var $shortcode = $('.xoo-wsc-sc-cont');
+
+			if( $shortcode.length && xoo_wsc_params.menuCartHideOnEmpty.length ){
+
+				var shortcodeEls = xoo_wsc_params.shortcodeEls;
+
+				$.each( xoo_wsc_params.menuCartHideOnEmpty, function( index, val ){
+
+					if( shortcodeEls[val] ){
+						if( hasProducts ){
+							$(shortcodeEls[val]).show();
+						}
+						else{
+							$(shortcodeEls[val]).hide();
+						}
+					}
+
+				})
+
 			}
 		}
 

@@ -2,13 +2,17 @@
 
 $settings = array(
 
+
+
+
 	/** SIDE CART MAIN **/
+
 	array(
 		'callback' 		=> 'number',
 		'title' 		=> 'Side Cart Width',
 		'id' 			=> 'scm-width',
 		'section_id' 	=> 'sc_main',
-		'default' 		=> '365',
+		'default' 		=> '425',
 		'desc' 			=> 'Size in px'
 	),
 
@@ -77,6 +81,33 @@ $settings = array(
 
 
 	array(
+		'callback' 		=> 'radio',
+		'title' 		=> 'Basket Icon',
+		'id' 			=> 'sck-basket-icon',
+		'section_id' 	=> 'sc_basket',
+		'args' 			=> array(
+			'options' 	=> array(
+				'xoo-wsc-icon-basket1' 		=> 'xoo-wsc-icon-basket1',
+				'xoo-wsc-icon-basket2' 		=> 'xoo-wsc-icon-basket2',
+				'xoo-wsc-icon-basket3'		=> 'xoo-wsc-icon-basket3',
+				'xoo-wsc-icon-basket4' 		=> 'xoo-wsc-icon-basket4',
+				'xoo-wsc-icon-basket5' 		=> 'xoo-wsc-icon-basket5',
+				'xoo-wsc-icon-basket6' 		=> 'xoo-wsc-icon-basket6',
+				'xoo-wsc-icon-cart1' 		=> 'xoo-wsc-icon-cart1',
+				'xoo-wsc-icon-cart2' 		=> 'xoo-wsc-icon-cart2',
+				'xoo-wsc-icon-bag1' 		=> 'xoo-wsc-icon-bag1',
+				'xoo-wsc-icon-bag2' 		=> 'xoo-wsc-icon-bag2',
+				'xoo-wsc-icon-shopping-bag1'=> 'xoo-wsc-icon-shopping-bag1',
+			),
+			'has_asset' 	=> true,
+			'asset_type' 	=> 'icon',
+			'upload' 		=> 'yes'
+		),
+		'default' 	=> 'xoo-wsc-icon-shopping-bag1',
+	),
+
+
+	array(
 		'callback' 		=> 'select',
 		'title' 		=> 'Shape',
 		'id' 			=> 'sck-shape',
@@ -105,35 +136,10 @@ $settings = array(
 		'title' 		=> 'Basket Size',
 		'id' 			=> 'sck-bk-size',
 		'section_id' 	=> 'sc_basket',
-		'default' 		=> '60',
+		'default' 		=> '64',
 	),
 
 	
-	array(
-		'callback' 		=> 'radio',
-		'title' 		=> 'Basket Icon',
-		'id' 			=> 'sck-basket-icon',
-		'section_id' 	=> 'sc_basket',
-		'args' 			=> array(
-			'options' 	=> array(
-				'xoo-wsc-icon-basket1' 		=> 'xoo-wsc-icon-basket1',
-				'xoo-wsc-icon-basket2' 		=> 'xoo-wsc-icon-basket2',
-				'xoo-wsc-icon-basket3'		=> 'xoo-wsc-icon-basket3',
-				'xoo-wsc-icon-basket4' 		=> 'xoo-wsc-icon-basket4',
-				'xoo-wsc-icon-basket5' 		=> 'xoo-wsc-icon-basket5',
-				'xoo-wsc-icon-basket6' 		=> 'xoo-wsc-icon-basket6',
-				'xoo-wsc-icon-cart1' 		=> 'xoo-wsc-icon-cart1',
-				'xoo-wsc-icon-cart2' 		=> 'xoo-wsc-icon-cart2',
-				'xoo-wsc-icon-bag1' 		=> 'xoo-wsc-icon-bag1',
-				'xoo-wsc-icon-bag2' 		=> 'xoo-wsc-icon-bag2',
-				'xoo-wsc-icon-shopping-bag1'=> 'xoo-wsc-icon-shopping-bag1',
-			),
-			'has_asset' 	=> true,
-			'asset_type' 	=> 'icon',
-			'upload' 		=> 'yes'
-		),
-		'default' 	=> 'xoo-wsc-icon-basket1',
-	),
 
 	array(
 		'callback' 		=> 'upload',
@@ -233,6 +239,16 @@ $settings = array(
 
 
 	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Count size',
+		'id' 			=> 'sck-count-size',
+		'section_id' 	=> 'sc_basket',
+		'default' 		=> 28,
+		'desc' 			=> 'Cart count size'
+	),
+
+
+	array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Count Color',
 		'id' 			=> 'sck-count-color',
@@ -252,6 +268,28 @@ $settings = array(
 
 
 	/** SIDE CART HEADER **/
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'New Header Layout',
+		'id' 			=> 'sch-new-layout',
+		'section_id' 	=> 'sc_head',
+		'default' 		=> 'no',
+	),
+	
+	array(
+		'callback' 		=> 'customlayout',
+		'title' 		=> 'Layout',
+		'id' 			=> 'sch-layout',
+		'section_id' 	=> 'sc_head',
+		'default' 		=> array(
+			'left' 		=> array( 'basket', 'heading' ),
+			'center' 	=> array(),
+			'right'		=> array( 'save', 'close' ),
+		),
+		'desc' 	=> 'Drag elements to move'
+	),
+
 
 	array(
 		'callback' 		=> 'select',
@@ -307,13 +345,25 @@ $settings = array(
 		'default' 	=> 'xoo-wsc-icon-cross',
 	),
 
+	
 	array(
 		'callback' 		=> 'number',
-		'title' 		=> 'Close Icon Size',
-		'id' 			=> 'sch-close-fsize',
+		'title' 		=> 'Basket Icon Size',
+		'id' 			=> 'sch-basket-fsize',
 		'section_id' 	=> 'sc_head',
-		'default' 		=> '16',
+		'default' 		=> 30,
 		'desc' 			=> 'Size in px'
+	),
+
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Count size',
+		'id' 			=> 'sch-count-size',
+		'section_id' 	=> 'sc_head',
+		'default' 		=> 20,
+		'desc' 			=> 'Cart count size'
 	),
 
 
@@ -322,28 +372,18 @@ $settings = array(
 		'title' 		=> 'Heading Font Size',
 		'id' 			=> 'sch-head-fsize',
 		'section_id' 	=> 'sc_head',
-		'default' 		=> '20',
+		'default' 		=> 22,
 		'desc' 			=> 'Size in px'
 	),
 
 
 	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Progress Bar Color',
-		'id' 			=> 'sch-pbcolor',
+		'callback' 		=> 'number',
+		'title' 		=> 'Close Icon Size',
+		'id' 			=> 'sch-close-fsize',
 		'section_id' 	=> 'sc_head',
-		'default' 		=> '#f0f0f0',
-		'pro' 			=> 'yes'
-	),
-
-
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Progress Bar Filled Color',
-		'id' 			=> 'sch-pbfillcolor',
-		'section_id' 	=> 'sc_head',
-		'default' 		=> '#000000',
-		'pro' 			=> 'yes'
+		'default' 		=> 22,
+		'desc' 			=> 'Size in px'
 	),
 
 
@@ -374,9 +414,9 @@ $settings = array(
 		'desc' 			=> 'Default: 2px solid #eee'
 	),
 
-
 	/** SIDE CART BODY **/
-	array(
+
+		array(
 		'callback' 		=> 'number',
 		'title' 		=> 'Font Size',
 		'id' 			=> 'scb-fsize',
@@ -394,6 +434,48 @@ $settings = array(
 		'default' 		=> '#f8f9fa',
 	),
 
+
+	array(
+		'callback' 		=> 'asset_selector',
+		'title' 		=> 'Products Layout',
+		'id' 			=> 'scb-playout',
+		'section_id' 	=> 'sc_body',
+		'default' 		=> 'rows',
+		'args' 			=> array(
+			'options' => array(
+				'rows' 	=> array(
+					'title' => 'Rows',
+					'asset' => XOO_WSC_URL.'/admin/assets/images/pattern-row.jpg',
+				),
+				'cards' 	=> array(
+					'title' => 'Cards',
+					'asset' => XOO_WSC_URL.'/admin/assets/images/pattern-card.jpg',
+				),
+				
+			),
+			'custom_attributes' => array(
+				'data-multiple' => 'no',
+				'data-required' => 'yes'
+			)
+		),
+
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Quantiy & Price Display',
+		'id' 			=> 'scbp-qpdisplay',
+		'section_id' 	=> 'sc_body',
+		'args' 			=> array(
+			'options' 	=> array(
+				'one_liner' => 'Show in one line',
+				'separate' 	=> 'Show separately',
+			),
+		),
+		'default' 		=> 'separate',
+		'desc' 			=> '"One line" works when quantity, price and total are enabled'
+	),
 
 	array(
 		'callback' 		=> 'upload',
@@ -443,35 +525,6 @@ $settings = array(
 	),
 
 
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Quantiy & Price Display',
-		'id' 			=> 'scbp-qpdisplay',
-		'section_id' 	=> 'sc_body',
-		'args' 			=> array(
-			'options' 	=> array(
-				'one_liner' => 'Show in one line',
-				'separate' 	=> 'Show separately',
-			),
-		),
-		'default' 		=> 'one_liner',
-		'desc' 			=> '"One line" works when quantity, price and total are enabled'
-	),
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Products Layout',
-		'id' 			=> 'scb-playout',
-		'section_id' 	=> 'sc_body',
-		'args' 			=> array(
-			'options' 	=> array(
-				'rows' 		=> 'Rows',
-				'cards' 	=> 'Cards',
-			),
-		),
-		'default' 		=> 'rows',
-	),
 
 
 	/** Product Row Layout **/
@@ -624,16 +677,18 @@ $settings = array(
 		'section_id' 	=> 'scb_productcard',
 		'args' 			=> array(
 			'options' 	=> array(
-				'name' 	=> 'Product Name',
-				'price' => 'Product Price',
-				'qty' 	=> 'Product Quantity',
-				'total' => 'Product Total',
-				'meta' 	=> 'Product Meta ( Variations )',
-				'link' 	=> 'View Product Link',
+				'name' 					=> 'Product Name',
+				'price' 				=> 'Product Price',
+				'qty' 					=> 'Product Quantity',
+				'total' 				=> 'Product Total',
+				'meta' 					=> 'Product Meta ( Variations )',
+				'link' 					=> 'View Product Link',
+				'price_save' 	=> 'Product Price Savings (On Sale)',
+				'total_save' 	=> 'Product Total Savings (On Sale)',
 			),
 		),
 		'default' 	=> array(
-			'total_sales', 'name', 'link', 'meta', 'price'
+			'total_sales', 'name', 'link', 'meta', 'price', 'price_save'
 		),
 		'desc' 		=> 'This only controls back and front display. To enable/disable the detail go to tab general -> Side cart body -> Show and check/uncheck the detail from there.',
 	),
@@ -893,6 +948,7 @@ $settings = array(
 		'pro' 			=> 'yes'
 	),
 
+
 	/** SIDE CART FOOTER **/
 
 	array(
@@ -1008,6 +1064,22 @@ $settings = array(
 	),
 
 	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Button Row',
+		'id' 			=> 'scf-btns-row',
+		'section_id' 	=> 'sc_footer',
+		'args' 			=> array(
+			'options' 	=> array(
+				'one'		=> 'One in a row ( 1+1+1 )',
+				'two_one' 	=> 'Two in first row ( 2 + 1 )',
+				'one_two' 	=> 'Two in last row ( 1 + 2 )',
+				'three' 	=> 'Three in one row( 3 )'
+			),
+		),
+		'default' 	=> 'one'
+	),
+
+	array(
 		'callback' 		=> 'sortable',
 		'title' 		=> 'Button Position',
 		'id' 			=> 'scf-button-pos',
@@ -1025,21 +1097,6 @@ $settings = array(
 	),
 
 
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Button Row',
-		'id' 			=> 'scf-btns-row',
-		'section_id' 	=> 'sc_footer',
-		'args' 			=> array(
-			'options' 	=> array(
-				'one'		=> 'One in a row ( 1+1+1 )',
-				'two_one' 	=> 'Two in first row ( 2 + 1 )',
-				'one_two' 	=> 'Two in last row ( 1 + 2 )',
-				'three' 	=> 'Three in one row( 3 )'
-			),
-		),
-		'default' 	=> 'one'
-	),
 
 
 	array(

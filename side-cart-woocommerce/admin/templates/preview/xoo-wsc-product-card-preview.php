@@ -5,8 +5,15 @@
 
 <!-- Price HTML  -->
 <?php ob_start(); ?>
-<# if ( data.product.showPprice && !data.product.oneLiner) { #>
-	<?php printf( '<span class="xoo-wsc-card-price">%1$s</span>', __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ); ?>
+<# if ( data.product.showPprice && !data.product.oneLiner ) { #>
+	<div class="xoo-wsc-card-price">
+		<?php echo __( 'Price: ', 'side-cart-woocommerce' ); ?>
+			<# if( data.product.priceType === "actual" ){ #>
+			<?php echo $product_price; ?>
+		<# }else{ #>
+			<?php echo $product_sale_price ?>
+		<# } #>
+	</div>
 <# } #>
 <?php $priceHTML = ob_get_clean(); ?>
 
@@ -32,6 +39,47 @@
 	<?php echo $product_meta ?>
 <# } #>
 <?php $metaHTML = ob_get_clean(); ?>
+
+
+<?php $priceSavingsHTML = $totalSavingsHTML = ''; ?>
+
+<?php if( isset( $savings ) ): ?>
+
+	<?php ob_start(); ?>
+
+	<# if ( data.product.showPriceSavings ) { #>
+
+		<div class="xoo-wsc-psavings">
+			<# if ( data.product.savingsUnit === "amount" ) { #>
+				<?php echo $savings['price_amount'] ?>
+			<# }else{ #>
+				<?php echo $savings['price_perc'] ?>
+			<# } #>
+		</div>
+
+	<# } #>
+
+	<?php $priceSavingsHTML = ob_get_clean(); ?>
+
+
+	<?php ob_start(); ?>
+
+	<# if ( data.product.showTotalSavings ) { #>
+
+		<div class="xoo-wsc-psavings">
+			<# if ( data.product.savingsUnit === "amount" ) { #>
+				<?php echo $savings['total_amount'] ?>
+			<# }else{ #>
+				<?php echo $savings['price_perc'] ?>
+			<# } #>
+		</div>
+
+	<# } #>
+
+	<?php $totalSavingsHTML = ob_get_clean(); ?>
+
+<?php endif; ?>
+
 
 
 <!-- Quantity HTML -->
@@ -115,9 +163,18 @@
 						<?php echo $priceHTML; ?>
 					<# } #>
 
+					<# if ( data.card.backShow.price_save ) { #>
+						<?php echo $priceSavingsHTML; ?>
+					<# } #>
+
 					<# if ( data.card.backShow.qty ) { #>
 						<?php echo $qtyHTML; ?>
 					<# } #>
+
+					<# if ( data.card.backShow.total_save ) { #>
+						<?php echo $totalSavingsHTML; ?>
+					<# } #>
+
 
 				</div>
 
@@ -140,6 +197,10 @@
 				<?php echo $priceHTML; ?>
 			<# } #>
 
+			<# if ( !data.card.backShow.price_save || data.card.visibility === 'all_on_front' ) { #>
+				<?php echo $priceSavingsHTML; ?>
+			<# } #>
+
 			<# if ( !data.card.backShow.meta || data.card.visibility === 'all_on_front' ) { #>
 				<?php echo $metaHTML; ?>
 			<# } #>
@@ -147,6 +208,11 @@
 			<# if ( !data.card.backShow.qty || data.card.visibility === 'all_on_front' ) { #>
 				<?php echo $qtyHTML; ?>
 			<# } #>
+
+			<# if ( !data.card.backShow.total_save || data.card.visibility === 'all_on_front' ) { #>
+				<?php echo $totalSavingsHTML; ?>
+			<# } #>
+
 			
 		</div>
 

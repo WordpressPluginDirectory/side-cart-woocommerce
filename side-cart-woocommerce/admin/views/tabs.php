@@ -23,6 +23,12 @@ $tabs = array(
 		'option_key' 	=> 'xoo-wsc-av-options'
 	),
 
+	'rewards' => array(
+		'title'			=> 'Rewards',
+		'id' 			=> 'rewards',
+		'option_key' 	=> 'xoo-wsc-rewards-options'
+	),
+
 	'pro' => array(
 		'title'			=> 'PRO',
 		'id' 			=> 'pro',
