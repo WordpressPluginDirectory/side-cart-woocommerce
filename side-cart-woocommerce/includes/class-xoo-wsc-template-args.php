@@ -118,16 +118,18 @@ class Xoo_Wsc_Template_Args{
 
 	public static function cart_shortcode(){
 
+		$cartEmpty = WC()->cart->is_empty();
+
 		$args = array(
-			'icon' 				=> in_array( 'icon', self::$gl['shbk-show'] ) ? 'yes' : 'no',
-			'count' 			=> in_array( 'count', self::$gl['shbk-show'] ) ? 'yes' : 'no',
-			'subtotal' 			=> in_array( 'subtotal', self::$gl['shbk-show'] ) ? 'yes' : 'no',
+			'icon' 				=> in_array( 'icon', self::$gl['shbk-show'] ) && !( $cartEmpty && in_array( 'icon', self::$gl['shbk-hide'] ) ) ? 'yes' : 'no',
+			'count' 			=> in_array( 'count', self::$gl['shbk-show'] ) && !( $cartEmpty && in_array( 'count', self::$gl['shbk-hide'] ) ) ? 'yes' : 'no',
+			'subtotal' 			=> in_array( 'subtotal', self::$gl['shbk-show'] ) && !( $cartEmpty && in_array( 'subtotal', self::$gl['shbk-hide'] ) ) ? 'yes' : 'no',
 			'basketIcon' 		=> esc_html( self::$sy['sck-basket-icon'] ),
 			'customBasketIcon' 	=> ''
 		);
 
 
-		return apply_filters( 'xoo_wsc_slider_args', $args );
+		return apply_filters( 'xoo_wsc_cart_shortcode_args', $args );
 
 	}
 

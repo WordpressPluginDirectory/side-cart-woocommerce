@@ -1,6 +1,6 @@
 .xoo-settings-container {
-    padding: 20px 20px 50px;
-    max-width: 1300px;
+    flex-grow: 1;
+    width: 100%;
 }
 
 ul.xoo-sc-tabs {
@@ -629,6 +629,29 @@ button.xoo-as-run-export {
 }
 
 
+.xoo-aff-border-inputs {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.xoo-aff-border-inputs .wp-picker-container .wp-color-result.button {
+    margin: 0;
+}
+
+.xoo-aff-border-inputs > div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 4px;
+}
+
+
+.xoo-as-field .xoo-aff-border-inputs input[type="number"] {
+    max-width: 100px;
+}
+
+
 /*RTL */
 body.rtl .xoo-as-checkbox .xoo-as-desc {
     margin-right: 10px;
@@ -807,4 +830,111 @@ ul.xoo-sc-tabs li[data-tab="pro"] {
 
 .xoo-sc-tab-content[data-tab="info"] h4 {
     font-weight: 400;
+}
+
+.xoo-as-val-desc {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.xoo-as-placeholders {
+    margin-top: 20px;
+    font-style: italic;
+}
+
+.xoo-as-placeholders > span {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+
+.xoo-as-placeholders ul {
+    display: flex;
+    column-gap: 10px;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.xoo-as-placeholders ul li {
+    display: flex;
+    gap: 5px;
+}
+
+.xoo-as-placeholders ul li span:nth-child(1) {
+    color: #3c434a;
+    font-weight: 500;
+}
+
+textarea.wp-editor-area {
+    width: 100%;
+    max-width: 100%;
+}
+
+.xoo-as-field{
+    width: 100%;
+}
+
+
+
+
+
+/* Sidebar */
+.xoo-as-container {
+    display: flex;
+    max-width: 1500px;
+    padding: 20px 20px 50px;
+    gap: 20px;
+}
+
+.xoo-as-sidebar {
+    align-self: flex-start;
+    top: 40px;
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    max-width: 220px;
+    width: 100%;
+    position: sticky;
+    margin-top: 58px;
+}
+
+.xoo-as-sbar-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    transform: rotate(180deg);
+    cursor: pointer;
+    user-select: none;
+}
+
+.xoo-as-sidebar.xoo-as-sbar-collapsed {
+    width: auto;
+}
+
+.xoo-as-sbar-collapsed .xoo-as-sidebar-content {
+    display: none;
+}
+
+.xoo-as-sbar-collapsed .xoo-as-sbar-close {
+    transform: none;
+}
+
+.xoo-as-sidebar-content ol {
+    margin-left: 10px;
+    list-style-type: disclosure-closed;
+}
+
+.xoo-as-sidebar-content code {
+    margin:  5px 0;
+    display: inline-block;
+    clear: none;
+}
+
+.xoo-as-info-warning {
+    color: #e98080;
+}
+
+.xoo-as-sidebar-content ol li {
+    margin-bottom: 15px;
 }

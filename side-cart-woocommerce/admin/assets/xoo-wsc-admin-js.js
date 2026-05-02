@@ -286,7 +286,8 @@ jQuery(document).ready(function($){
 			var header = {
 				'background-color': this.sy('sch-bgcolor'),
 				'color': 			this.sy('sch-txtcolor'),
-				'border-bottom': 	this.sy('sch-border')
+				'border-bottom': 	this.sy('sch-border'),
+				'padding': 			this.sy('sch-padding')
 			}
 
 			var headerTxt = {
@@ -455,6 +456,9 @@ jQuery(document).ready(function($){
 					'width': this.sy('sch-count-size','px'),
 					'height': this.sy('sch-count-size','px'),
 					'line-height': this.sy('sch-count-size','px')
+				},
+				'.xoo-wsc-smr-del': {
+					'font-size': this.sy('scb-icon-size','px')
 				}
 			}
 
@@ -500,7 +504,7 @@ jQuery(document).ready(function($){
 
 			var sideCartwidth = parseInt(this.sy('scm-width')) + 100;
 
-			selectors['.xoo-wsc-cart-active .xoo-settings-container'] = {
+			selectors['.xoo-wsc-cart-active .xoo-as-container'] = {
 				'width': 'calc( 100% - '+sideCartwidth+'px )'
 			}
 
@@ -905,17 +909,38 @@ jQuery(document).ready(function($){
 				}
 
 				$bar.find('select.xoo-wsc-bar-barValue').trigger('change');
+
+				Rewards.onBarAdd($bar, false);
 				
 			} )
 
-			Rewards.onBarAdd();
-			Rewards.initProductSearchBox();
+			Rewards.globalBarInit();
+			
 		},
 
 
-		onBarAdd: function(){
+
+
+		onBarAdd: function($bar, callGlobal = true){
+
+			Rewards.initColorPicker($bar);
+			
+			$bar.find('.xoo-wsc-bar-setting[data-barset="filter-byproduct"').trigger('change');
+			$bar.find( '.xoo-wsc-bar-prodsearch' ).each(function( index, el ){
+				if( $(el).closest('.xoo-wsc-bar-checkpoints').length ) return; //will fetch values later on checkpoint toggle.
+				Rewards.productSearchFillDefaultValues($(el));
+			})
+
+			if( callGlobal ){
+				Rewards.globalBarInit();
+			}
+			
+			
+		},
+
+		globalBarInit: function(){
+			Rewards.initProductSearchBox();
 			Rewards.initSortable();
-			Rewards.initColorPicker();
 			Rewards.barNumbering();
 		},
 
@@ -930,7 +955,7 @@ jQuery(document).ready(function($){
 
 			$bar.addClass('xoo-wsc-acc-active');
 
-			Rewards.onBarAdd();
+			Rewards.onBarAdd($bar);
 
 			
 		},
@@ -944,10 +969,37 @@ jQuery(document).ready(function($){
 			$('body').on( 'input', '.xoo-wsc-chkpoint-title-input', Rewards.onCheckPointTitleChange );
 			$('body').on( 'input', '.xoo-wsc-bar-title-input', Rewards.onBarTitleChange );
 			$('body').on( 'change', 'select.xoo-wsc-bar-barValue', Rewards.onBarValueChange );
+			$('body').on( 'change', '.xoo-wsc-bar-setting[data-barset="filter-byproduct"]', Rewards.onProductFilterChange );
 
 			$('button.xoo-as-form-save').on( 'click', Rewards.beforeSettingsSave );
 			$(document).ajaxComplete(Rewards.onSettingsSave);
 			
+		},
+
+		onProductFilterChange: function(){
+
+			var $bar 						= $(this).closest('.xoo-wsc-bar'),
+				$productSearchCont 			= $bar.find('.xoo-wsc-bar-setting[data-barset="filter-byproductsearch"]'),
+				$notEligbTxtCont 			= $bar.find('.xoo-wsc-bar-setting[data-barset="product-noteligbtxt"]'),
+				$freeShippingPoint 			= $bar.find('.xoo-wsc-bar-chkpoint[data-type="freeshipping"]'),
+				$checkPointSelector 		= $bar.find('.xoo-wsc-checkpoint-selector select'),
+				$checkPointSelectorShipping = $checkPointSelector.find('option[value="freeshipping"]'),
+				$shippingNotice 			= $bar.find('.xoo-wsc-freeshipnotice');
+
+			if( $(this).find('select').val() === 'no' ){
+				$productSearchCont.add($shippingNotice).add($notEligbTxtCont).hide();
+				$checkPointSelectorShipping.add($freeShippingPoint).show();
+			}
+			else{
+				$productSearchCont.add($notEligbTxtCont).add($shippingNotice).show();
+				$checkPointSelectorShipping.add($freeShippingPoint ).hide();
+			}
+
+			$checkPointSelector
+			    .find('option:not([value="freeshipping"])')
+			    .first()
+			    .prop('selected', true)
+			    .trigger('change');
 		},
 
 
@@ -979,47 +1031,46 @@ jQuery(document).ready(function($){
 		onCheckPointToggle: function(){
 			var $checkpoint = $(this).closest('.xoo-wsc-bar-chkpoint');
 			Rewards.initIconPicker( $checkpoint );
-			Rewards.productSearchFillDefaultValues( $checkpoint );
+			$.each( $checkpoint.find('.xoo-wsc-bar-prodsearch'), function( index, el ){
+				Rewards.productSearchFillDefaultValues($(el));
+			});
 		},
 
 
-		productSearchFillDefaultValues( $checkpoint ){
+		productSearchFillDefaultValues( $searchCont ){
 
-			$.each( $checkpoint.find('.xoo-wsc-bar-prodsearch'), function( index, el ){
+			
+			var	$defaultCont 	= $searchCont.find('.xoo-wsc-barpsearch-defaults');
 
-				var $searchCont 	= $(el),
-					$defaultCont 	= $searchCont.find('.xoo-wsc-barpsearch-defaults');
+			if( !$defaultCont.length ) return true;
 
-				if( !$defaultCont.length ) return true;
+			var $defaultInputs  = $defaultCont.find('input'),
+				$searchSelect 	= $searchCont.find('select.wc-product-search'),
+				defaultValues 	= [] ;
 
-				var $defaultInputs  = $defaultCont.find('input'),
-					$searchSelect 	= $searchCont.find('select.wc-product-search'),
-					defaultValues 	= [] ;
+			if( !$defaultInputs.length ) return true;
 
-				if( !$defaultInputs.length ) return true;
+			let productIDs = $defaultInputs.map(function(){
+			    return $(this).val();
+			}).get();
 
-				let productIDs = $defaultInputs.map(function(){
-				    return $(this).val();
-				}).get();
+			$searchCont.addClass('xoo-as-processing');
 
-				$searchCont.addClass('xoo-as-processing');
+			$.ajax({
+				url: xoo_wsc_admin_params.adminurl,
+				type: 'POST',
+				data: {
+					action: 'xoo_wsc_product_search_fill_defaults',
+					product_ids: productIDs,
+					xoo_wsc_nonce: xoo_wsc_admin_params.nonce
+				},
+				success: function( response ){
+					$searchSelect.html(response);
+					$defaultCont.remove();
+					$searchCont.removeClass('xoo-as-processing');
+				}
+			})
 
-				$.ajax({
-					url: xoo_wsc_admin_params.adminurl,
-					type: 'POST',
-					data: {
-						action: 'xoo_wsc_product_search_fill_defaults',
-						product_ids: productIDs,
-						xoo_wsc_nonce: xoo_wsc_admin_params.nonce
-					},
-					success: function( response ){
-						$searchSelect.html(response);
-						$defaultCont.remove();
-						$searchCont.removeClass('xoo-as-processing');
-					}
-				})
-
-			} );
 
 
 		},
@@ -1073,8 +1124,8 @@ jQuery(document).ready(function($){
 		},
 
 
-		initColorPicker: function(){
-			$('.xoo-wsc-barColorPicker input:not(.wp-color-picker)').wpColorPicker({
+		initColorPicker: function($bar){
+			$bar.find('.xoo-wsc-barColorPicker input:not(.wp-color-picker)').wpColorPicker({
 				change: function(event, ui){
 					$(event.target).val(ui.color.toString()).trigger('change')
 				}

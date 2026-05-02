@@ -46,9 +46,15 @@ class Xoo_Wsc_Frontend{
 
 
 	public function basket_menu_filter(){
-		$menu = $this->glSettings['shbk-menu'];
-		if( !$menu || $menu === 'none' ) return;
-		add_filter( 'wp_nav_menu_'.$menu.'_items', array( $this, 'basket_menu_html' ), 9999, 2 );
+		$menus = isset( $this->glSettings['shbk-menu'] ) ? $this->glSettings['shbk-menu'] : null;
+		if( !$menus || $menus === 'none' || empty( $menus ) ) return;
+		if( !is_array( $menus ) ){
+			$menus = array( $menus );
+		}
+		foreach ( $menus as $menu ) {
+			add_filter( 'wp_nav_menu_'.$menu.'_items', array( $this, 'basket_menu_html' ), 9999, 2 );
+		}
+		
 	}
 
 	public function basket_menu_html( $items, $args ){

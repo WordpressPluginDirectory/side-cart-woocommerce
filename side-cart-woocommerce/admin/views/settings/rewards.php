@@ -101,6 +101,34 @@ $rewards = array(
 		'section_id' 	=> 'general',
 		'default' 		=> '',
 	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> '[Free Gifts] Show added gifts in side cart',
+		'id' 			=> 'scbar-fg-show',
+		'section_id' 	=> 'general',
+		'default' 		=> 'yes',
+	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> '[Free Gifts] Hide showcase products once achieved',
+		'id' 			=> 'scbar-fg-showcase-hide',
+		'section_id' 	=> 'general',
+		'default' 		=> 'yes',
+		'desc' 			=> "If you've enabled 'Showcase products' under gift checkpoint settings and want to hide them once checkpoint is achieved"
+	),
+
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Exclude Gift quantity from basket count',
+		'id' 			=> 'scbar-fg-qtyexc',
+		'section_id' 	=> 'general',
+		'default' 		=> 'no',
+		'desc' 			=> 'Excludes gift quantities from basket count ( The count you see in shortcode and floating basket )'
+	),
+
 	
 );
 

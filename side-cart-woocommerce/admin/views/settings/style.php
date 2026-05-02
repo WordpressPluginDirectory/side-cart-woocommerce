@@ -32,7 +32,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Open From',
+		'title' 		=> 'Slide Cart From',
 		'id' 			=> 'scm-open-from',
 		'section_id' 	=> 'sc_main',
 		'args' 			=> array(
@@ -68,15 +68,6 @@ $settings = array(
 			),
 		),
 		'default' 	=> 'always_show'
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Show on Mobile',
-		'id' 			=> 'sck-show-mobile',
-		'section_id' 	=> 'sc_basket',
-		'default' 		=> 'yes',
 	),
 
 
@@ -266,6 +257,16 @@ $settings = array(
 	),
 
 
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Show on Mobile',
+		'id' 			=> 'sck-show-mobile',
+		'section_id' 	=> 'sc_basket',
+		'default' 		=> 'yes',
+	),
+
+
+
 
 	/** SIDE CART HEADER **/
 
@@ -376,6 +377,15 @@ $settings = array(
 		'desc' 			=> 'Size in px'
 	),
 
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Container Padding',
+		'id' 			=> 'sch-padding',
+		'section_id' 	=> 'sc_head',
+		'default' 		=> '15px 15px',
+		'desc' 			=> '↨ ⟷ ( Default: 15px 15px )'
+	),
 
 	array(
 		'callback' 		=> 'number',
@@ -525,6 +535,14 @@ $settings = array(
 	),
 
 
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Icon Size',
+		'id' 			=> 'scb-icon-size',
+		'section_id' 	=> 'sc_body',
+		'default' 		=> 16,
+		'desc' 			=> 'Size in px'
+	),
 
 
 	/** Product Row Layout **/
@@ -641,6 +659,34 @@ $settings = array(
 			),
 		),
 		'default' 		=> 'center',
+	),
+
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Sales Count Background color',
+		'id' 			=> 'scbp-sales-bgcolor',
+		'section_id' 	=> 'scb_product',
+		'default' 		=> '#f8f9fa',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'color',
+		'title' 		=> 'Sales Count Text color',
+		'id' 			=> 'scbp-sales-txtcolor',
+		'section_id' 	=> 'scb_product',
+		'default' 		=> '#000',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Sales Count Border',
+		'id' 			=> 'scbp-sales-border',
+		'section_id' 	=> 'scb_product',
+		'default' 		=> '1px solid #c4c4c4',
+		'pro' 			=> 'yes'
 	),
 
 	

@@ -41,6 +41,7 @@
 			<div class="xoo-wsc-chkpoint-setting">
 				<label>Checkpoint Value</label>
 				<input type="number" value="{{data.amount}}" step="any" name="<?php echo $id ?>[amount]">
+				<span class="xoo-scbhk-desc">Value required to achieve this reward</span>
 			</div>
 			<# } #>
 
@@ -52,7 +53,7 @@
 
 				<label>Free Gift Products</label>
 
-				<select class="wc-product-search" multiple="multiple" name="<?php echo $id ?>[gift_ids][]" data-placeholder="Search for a product" data-action="woocommerce_json_search_products_and_variations">
+				<select class="wc-product-search" multiple="multiple" name="<?php echo $id ?>[gift_ids][]" data-placeholder="<?php esc_attr_e( 'Search for a product&hellip;', 'woocommerce' ); ?>" data-action="woocommerce_json_search_products_and_variations">
 				</select>
 
 				<div class="xoo-wsc-barpsearch-defaults">
@@ -70,6 +71,13 @@
 				<label>Gift Quantity</label>
 				<input type="number" value="{{data.gift_qty}}" step="any" name="<?php echo $id ?>[gift_qty]">
 			</div>
+
+			<div class="xoo-wsc-chkpoint-setting">
+				<input type="hidden" name="<?php echo $id ?>[showcase]" value="no">
+				<label><input type="checkbox" value="yes" name="<?php echo $id ?>[showcase]" {{ data.showcase == 'yes' ? 'checked' : '' }}> Showcase Gifts<span class="xoo-scbhk-desc"> (If disabled, products will be kept as a suprise)</span></label>
+
+			</div>
+
 
 			<# } #>
 

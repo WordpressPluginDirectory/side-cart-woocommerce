@@ -57,16 +57,22 @@ class Xoo_Wsc_Admin_Settings{
 
 		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'header_layout_setting_html' ), 10, 4 );
 
-		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'toggle_old_header_layout_setting' ), 10, 4 );
+		add_action( 'wp_ajax_xoo_wsc_product_search_fill_defaults', array( $this, 'product_search_fill_defaults' ) );
+
+		add_filter( 'xoo_wsc_admin_settings', array( $this, 'filter_settings' ), 10, 2 );
 
 	}
 
 
-	public function toggle_old_header_layout_setting( $field, $field_id, $value, $args ){
-		if( $field_id === 'xoo-wsc-sy-options[sch-new-layout]' && get_option( 'xoo-wsc-old-header-layout',true ) !== "yes" ){
-			$field = '';
+	public function filter_settings( $settings, $type ){
+		if( $type === 'style' && get_option( 'xoo-wsc-old-header-layout',true ) !== "yes" ){
+			foreach  ($settings as $index => $setting ) {
+				if( in_array( $setting['id'], array( 'sch-new-layout', 'sch-head-align', 'sch-close-align' ) ) ){
+					unset( $settings[$index] );
+				}
+			}
 		}
-		return $field;
+		return $settings;
 	}
 
 

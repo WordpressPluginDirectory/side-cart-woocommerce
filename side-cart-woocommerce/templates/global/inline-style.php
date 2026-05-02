@@ -16,6 +16,7 @@ $basketIconSize = $sy['sck-size'];
 $basketOffset 	= $sy['sck-offset'];
 $basketHOffset 	= $sy['sck-hoffset'];
 $countPosition 	= $sy['sck-count-pos'];
+$countSize  	= (int) $sy['sck-count-size'];
 $basketBG 		= $sy['sck-basket-bg'];
 $basketColor 	= $sy['sck-basket-color'];
 $basketShadow 	= $sy['sck-basket-sh'];
@@ -23,13 +24,18 @@ $countBG 		= $sy['sck-count-bg'];
 $countColor 	= $sy['sck-count-color'];
 
 /* Header */
+$headerOldLayout = isset( $sy['sch-new-layout'] ) && $sy['sch-new-layout'] !== "yes";
+if( $headerOldLayout ){
+	$closeIconAlign = $sy['sch-close-align'];
+	$headingAlign 	= $sy['sch-head-align'];
+}
+
 $closeIconSize 	= $sy['sch-close-fsize'];
-$closeIconAlign = $sy['sch-close-align'];
-$headingAlign 	= $sy['sch-head-align'];
 $headFontSize 	= $sy['sch-head-fsize'];
 $headBGColor 	= $sy['sch-bgcolor'];
 $headTxtColor 	= $sy['sch-txtcolor'];
 $headBorder		= $sy['sch-border'];
+$headPadding 	= $sy['sch-padding'];
 $headIconSize 	= $sy['sch-basket-fsize'];
 $headCountSize 	= $sy['sch-count-size'];
 
@@ -37,6 +43,7 @@ $headCountSize 	= $sy['sch-count-size'];
 $bodyFontSize 	= $sy['scb-fsize'];
 $bodyBGColor 	= $sy['scb-bgcolor'];
 $bodyTxtColor 	= $sy['scb-txtcolor'];
+$bodyIconSize 	= $sy['scb-icon-size'];
 
 
 /* Product Card */
@@ -187,6 +194,9 @@ else{
 .xoo-wsc-items-count{
 	<?php echo $countPosition === 'top_right' || $countPosition === 'top_left' ? 'top' : 'bottom' ?>: -9px;
 	<?php echo $countPosition === 'top_right' || $countPosition === 'bottom_right' ? 'right' : 'left' ?>: -8px;
+	height: <?php echo $countSize; ?>px;
+	line-height: <?php echo $countSize; ?>px;
+	width: <?php echo $countSize; ?>px;
 }
 
 .xoo-wsc-items-count, .xoo-wsch-items-count{
@@ -233,12 +243,16 @@ else{
 
 span.xoo-wsch-close {
     font-size: <?php echo $closeIconSize ?>px;
-    <?php echo $closeIconAlign ?>: 10px;
 }
 
-.xoo-wsch-top{
-	justify-content: <?php echo $headingAlign ?>;
-}
+<?php if( $headerOldLayout ): ?>
+	.xoo-wsch-top{
+		justify-content: <?php echo $headingAlign ?>;
+	}
+	span.xoo-wsch-close {
+	    <?php echo $closeIconAlign ?>: 10px;
+	}
+<?php endif; ?>
 
 .xoo-wsch-text{
 	font-size: <?php echo $headFontSize ?>px;
@@ -248,6 +262,7 @@ span.xoo-wsch-close {
 	color: <?php echo $headTxtColor ?>;
 	background-color: <?php echo $headBGColor ?>;
 	border-bottom: <?php echo $headBorder ?>;
+	padding: <?php echo $headPadding ?>;
 }
 
 
@@ -419,4 +434,8 @@ span.xoo-wsch-items-count{
 
 span.xoo-wsch-icon{
 	font-size: <?php echo $headIconSize; ?>px
+}
+
+.xoo-wsc-smr-del{
+	font-size: <?php echo $bodyIconSize; ?>px
 }

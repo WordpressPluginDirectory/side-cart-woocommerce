@@ -2,9 +2,7 @@
 
 $menus 			= (array) wp_get_nav_menus();
 
-$menuOptions 	= array(
-	'none' 	=> 'Select menu'
-);
+$menuOptions 	= array();
 
 foreach ($menus as $menuObj ) {
 	$menuOptions[ $menuObj->slug ] = $menuObj->name;
@@ -30,14 +28,20 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Add to menu',
+		'title' 		=> 'Add basket to menu',
 		'id' 			=> 'shbk-menu',
 		'section_id' 	=> 'sh_bk',
 		'args' 			=> array(
-			'options' 	=> $menuOptions
+			'options' 	=> $menuOptions,
+			'multiple' => 'yes',
+			'custom_attributes' => array(
+				'data-select2box' => 'yes',
+				'multiple' => 'yes',
+				'data-placeholder' => 'Select menu'
+			)
 		),
 		'default' 	=> 'none',
-		'desc' 			=> 'Adds the basket to your menu'
+		'desc' 			=> empty( $menus ) ? 'You don\'t have any menu on your site yet. Please <a href="'.admin_url( 'nav-menus.php' ).'" target="__blank">create</a> one first.' : ''
 	),
 
 	array(
@@ -60,7 +64,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Hide when cart is empty',
+		'title' 		=> 'When cart is empty, hide',
 		'id' 			=> 'shbk-hide',
 		'section_id' 	=> 'sh_bk',
 		'args' 			=> array(
@@ -489,13 +493,13 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Cart Order',
+		'title' 		=> 'Show recently added cart items',
 		'id' 			=> 'm-cart-order',
 		'section_id' 	=> 'main',
 		'args' 			=> array(
 			'options' 	=> array(
-				'asc' 	=> 'Recently added item at the end of the cart.',
-				'desc'	=> 'Recently added item on top',
+				'asc' 	=> 'at the end of the cart.',
+				'desc'	=> 'on top',
 			),
 		),
 		'default' 	=> 'asc',

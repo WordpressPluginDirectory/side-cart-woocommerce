@@ -65,9 +65,6 @@
 						</select>
 					</div>
 
-
-					
-
 					<div class="xoo-wsc-bar-setting xoo-wsc-barset-full">
 						<label>Progress bar completed text</label>
 						<input type="text" value="{{data.comptxt}}" name="<?php echo $id ?>[comptxt]">
@@ -141,6 +138,35 @@
 
 							</div>
 
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
+
+								<h4 style="width: 100%; margin: 0;">Container</h4>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Background Color</label>
+									<input type="text" value="{{data.contBGColor}}" name="<?php echo $id ?>[contBGColor]">
+								</div>
+
+							</div>
+
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
+
+								<div class="xoo-wsc-bar-setting">
+									<label>Padding</label>
+									<input type="text" value="{{data.contPadding}}" name="<?php echo $id ?>[contPadding]">
+									<span class="xoo-scbhk-desc">↨ ⟷ ( Default: 15px 20px )</span>
+								</div>
+
+
+								<div class="xoo-wsc-bar-setting">
+									<label>Margin</label>
+									<input type="text" value="{{data.contMargin}}" name="<?php echo $id ?>[contMargin]">
+									<span class="xoo-scbhk-desc">↨ ⟷ ( Default: 0px 0px )</span>
+								</div>
+
+							</div>
+
+
 						</div>
 
 					</div>
@@ -153,8 +179,60 @@
 						<div class="xoo-wsc-acc-cont xoo-wsc-bar-settings">
 
 							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
+
+								<div class="xoo-wsc-bar-setting" data-barset="filter-byproduct">
+									<label>Filter by Product - Calculate Bar Value based on</label>
+									<select name="<?php echo $id ?>[filter_byproducts]" >
+										<?php $this->bar_selectedoptions( 'filter_byproducts', array(
+											'no' 					=> 'all products in cart',
+											'allowed_products' 		=> 'only selected products',
+											'except_products' 		=> 'all except selected products',
+										) ) ?>
+									</select>
+									<span class="xoo-scbhk-desc">Example: Give a reward when the cart total reaches $100, but exclude a specific product. The price of this product will not be included in the $100 calculation.</span>
+									
+								</div>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-bar-prodsearch" data-barset="filter-byproductsearch">
+
+									<label>Products</label>
+
+									<select class="wc-product-search" multiple="multiple" name="<?php echo $id ?>[filter_product_ids][]" data-placeholder="<?php esc_attr_e( 'Search for a product&hellip;', 'woocommerce' ); ?>" data-action="woocommerce_json_search_products_and_variations">
+									</select>
+
+									<div class="xoo-wsc-barpsearch-defaults">
+										<# _.each( data.filter_product_ids , function(option_value, index) { #>
+											<input type="hidden" name="<?php echo $id ?>[filter_product_ids][]" value="{{option_value}}">
+										<# }) #>
+									</div>
+
+									<span class="xoo-scbhk-desc">The Bar Value & rewards will be calculated based on these products in the cart.</span>
+								</div>
+
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barset-full" data-barset="product-noteligbtxt">
+									<label>Product not eligible for rewards title.</label>
+									<input type="text" value="{{data.productNotEligibleTxt}}" name="<?php echo $id ?>[productNotEligibleTxt]">
+									<span class="xoo-scbhk-desc">Leave empty to disable the message.</span>
+								</div>
+
+
+
+							</div>
+
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
 								<div class="xoo-wsc-bar-setting">
-									<label>Allow Discount Checkpoints to Override Other Progress Bars</label>
+									<label>Free Gift - Limit to Highest Gift</label>
+									<input type="hidden" name="<?php echo $id ?>[highestGift]" value="no">
+									<input type="checkbox" value="yes" name="<?php echo $id ?>[highestGift]" {{ data.highestGift == 'yes' ? 'checked' : '' }}>
+									<span class="xoo-scbhk-desc">If you have multiple "Free Gift" checkpoints and only want to award the gift from the highest checkpoint, enable this option. </span>
+								</div>
+
+							</div>
+
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
+								<div class="xoo-wsc-bar-setting">
+									<label>Discount - Use Highest Discount Across All Bars</label>
 									<input type="hidden" name="<?php echo $id ?>[overrideDiscount]" value="no">
 									<input type="checkbox" value="yes" name="<?php echo $id ?>[overrideDiscount]" {{ data.overrideDiscount == 'yes' ? 'checked' : '' }}>
 									<span class="xoo-scbhk-desc">When enabled, the highest discount milestone across all progress bars will take priority and override discounts from other progress bars. If disabled, the discount checkpoints in this progress bar will apply its own discount independently. </span>
@@ -170,6 +248,8 @@
 
 
 			</div>
+
+			<p class="xoo-wsc-freeshipnotice">Free Shipping checkpoint is not available when "Filter by products" is enabled</p>
 
 			<div class="xoo-wsc-checkpoint-selector">
 				<select>
