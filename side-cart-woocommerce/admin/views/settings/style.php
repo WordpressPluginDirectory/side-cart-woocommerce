@@ -2,6 +2,78 @@
 
 $settings = array(
 
+	array(
+		'callback' 		=> 'button_theme_creator',
+		'title' 		=> '',
+		'id' 			=> 'scm-btnthemes',
+		'section_id' 	=> 'sc_button_theme_creator',
+		'default' 		=> array(
+			'theme_default1' => xoo_wsc_helper()->get_button_values( array(
+				'theme_id' => 'theme_default1',
+				'title' => 'Default Theme #1',
+				'border' 	=> array(
+					'size' => 2,
+				),
+				'hover' => array(
+					'border' 	=> array(
+						'size' => 2,
+					),
+				)
+			) ),
+			'theme_default2' => xoo_wsc_helper()->get_button_values( array(
+				'theme_id' => 'theme_default2',
+				'title' 	=> 'Default Theme #2',
+				'bgColor' 	=> '#dde6ed',
+				'txtColor' 	=> '#27374d',
+				'size_type' => 'auto',
+				'border' 	=> array(
+					'size' => 2,
+					'color' => '#27374d'
+				),
+				'hover' => array(
+					'bgColor' 	=> '#27374d',
+					'txtColor' 	=> '#dde6ed',
+					'border' 	=> array(
+						'size' => 2,
+						'color' => '#dde6ed'
+					),
+				)
+			) )
+		)
+	),
+
+	array(
+		'callback' 		=> 'button_theme_selector',
+		'title' 		=> 'Cart Button',
+		'id' 			=> 'scm-btntheme-cart',
+		'section_id' 	=> 'sc_button_theme_creator',
+		'default' 		=> 'theme_default1'
+	),
+
+
+	array(
+		'callback' 		=> 'button_theme_selector',
+		'title' 		=> 'Checkout Button',
+		'id' 			=> 'scm-btntheme-checkout',
+		'section_id' 	=> 'sc_button_theme_creator',
+		'default' 		=> 'theme_default1'
+	),
+
+	array(
+		'callback' 		=> 'button_theme_selector',
+		'title' 		=> 'Continue Shopping',
+		'id' 			=> 'scm-btntheme-continue',
+		'section_id' 	=> 'sc_button_theme_creator',
+		'default' 		=> 'theme_default1'
+	),
+
+	array(
+		'callback' 		=> 'button_theme_selector',
+		'title' 		=> 'Empty Cart',
+		'id' 			=> 'scm-btntheme-empty',
+		'section_id' 	=> 'sc_button_theme_creator',
+		'default' 		=> 'theme_default2'
+	),
 
 
 
@@ -32,7 +104,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Slide Cart From',
+		'title' 		=> 'Open From',
 		'id' 			=> 'scm-open-from',
 		'section_id' 	=> 'sc_main',
 		'args' 			=> array(
@@ -41,7 +113,27 @@ $settings = array(
 				'right' 	=> 'Right',
 			),
 		),
-		'default' 	=> 'right'
+		'default' 	=> 'right',
+		'desc' 		=> 'Slide side cart from left or right side'
+	),
+
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Information Box Location',
+		'id' 			=> 'scm-info-loc',
+		'section_id' 	=> 'sc_main',
+		'args' 			=> array(
+			'options' 	=> array(
+				'footer_start'		=> 'Footer Start',
+				'footer_end'		=> 'Footer End',
+				'body_start' 		=> 'Body Start',
+				'body_end' 			=> 'Body End',
+				'body_end_stick' 	=> 'Body End Stick bottom',
+				'mobile_body' 		=> 'Main body when on mobile'
+			),
+		),
+		'default' 	=> 'body_end_stick',
 	),
 
 
@@ -180,7 +272,7 @@ $settings = array(
 		'title' 		=> 'Basket Color',
 		'id' 			=> 'sck-basket-color',
 		'section_id' 	=> 'sc_basket',
-		'default' 		=> '#000000',
+		'default' 		=> '#27374d',
 	),
 
 
@@ -244,7 +336,7 @@ $settings = array(
 		'title' 		=> 'Count Color',
 		'id' 			=> 'sck-count-color',
 		'section_id' 	=> 'sc_basket',
-		'default' 		=> '#ffffff',
+		'default' 		=> '#dde6ed',
 	),
 
 
@@ -253,7 +345,7 @@ $settings = array(
 		'title' 		=> 'Count Background Color',
 		'id' 			=> 'sck-count-bg',
 		'section_id' 	=> 'sc_basket',
-		'default' 		=> '#000000',
+		'default' 		=> '#27374d',
 	),
 
 
@@ -492,8 +584,7 @@ $settings = array(
 		'title' 		=> 'Empty Cart Image',
 		'id' 			=> 'scb-empty-img',
 		'section_id' 	=> 'sc_body',
-		'default' 		=> '',
-		'pro' 			=> 'yes'
+		'default' 		=> XOO_WSC_URL.'/assets/images/empty-cart.png',
 	),
 
 	array(
@@ -567,7 +658,7 @@ $settings = array(
 		'title' 		=> 'Image Width',
 		'id' 			=> 'scbp-imgw',
 		'section_id' 	=> 'scb_product',
-		'default' 		=> 28,
+		'default' 		=> 24,
 		'desc' 			=> 'Value in percentage'
 	),
 
@@ -622,7 +713,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'text',
-		'title' 		=> 'Shadow',
+		'title' 		=> 'Box Shadow',
 		'id' 			=> 'scbp-shadow',
 		'section_id' 	=> 'scb_product',
 		'default' 		=> '0 2px 2px #00000005',
@@ -641,7 +732,7 @@ $settings = array(
 				'one_line'	=> 'Show variations in single line',
 			),
 		),
-		'default' 	=> 'sep_line',
+		'default' 	=> 'one_line',
 		'desc' 		=> 'Format for displaying multiple variations.'
 	),
 
@@ -734,7 +825,7 @@ $settings = array(
 			),
 		),
 		'default' 	=> array(
-			'total_sales', 'name', 'link', 'meta', 'price', 'price_save'
+			'total_sales', 'name', 'link', 'meta', 'price', 'price_save', 'total_save'
 		),
 		'desc' 		=> 'This only controls back and front display. To enable/disable the detail go to tab general -> Side cart body -> Show and check/uncheck the detail from there.',
 	),
@@ -885,6 +976,7 @@ $settings = array(
 		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0px 10px 15px -12px #0000001a')
 	),
 
+	
 	/** SIDE CART BODY Quantity **/
 
 	array(
@@ -897,9 +989,11 @@ $settings = array(
 				'square' 	=> 'Square Corners',
 				'circle' 	=> 'Round Corners',
 			),
+			'toggleSettings' => array(
+				'xoo-wsc-sy-options[scbq-box-border]' => array( 'circle' ),
+			)
 		),
-		'default' 	=> 'square',
-		'pro' 		=> 'yes'
+		'default' 	=> 'square'
 	),
 
 	array(
@@ -908,10 +1002,8 @@ $settings = array(
 		'id' 			=> 'scbq-width',
 		'section_id' 	=> 'scb_qty',
 		'default' 		=> 75,
-		'desc' 			=> 'Size in px',
-		'pro' 			=> 'yes'
+		'desc' 			=> 'Size in px'
 	),
-
 
 	array(
 		'callback' 		=> 'number',
@@ -919,49 +1011,44 @@ $settings = array(
 		'id' 			=> 'scbq-height',
 		'section_id' 	=> 'scb_qty',
 		'default' 		=> 28,
-		'desc' 			=> 'Size in px',
-		'pro' 			=> 'yes'
+		'desc' 			=> 'Size in px'
 	),
+
 
 	array(
 		'callback' 		=> 'number',
-		'title' 		=> 'Border Size',
-		'id' 			=> 'scbq-bsize',
+		'title' 		=> '+/- Buttons Size',
+		'id' 			=> 'scbq-btnsize',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> 1,
-		'desc' 			=> 'Size in px',
-		'pro' 			=> 'yes'
+		'default' 		=> 20,
+		'desc' 			=> 'Size in px'
 	),
 
 
 	array(
 		'callback' 		=> 'color',
-		'title' 		=> 'Input Border Color',
-		'id' 			=> 'scbq-input-bcolor',
+		'title' 		=> '+/- Buttons BG Color',
+		'id' 			=> 'scbq-box-bgcolor',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#000000',
-		'desc' 			=> 'Leave empty to remove border',
-		'pro' 			=> 'yes'
+		'default' 		=> '#f8f9fa',
 	),
 
 
 	array(
 		'callback' 		=> 'color',
-		'title' 		=> 'Box Border Color',
-		'id' 			=> 'scbq-box-bcolor',
+		'title' 		=> '+/- Buttons Text Color',
+		'id' 			=> 'scbq-box-txtcolor',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#000000',
-		'desc' 			=> 'Leave empty to remove border',
-		'pro' 			=> 'yes'
+		'default' 		=> '#27374d',
 	),
+
 
 	array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Input BG Color',
 		'id' 			=> 'scbq-input-bgcolor',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#ffffff',
-		'pro' 			=> 'yes'
+		'default' 		=> '#f8f9fa',
 	),
 
 
@@ -970,29 +1057,44 @@ $settings = array(
 		'title' 		=> 'Input Text Color',
 		'id' 			=> 'scbq-input-txtcolor',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#000000',
-		'pro' 			=> 'yes'
+		'default' 		=> '#27374d',
+	),
+
+	
+
+	array(
+		'callback' 		=> 'border',
+		'title' 		=> 'Box Border',
+		'id' 			=> 'scbq-box-border',
+		'section_id' 	=> 'scb_qty',
+		'default' 		=> array(
+			'size' 		=> 1,
+			'color' 	=> '#c9c9c9',
+			'style' 	=> 'solid',
+			'radius' 	=> 0,
+		),
 	),
 
 
 	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Buttons BG Color',
-		'id' 			=> 'scbq-box-bgcolor',
+		'callback' 		=> 'border',
+		'title' 		=> 'Input Border',
+		'id' 			=> 'scbq-input-border',
 		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#ffffff',
-		'pro' 			=> 'yes'
+		'default' 		=> array(
+			'size' 		=> 1,
+			'color' 	=> '#c9c9c9',
+			'style' 	=> 'solid',
+			'radius' 	=> 0,
+		),
 	),
 
 
-	array(
-		'callback' 		=> 'color',
-		'title' 		=> 'Buttons Text Color',
-		'id' 			=> 'scbq-box-txtcolor',
-		'section_id' 	=> 'scb_qty',
-		'default' 		=> '#000000',
-		'pro' 			=> 'yes'
-	),
+	
+
+
+
+
 
 
 	/** SIDE CART FOOTER **/
@@ -1037,7 +1139,7 @@ $settings = array(
 		'title' 		=> 'Font Size',
 		'id' 			=> 'scf-fsize',
 		'section_id' 	=> 'sc_footer',
-		'default' 		=> '18',
+		'default' 		=> '17',
 		'desc' 			=> 'Size in px'
 	),
 
@@ -1064,8 +1166,8 @@ $settings = array(
 		'title' 		=> 'Shadow',
 		'id' 			=> 'scf-shadow',
 		'section_id' 	=> 'sc_footer',
-		'default' 		=> '0 -1px 10px #0000001a',
-		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0 -1px 10px #0000001a')
+		'default' 		=> '0 -1px 6px rgba(0, 0, 0, 0.05)',
+		'desc' 			=> xoo_wsc_helper()->box_shadow_desc('0 -1px 6px rgba(0, 0, 0, 0.05)')
 	),
 
 
@@ -1109,21 +1211,6 @@ $settings = array(
 		'pro' 		=> 'yes'
 	),
 
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Button Row',
-		'id' 			=> 'scf-btns-row',
-		'section_id' 	=> 'sc_footer',
-		'args' 			=> array(
-			'options' 	=> array(
-				'one'		=> 'One in a row ( 1+1+1 )',
-				'two_one' 	=> 'Two in first row ( 2 + 1 )',
-				'one_two' 	=> 'Two in last row ( 1 + 2 )',
-				'three' 	=> 'Three in one row( 3 )'
-			),
-		),
-		'default' 	=> 'one'
-	),
 
 	array(
 		'callback' 		=> 'sortable',
@@ -1142,6 +1229,22 @@ $settings = array(
 		'desc' 	=> 'Drag to change order. Leave button text empty under general -> texts to remove button'
 	),
 
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Button Row',
+		'id' 			=> 'scf-btns-row',
+		'section_id' 	=> 'sc_footer',
+		'args' 			=> array(
+			'options' 	=> array(
+				'one'		=> 'One in a row ( 1+1+1 )',
+				'two_one' 	=> 'Two in first row ( 2 + 1 )',
+				'one_two' 	=> 'Two in last row ( 1 + 2 )',
+				'three' 	=> 'Three in one row( 3 )'
+			),
+		),
+		'default' 	=> 'two_one'
+	),
 
 
 
@@ -1164,12 +1267,39 @@ $settings = array(
 	),
 
 
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'New Button Layout',
+		'id' 			=> 'scf-btn-newlayout',
+		'section_id' 	=> 'sc_footer',
+		'args' 			=> array(
+			'toggleSettings' => array(
+				'xoo-wsc-sy-options[scf-btn-padding]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btn-border]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btn-bgcolor]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btn-txtcolor]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btnhv-border]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btnhv-bgcolor]' 	=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btnhv-txtcolor]' 	=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btns-theme]' 		=> array( 'yes' ),
+				'xoo-wsc-sy-options[scf-btn-main]' 			=> array( 'unchecked' ),
+				'xoo-wsc-sy-options[scm-btntheme-cart]' 	=> array( 'unchecked' ),
+				'xoo-wsc-sy-options[scm-btntheme-checkout]' => array( 'unchecked' ),
+				'xoo-wsc-sy-options[scm-btntheme-continue]' => array( 'unchecked' ),
+				'xoo-wsc-sy-options[scm-btntheme-empty]' 	=> array( 'unchecked' ),
+			)
+		),
+		'default'	=> 'yes',
+		'desc' 		=> 'You can create button themes with new button layout'
+		
+	),
+
 
 	array(
 		'callback' 		=> 'select',
 		'title' 		=> 'Design',
 		'id' 			=> 'scf-btns-theme',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'args' 			=> array(
 			'options' 	=> array(
 				'theme'		=> 'Use theme button design & colors',
@@ -1177,7 +1307,8 @@ $settings = array(
 			),
 		),
 		'default' 	=> 'custom',
-		'desc' 		=> 'If set to theme design, all the below options will be ineffective. Theme button design can be inconsistent and vary from theme to theme.'
+		'desc' 		=> 'If set to theme design, all the below options will be ineffective. Theme button design can be inconsistent and vary from theme to theme.',
+		
 	),
 
 
@@ -1185,7 +1316,7 @@ $settings = array(
 		'callback' 		=> 'text',
 		'title' 		=> 'Padding',
 		'id' 			=> 'scf-btn-padding',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '10px 20px',
 		'desc' 			=> '↨ ⟷ ( Default: 10px 20px ), use values'
 	),
@@ -1195,7 +1326,7 @@ $settings = array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Background Color',
 		'id' 			=> 'scf-btn-bgcolor',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '#000000',
 	),
 
@@ -1204,7 +1335,7 @@ $settings = array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Text Color',
 		'id' 			=> 'scf-btn-txtcolor',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '#ffffff',
 	),
 
@@ -1212,7 +1343,7 @@ $settings = array(
 		'callback' 		=> 'text',
 		'title' 		=> 'Border',
 		'id' 			=> 'scf-btn-border',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '2px solid #ffffff',
 		'desc' 			=> 'Default: 2px solid #000000'
 	),
@@ -1222,7 +1353,7 @@ $settings = array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Hover Background Color',
 		'id' 			=> 'scf-btnhv-bgcolor',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '#ffffff',
 	),
 
@@ -1231,7 +1362,7 @@ $settings = array(
 		'callback' 		=> 'color',
 		'title' 		=> 'Hover Text Color',
 		'id' 			=> 'scf-btnhv-txtcolor',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '#000000',
 	),
 
@@ -1239,7 +1370,7 @@ $settings = array(
 		'callback' 		=> 'text',
 		'title' 		=> 'Hover Border',
 		'id' 			=> 'scf-btnhv-border',
-		'section_id' 	=> 'sc_button',
+		'section_id' 	=> 'sc_footer',
 		'default' 		=> '2px solid #000000',
 		'desc' 			=> 'Default: 2px solid #000000'
 	),
@@ -1384,6 +1515,40 @@ $settings = array(
 		'pro' 			=> 'yes'
 	),
 
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Product Padding',
+		'id' 			=> 'scsp-prd-padding',
+		'section_id' 	=> 'sc_sug_products',
+		'default' 		=> '10px 15px',
+		'desc' 			=> '↨ ⟷ ( Default: 10px 15px )',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'text',
+		'title' 		=> 'Products Spacing',
+		'id' 			=> 'scsp-prd-margin',
+		'section_id' 	=> 'sc_sug_products',
+		'default' 		=> '10px 15px',
+		'desc' 			=> 'Space between two products, ↨ ⟷ ( Default: 10px 15px )',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'border',
+		'title' 		=> 'Product Border',
+		'id' 			=> 'scsp-prd-border',
+		'section_id' 	=> 'sc_sug_products',
+		'default' 		=> array(
+			'size' 		=> 0,
+			'color' 	=> '#c9c9c9',
+			'style' 	=> 'solid',
+			'radius' 	=> 0,
+		),
+		'pro' 			=> 'yes'
+	),
+
 
 	/** Saved For Later **/
 
@@ -1521,7 +1686,7 @@ $settings = array(
 		'title' 		=> 'Count Background Color',
 		'id' 			=> 'shbk-count-bg',
 		'section_id' 	=> 'sh_bk',
-		'default' 		=> '#000000',
+		'default' 		=> '#27374d',
 	),
 
 	array(
@@ -1529,7 +1694,7 @@ $settings = array(
 		'title' 		=> 'Text Color',
 		'id' 			=> 'shbk-txt-color',
 		'section_id' 	=> 'sh_bk',
-		'default' 		=> '#000000',
+		'default' 		=> '#dde6ed',
 	),
 
 

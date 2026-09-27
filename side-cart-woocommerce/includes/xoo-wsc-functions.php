@@ -100,4 +100,80 @@ function xoo_wsc_single_product_atc_fix(){
 }
 add_action( 'init', 'xoo_wsc_single_product_atc_fix' );
 
+
+function xoo_wsc_display_infobox(){
+	echo '<div class="xoo-wsc-info-cont">';
+	echo xoo_wsc_helper()->get_general_option('sct-info');
+	echo '</div>';
+}
+
+
+
+/* Information box location */
+function xoo_wsc_add_infobox_hook(){
+
+	$location 	= xoo_wsc_helper()->get_style_option('scm-info-loc');
+
+	if( $location === 'body_end' || $location === 'body_end_stick' || ( $location === 'mobile_body' && wp_is_mobile() ) ){
+		$hook = 'xoo_wsc_body_end';
+	}
+	elseif( $location === 'body_start' ){
+		$hook = 'xoo_wsc_body_start';
+	}
+	elseif( $location === 'footer_end' ){
+		$hook = 'xoo_wsc_footer_end';
+	}
+	elseif( $location === 'footer_start' || $location === 'mobile_body' ){
+		$hook = 'xoo_wsc_footer_start';
+	}
+	else{
+		return;
+	}
+
+	add_action( $hook, 'xoo_wsc_display_infobox' );
+
+}
+add_action( 'xoo_wsc_header_start', 'xoo_wsc_add_infobox_hook' );
+
+function xoo_wsc_quantity_input( $args = array(), $product = null, $echo = true ) {
+
+	if ( is_null( $product ) ) {
+		return;
+	}
+
+	$defaults = array(
+		'input_value'  	=> '1',
+		'max_value'    	=> apply_filters( 'woocommerce_quantity_input_max', -1, $product ),
+		'min_value'    	=> apply_filters( 'woocommerce_quantity_input_min', 0, $product ),
+		'step'         	=> apply_filters( 'woocommerce_quantity_input_step', 1, $product ),
+		'pattern'      	=> apply_filters( 'woocommerce_quantity_input_pattern', has_filter( 'woocommerce_stock_amount', 'intval' ) ? '[0-9]*' : '' ),
+		'inputmode'    	=> apply_filters( 'woocommerce_quantity_input_inputmode', has_filter( 'woocommerce_stock_amount', 'intval' ) ? 'numeric' : '' ),
+		'placeholder'  	=> apply_filters( 'woocommerce_quantity_input_placeholder', '', $product ),
+		'wsc_classes'  	=> apply_filters( 'xoo_wsc_quantity_input_classes', array( 'xoo-wsc-qty' ), $product ),
+		'qtyDesign' 	=> xoo_wsc_helper()->get_style_option('scbq-style')
+	);
+
+	$args = apply_filters( 'woocommerce_quantity_input_args', wp_parse_args( $args, $defaults ), $product );
+
+	// Apply sanity to min/max args - min cannot be lower than 0.
+	$args['min_value'] = max( $args['min_value'], 0 );
+	$args['max_value'] = 0 < $args['max_value'] ? $args['max_value'] : '';
+
+	// Max cannot be lower than min if defined.
+	if ( '' !== $args['max_value'] && $args['max_value'] < $args['min_value'] ) {
+		$args['max_value'] = $args['min_value'];
+	}
+
+	ob_start();
+
+	xoo_wsc_helper()->get_template( 'global/body/qty-input.php', $args );
+
+	if ( $echo ) {
+		echo ob_get_clean(); // WPCS: XSS ok.
+	} else {
+		return ob_get_clean();
+	}
+}
+
+
 ?>

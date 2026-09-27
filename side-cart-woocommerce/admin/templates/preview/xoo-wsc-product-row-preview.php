@@ -2,7 +2,6 @@
 <?php ob_start(); ?>
 
 <# if ( data.product.showPdel ) { #>
-
 	<# if ( "icon" === data.product.deleteType ) { #>
 		<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
 	<# }else{ #>
@@ -12,6 +11,7 @@
 <# } #>
 
 <?php $deleteHTML = ob_get_clean(); ?>
+
 
 <?php $priceSavingsHTML = $totalSavingsHTML = ''; ?>
 
@@ -53,17 +53,20 @@
 <?php endif; ?>
 
 
+
 <div class="xoo-wsc-product">
 
-	<# if ( data.product.showPImage ) { #>
+	<# if ( data.product.showPImage || "image" === data.product.deletePosition ) { #>
+
 		<div class="xoo-wsc-img-col">
 
-			<?php echo $product_thumbnail; ?>
-			
+			<# if ( data.product.showPImage ) { #>
+				<?php echo $product_thumbnail; ?>
+			<# } #>
 
 			<# if ( "image" === data.product.deletePosition ) { #>
 
-				<?php echo $deleteHTML ?>
+				<?php echo $deleteHTML; ?>
 
 			<# } #>
 
@@ -106,13 +109,16 @@
 
 				<# }else{ #>
 
-					<# if ( data.product.showPqty ) { #>
+					<# if ( data.product.showPqty && !data.product.updateQty ) { #>
 						<span class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <?php echo $product_quantity; ?></span>
 					<# } #>
 
+
 					<div class="xoo-wsc-priceBox">
 
-						<?php echo $priceSavingsHTML; ?>
+						<# if ( !data.product.updateQty ) { #>
+							<?php echo $priceSavingsHTML; ?>
+						<# } #>	
 
 						<# if ( data.product.showPprice ) { #>
 							<div class="xoo-wsc-pprice">
@@ -125,10 +131,29 @@
 							</div>
 						<# } #>
 
+						<# if ( data.product.updateQty ) { #>
+							<?php echo $priceSavingsHTML; ?>
+						<# } #>	
+
 					</div>
 
 				<# } #>
 
+
+
+				<!-- Quantity -->
+				<# if ( data.product.showPqty && data.product.updateQty ) { #>
+					<div class="xoo-wsc-qty-box xoo-wsc-qtb-{{{data.product.qtyDesign}}}">
+
+						<span class="xoo-wsc-minus xoo-wsc-chng">-</span>
+
+						<input type="number" class="xoo-wsc-qty" value="<?php echo esc_attr( $product_quantity ); ?>" />
+
+						<span class="xoo-wsc-plus xoo-wsc-chng">+</span>
+
+					</div>
+				<# } #>
+				
 
 			</div>
 
@@ -143,9 +168,11 @@
 
 				<# } #>
 
+
 				<# if ( !data.product.oneLiner ) { #>
 					<?php echo $totalSavingsHTML; ?>
 				<# } #>
+					
 
 				<# if ( data.product.showPtotal && !data.product.oneLiner ) { #>
 					<span class="xoo-wsc-smr-ptotal"><?php echo $product_subtotal ?></span>

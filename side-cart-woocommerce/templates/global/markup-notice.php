@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 4.1
+ * @version 2.9.0
  */
 
 
@@ -17,12 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-extract( Xoo_Wsc_Template_Args::markup_notice() );
-
-if( !$showNotifications ) return;
 
 ?>
 
 <div class="xoo-wsc-markup-notices">
-	<?php xoo_wsc_cart()->print_notices_html( 'markup' ); ?>
+	<?php xoo_wsc_cart()->print_notices_html(); ?>
 </div>

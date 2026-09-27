@@ -73,20 +73,25 @@ $bPradius		= (int) $sy['scbp-bradius'];
 $bPshadow		= $sy['scbp-shadow'];
 $bpBgColor		= $sy['scbp-bgcolor'];
 
+/* Quantity */
+$qtyStyle 		= $sy['scbq-style'];
+$qtyWidth 		= $sy['scbq-width'];
+$qtybtnsize 	= $sy['scbq-btnsize'];
+$qtyHeight 		= $sy['scbq-height'];
+$btnBorColor 	= $sy['scbq-box-border'];
+$inputBgColor 	= $sy['scbq-input-bgcolor'];
+$inputTxtColor 	= $sy['scbq-input-txtcolor'];
+$btnBgColor 	= $sy['scbq-box-bgcolor'];
+$btnTxtColor 	= $sy['scbq-box-txtcolor'];
+
+
 
 /* Footer */
+$new_btn_layout = !isset( $sy['scf-btn-newlayout'] ) || $sy['scf-btn-newlayout'] === "yes";
+$buttonRows 	= $sy['scf-btns-row'];
 $footerStick 	= $sy['scf-stick'];
 $buttonsOrder  	= $sy['scf-button-pos'];
-$buttonPadding 	= $sy['scf-btn-padding'];
-$buttonRows 	= $sy['scf-btns-row'];
-$buttonTheme 	= $sy['scf-btns-theme'];
-$buttonbgColor 	= $sy['scf-btn-bgcolor'];
-$buttontxtColor = $sy['scf-btn-txtcolor'];
-$buttonBorder 	= $sy['scf-btn-border'];
 
-$HVbuttonbgColor 	= $sy['scf-btnhv-bgcolor'];
-$HVbuttontxtColor 	= $sy['scf-btnhv-txtcolor'];
-$HVbuttonBorder 	= $sy['scf-btnhv-border'];
 
 $ftrPadding 	= $sy['scf-padding'];
 $ftrBgColor 	= $sy['scf-bgcolor'];
@@ -101,6 +106,7 @@ $SCbasketColor 	= $sy['shbk-color'];
 $SCcountBG 		= $sy['shbk-count-bg'];
 $SCcountColor 	= $sy['shbk-count-color'];
 $SCtxtColor 	= $sy['shbk-txt-color'];
+
 
 if( $buttonRows === 'three' ){
 	$gridCols = '1fr 1fr 1fr';
@@ -121,26 +127,74 @@ else{
 	$gridCols = 'auto';
 }
 
+
+if( $new_btn_layout  ){
+
+	$themeSelectorMap = array(
+		'scm-btntheme-cart'     => 'a.xoo-wsc-ft-btn.xoo-wsc-ft-btn-cart',
+		'scm-btntheme-checkout' => 'a.xoo-wsc-ft-btn.xoo-wsc-ft-btn-checkout',
+		'scm-btntheme-continue' => 'a.xoo-wsc-ft-btn.xoo-wsc-ft-btn-continue',
+		'scm-btntheme-empty' 	=> '.xoo-wsc-empty-cart a.xoo-wsc-btn',
+	);
+
+	$buttonThemes = $sy['scm-btnthemes'];
+
+	xoo_wsc_helper()->print_button_themed_css( $themeSelectorMap, $sy, $buttonThemes );
+
+
+	if( isset( $buttonThemes[ $sy['scm-btntheme-checkout'] ] ) ){
+		$checkoutButtonTheme = $buttonThemes[ $sy['scm-btntheme-checkout'] ];
+		echo 'a.xoo-wsc-ft-btn.xoo-wsc-ft-btn-checkout .amount{
+			color: '.$checkoutButtonTheme['txtColor'].';
+		}';
+		echo 'a.xoo-wsc-ft-btn.xoo-wsc-ft-btn-checkout:hover .amount{
+			color: '.$checkoutButtonTheme['hover']['txtColor'].';
+		}';
+	}
+
+
+}
+else{
+
+	$buttonPadding 		= $sy['scf-btn-padding'];
+	$buttonTheme 		= $sy['scf-btns-theme'];
+	$buttonbgColor 		= $sy['scf-btn-bgcolor'];
+	$buttontxtColor 	= $sy['scf-btn-txtcolor'];
+	$buttonBorder 		= $sy['scf-btn-border'];
+	$HVbuttonbgColor 	= $sy['scf-btnhv-bgcolor'];
+	$HVbuttontxtColor 	= $sy['scf-btnhv-txtcolor'];
+	$HVbuttonBorder 	= $sy['scf-btnhv-border'];
+
+
+	if( $buttonTheme === 'custom' ) :?>
+
+		.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn, .xoo-wsc-container .xoo-wsc-btn {
+			background-color: <?php echo $buttonbgColor ?>;
+			color: <?php echo $buttontxtColor ?>;
+			border: <?php echo $buttonBorder ?>;
+			padding: <?php echo $buttonPadding ?>;
+		}
+
+		.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn:hover {
+			background-color: <?php echo $HVbuttonbgColor ?>;
+			color: <?php echo $HVbuttontxtColor ?>;
+			border: <?php echo $HVbuttonBorder ?>;
+		}
+
+		.xoo-wsc-btn .amount{
+			color: <?php echo $buttontxtColor ?>
+		}
+
+		.xoo-wsc-btn:hover .amount{
+			color: <?php echo $HVbuttontxtColor ?>;
+		}
+
+	<?php endif; 
+
+} 
+
 ?>
 
-
-
-<?php if( $buttonTheme === 'custom' ): ?>
-
-.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn, .xoo-wsc-container .xoo-wsc-btn {
-	background-color: <?php echo $buttonbgColor ?>;
-	color: <?php echo $buttontxtColor ?>;
-	border: <?php echo $buttonBorder ?>;
-	padding: <?php echo $buttonPadding ?>;
-}
-
-.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn:hover {
-	background-color: <?php echo $HVbuttonbgColor ?>;
-	color: <?php echo $HVbuttontxtColor ?>;
-	border: <?php echo $HVbuttonBorder ?>;
-}
-
-<?php endif; ?> 
 
 .xoo-wsc-footer{
 	background-color: <?php echo $ftrBgColor ?>;
@@ -153,13 +207,7 @@ else{
 	font-size: <?php echo $ftrFsize ?>px;
 }
 
-.xoo-wsc-btn .amount{
-	color: <?php echo $buttontxtColor ?>
-}
 
-.xoo-wsc-btn:hover .amount{
-	color: <?php echo $HVbuttontxtColor ?>;
-}
 
 .xoo-wsc-ft-buttons-cont{
 	grid-template-columns: <?php echo $gridCols ?>;
@@ -298,6 +346,37 @@ span.xoo-wsch-close {
 <?php endif; ?>
 
 
+/***** Quantity *****/
+
+.xoo-wsc-qty-box{
+	max-width: <?php echo $qtyWidth ?>px;
+}
+
+.xoo-wsc-qty-box.xoo-wsc-qtb-square{
+	<?php echo xoo_wsc_helper()->get_border_css_value( $sy['scbq-box-border'] ); ?>
+}
+
+input[type="number"].xoo-wsc-qty{
+	background-color: <?php echo $inputBgColor ?>;
+	color: <?php echo $inputTxtColor ?>;
+	height: <?php echo $qtyHeight ?>px;
+	line-height: <?php echo $qtyHeight ?>px;
+	<?php echo xoo_wsc_helper()->get_border_css_value( $sy['scbq-input-border'] ); ?>
+}
+
+
+.xoo-wsc-chng{
+	background-color: <?php echo $btnBgColor ?>;
+	color: <?php echo $btnTxtColor ?>;
+	width: <?php echo $qtybtnsize ?>px;
+}
+
+.xoo-wsc-qtb-circle .xoo-wsc-chng{
+	height: <?php echo $qtybtnsize ?>px;
+	line-height: <?php echo $qtybtnsize ?>px;
+}
+
+
 /** Shortcode **/
 .xoo-wsc-sc-count{
 	background-color: <?php echo $SCcountBG ?>;
@@ -403,7 +482,7 @@ span.xoo-wsch-close {
 
 <?php
 
-if( WC()->cart->get_cart_contents_count() === 0 ){
+if( WC()->cart && WC()->cart->get_cart_contents_count() === 0 ){
 
 	$shortcodeEls = xoo_wsc_frontend()->shortcodeEls;
 
@@ -439,3 +518,17 @@ span.xoo-wsch-icon{
 .xoo-wsc-smr-del{
 	font-size: <?php echo $bodyIconSize; ?>px
 }
+
+<?php if( $sy['scm-info-loc'] === "body_end_stick" ): ?>
+
+.xoo-wsc-body{
+	display: flex;
+	flex-direction: column;
+}
+
+.xoo-wsc-body .xoo-wsc-info-cont{
+	margin-top: auto;
+	margin-bottom: 5px;
+}
+
+<?php endif; ?>

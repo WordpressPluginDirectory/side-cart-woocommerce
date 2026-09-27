@@ -29,10 +29,10 @@ $rewards = array(
 
 	array(
 		'callback' 		=> 'number',
-		'title' 		=> 'Font Size',
-		'id' 			=> 'scbar-font-size',
+		'title' 		=> 'Bar Height',
+		'id' 			=> 'scbar-height',
 		'section_id' 	=> 'general',
-		'default' 		=> '15',
+		'default' 		=> 8,
 		'desc' 			=> 'Size in px'
 	),
 
@@ -104,29 +104,30 @@ $rewards = array(
 
 	array(
 		'callback' 		=> 'checkbox',
-		'title' 		=> '[Free Gifts] Show added gifts in side cart',
-		'id' 			=> 'scbar-fg-show',
-		'section_id' 	=> 'general',
-		'default' 		=> 'yes',
-	),
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> '[Free Gifts] Hide showcase products once achieved',
-		'id' 			=> 'scbar-fg-showcase-hide',
-		'section_id' 	=> 'general',
-		'default' 		=> 'yes',
-		'desc' 			=> "If you've enabled 'Showcase products' under gift checkpoint settings and want to hide them once checkpoint is achieved"
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Exclude Gift quantity from basket count',
-		'id' 			=> 'scbar-fg-qtyexc',
-		'section_id' 	=> 'general',
+		'title' 		=> 'Allow gift removal',
+		'id' 			=> 'scbar-fg-en-delete',
+		'section_id' 	=> 'rewards_gift',
 		'default' 		=> 'no',
-		'desc' 			=> 'Excludes gift quantities from basket count ( The count you see in shortcode and floating basket )'
+		'desc' 			=> "Allow customers to remove gift products from their cart"
+	),
+
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Show added gifts in side cart',
+		'id' 			=> 'scbar-fg-show',
+		'section_id' 	=> 'rewards_gift',
+		'default' 		=> 'no',
+		'desc' 			=> 'Show added gifts as normal cart item in side cart'
+	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Exclude gift quantities from basket count',
+		'id' 			=> 'scbar-fg-qtyexc',
+		'section_id' 	=> 'rewards_gift',
+		'default' 		=> 'no',
+		'desc' 			=> 'Exclude gift quantities from the basket count shown in the shortcode and floating basket'
 	),
 
 	

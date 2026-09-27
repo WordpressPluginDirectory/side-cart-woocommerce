@@ -9,13 +9,15 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.7.1
+ * @version 2.8.0
  */
 
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
+
+$productClasses = apply_filters( 'xoo_wsc_product_class', $productClasses );
 
 $visible 		= xoo_wsc_helper()->get_style_option('scbp-card-visible');
 $details 		= xoo_wsc_helper()->get_style_option('scbp-card-back'); 
@@ -27,6 +29,7 @@ $nameHTML 		= $showPname ? sprintf( '<span class="xoo-wsc-pname">%1$s</span>', $
 $totalHTML 		= $showPtotal && !$oneLiner ? sprintf( '<span class="xoo-wsc-card-ptotal">%1$s</span>', $product_subtotal ) : '';
 $metaHTML 		= $showPmeta ? $product_meta : '';
 $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $product_permalink, '<i class="xoo-wsc-icon-external-link"></i>'. __( 'View', 'side-cart-woocommerce' ) );
+$priceHTML 		= $showPprice && !$oneLiner ? sprintf( '<span class="xoo-wsc-card-price">%1$s</span>', __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ) : '';
 
 ?>
 
@@ -54,15 +57,6 @@ $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $p
 
 <?php $totalSavingsHTML = ob_get_clean(); ?>
 
-<!-- Price HTML  -->
-<?php ob_start(); ?>
-<?php if ( $showPprice && !$oneLiner ): ?>
-	<div class="xoo-wsc-card-price">
-		<?php echo __( 'Price: ', 'side-cart-woocommerce' ) . $product_price ?>
-	</div>
-<?php endif; ?>
-<?php $priceHTML = ob_get_clean(); ?>
-
 
 <?php ob_start(); //Delete HTML ?>
 
@@ -84,8 +78,22 @@ $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $p
 
 <div class="xoo-wsc-qty-box-cont">
 
-	<?php if( $updateQty ): ?>
+	<?php if( $showPqty && $updateQty ): ?>
 
+		<?php
+
+		xoo_wsc_quantity_input(
+			array(
+				'input_value'  	=> $cart_item['quantity'],
+				'quantity'  	=> $cart_item['quantity'],
+				'max_value'    	=> $_product->get_max_purchase_quantity(),
+				'min_value'    	=> '0',
+				'product_name' 	=> $_product->get_name(),
+			),
+			$_product
+		);
+
+		?>
 		
 	<?php else: ?>
 
@@ -98,6 +106,7 @@ $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $p
 				<span>=</span>
 				<span><?php echo $product_subtotal ?></span>
 			</div>
+			
 
 		<?php else: ?>
 
@@ -114,9 +123,7 @@ $viewLinkHTML 	= sprintf( '<a class="xoo-wsc-smr-link" href="%1$s">%2$s</a>', $p
 
 </div>
 
-
 <?php $qtyHTML = ob_get_clean(); ?>
-
 
 <?php ob_start(); ?>
 <?php echo in_array( 'name', $details ) ? $nameHTML : '' ?>
@@ -144,13 +151,18 @@ $productClasses 	= apply_filters( 'xoo_wsc_product_class', $productClasses, $_pr
 
 
 
+
 <div data-key="<?php echo $cart_item_key ?>" data-product_id="<?php echo $product_id ?>" class="<?php echo implode( ' ', $productClasses ) ?>">
 
 	<?php do_action( 'xoo_wsc_product_start', $_product, $cart_item_key ); ?>
 
 	<div class="xoo-wsc-card-cont">
 
-		<?php echo $delHTML ?>
+		<div class="xoo-wsc-card-actionbar">
+			
+			<?php echo $delHTML ?>
+
+		</div>
 
 		<div class="xoo-wsc-img-col magictime">
 
@@ -192,8 +204,6 @@ $productClasses 	= apply_filters( 'xoo_wsc_product_class', $productClasses, $_pr
 		<?php do_action( 'xoo_wsc_product_card_front', $_product, $cart_item_key ); ?>
 		
 	</div>
-
-
 
 	<?php do_action( 'xoo_wsc_product_end', $_product, $cart_item_key ); ?>
 

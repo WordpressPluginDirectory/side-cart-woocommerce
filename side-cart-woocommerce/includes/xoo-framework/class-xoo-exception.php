@@ -1,16 +1,19 @@
 <?php 
 
+namespace XooWSC\Framework;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
-class Xoo_Exception extends Exception{
+
+class Xoo_Exception extends \Exception{
 
 	public $wpErrorCode = null;
 
 	protected string $errorCode;
 
-	public function __construct($error, $errorCode = '', $code = 0, Exception $previous = null){
+	public function __construct($error, $errorCode = '', $code = 0, $previous = null){
 
 		$this->errorCode = $errorCode;
 
@@ -43,7 +46,7 @@ class Xoo_Exception extends Exception{
      */
     public function to_wp_error() {
         $code = $this->wpErrorCode ? $this->wpErrorCode : 'xoo_exception';
-        return new WP_Error($code, $this->getMessage());
+        return new \WP_Error($code, $this->getMessage());
     }
 
 

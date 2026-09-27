@@ -79,6 +79,7 @@ jQuery(document).ready(function($){
 		getPreviewCSS: function() {},
 		getPreviewHTMLData: function() {},
 		pageLoading: true,
+		buildTimout: null,
 
 		init: function(){
 			this.initColorPicker();
@@ -90,6 +91,23 @@ jQuery(document).ready(function($){
 
 		events: function(){
 			$( Customizer.$form ).on('change', this.onFormChange );
+
+
+			Customizer.$form.find('.wp-editor-area').each(function() {
+
+			    var editor = tinymce.get(this.id);
+
+			    if (!editor) return;
+
+			    editor.on('change undo redo SetContent', function() {
+			    	editor.save();
+			        Customizer.build();
+			    });
+
+			});
+
+			
+
 		},
 
 		initTemplates: function(){
@@ -118,21 +136,27 @@ jQuery(document).ready(function($){
 
 
 		setFormValues: function(){
-			//var values 		= this.$form.serializeArray();
-			//this.formValues = this.objectifyForm(values);
 			this.formValues = this.$form.serializeJSON();
 		},
 
 		build: function(){
 			if( this.pageLoading ) return; // prevent multiple building event on page load due to 'change' event
-			this.setFormValues();
-			this.buildHTML();
-			this.buildCSS();
-			AnimateCard.init();
+
+			clearTimeout( Customizer.buildTimout );
+
+			Customizer.buildTimout = setTimeout( function(){
+				Customizer.setFormValues();
+				Customizer.buildHTML();
+				Customizer.buildCSS();
+				AnimateCard.init();
+			}, 200 );
+			
 		},
 
 
 		buildCSS: function(){
+
+			console.log('built');
 
 			var css = '';
 
@@ -304,18 +328,6 @@ jQuery(document).ready(function($){
 				'color': 		this.sy('scb-txtcolor')
 			}
 
-			var footerBtn = {
-				'padding': 				this.sy('scf-btn-padding'),
-				'background-color': 	this.sy('scf-btn-bgcolor'),
-				'color': 				this.sy('scf-btn-txtcolor'),
-				'border': 				this.sy('scf-btn-border'),
-			}
-
-			var footerBtnHover = {
-				'background-color': 	this.sy('scf-btnhv-bgcolor'),
-				'color': 				this.sy('scf-btnhv-txtcolor'),
-				'border': 				this.sy('scf-btnhv-border'),
-			}
 
 			var footer = {
 				'padding': 				this.sy('scf-padding'),
@@ -423,6 +435,12 @@ jQuery(document).ready(function($){
 				}
 			}
 
+			if( this.sy('scm-info-loc') === 'body_end_stick' ){
+				body['display'] = 'flex';
+				body['flex-direction'] = 'column';
+			}
+
+
 			var selectors = {
 				'.xoo-wsc-basket': basket,
 				'.xoo-wsc-cart-active .xoo-wsc-basket': basketActive,
@@ -436,8 +454,6 @@ jQuery(document).ready(function($){
 				'.xoo-wsch-top': headerTop,
 				'.xoo-wsc-body': body,
 				'.xoo-wsc-products:not(.xoo-wsc-pattern-card), .xoo-wsc-products:not(.xoo-wsc-pattern-card) span.amount, .xoo-wsc-products:not(.xoo-wsc-pattern-card) a': bodyText,
-				'.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn, .xoo-wsc-container .xoo-wsc-btn': footerBtn,
-				'.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn:hover': footerBtnHover,
 				'.xoo-wsc-footer': footer,
 				'.xoo-wsc-footer, .xoo-wsc-footer a, .xoo-wsc-footer .amount': footerFSize,
 				'.xoo-wsc-products:not(.xoo-wsc-pattern-card) .xoo-wsc-product': product,
@@ -462,6 +478,71 @@ jQuery(document).ready(function($){
 				}
 			}
 
+
+			if( this.sy('scm-info-loc') === 'body_end_stick' ){
+				selectors['.xoo-wsc-body .xoo-wsc-info-cont'] = {
+					'margin-top': 'auto',
+					'margin-bottom': '5px'
+				}
+				
+			}
+
+			const buttonThemeSelectors = {
+				'xoo-wsc-sy-options[scm-btntheme-cart]': 'a.xoo-wsc-ft-btn-cart',
+				'xoo-wsc-sy-options[scm-btntheme-checkout]': 'a.xoo-wsc-ft-btn-checkout',
+				'xoo-wsc-sy-options[scm-btntheme-continue]': 'a.xoo-wsc-ft-btn-continue',
+			}
+
+
+			
+			var $buttonStyleTag = $('.xoo-wsc-button-theme-styles'),
+				$buttonStyleTag = $buttonStyleTag.length ? $buttonStyleTag : $('<div class="xoo-wsc-button-theme-styles"></div>').insertAfter(Customizer.$styleTag);
+
+
+			if( xoo_admin_params.BtnTheme && ( !$('input[name="xoo-wsc-sy-options[scf-btn-newlayout]"]').length ||  this.sy('scf-btn-newlayout') === 'yes' ) ){
+
+				var buttonCSS = '';
+
+				$.each( buttonThemeSelectors, function( settingID, classSelector ){
+
+					const themeID 	= $('select[name="'+settingID+'"]').val();
+
+					const themeValues = themeID ? xoo_admin_params.BtnTheme.getThemes( themeID ) : null;
+
+					 if( !themeValues ) return true;
+
+					buttonCSS += xoo_admin_params.BtnTheme.getCSS( themeValues, classSelector );
+
+				} );
+
+					
+				$buttonStyleTag.html('<style>'+buttonCSS+'</style>');
+			
+			}
+			else{
+
+				$buttonStyleTag.html('');
+
+
+				var footerBtn = {
+					'padding': 				this.sy('scf-btn-padding'),
+					'background-color': 	this.sy('scf-btn-bgcolor'),
+					'color': 				this.sy('scf-btn-txtcolor'),
+					'border': 				this.sy('scf-btn-border'),
+				}
+
+				var footerBtnHover = {
+					'background-color': 	this.sy('scf-btnhv-bgcolor'),
+					'color': 				this.sy('scf-btnhv-txtcolor'),
+					'border': 				this.sy('scf-btnhv-border'),
+				}
+
+				selectors['.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn, .xoo-wsc-container .xoo-wsc-btn'] 			= footerBtn;
+				selectors['.xoo-wsc-ft-buttons-cont a.xoo-wsc-ft-btn:hover, .xoo-wsc-container .xoo-wsc-btn:hover'] = footerBtnHover;	
+
+			}
+
+			
 			var gridCols = 'auto';
 
 			if( this.sy('scf-btns-row') === 'three' ){
@@ -509,10 +590,51 @@ jQuery(document).ready(function($){
 			}
 
 
+			/* Quantity */
+			selectors['.xoo-wsc-qty-box'] = {
+				'max-width': this.sy('scbq-width' ,'px')
+			}
+
+
+			var qtyboxBorder 		= window.xoo_admin_params.generateBorderCSS( this.sy('scbq-box-border') ),
+				qtyBoxInputBorder 	= window.xoo_admin_params.generateBorderCSS( this.sy('scbq-input-border') );
+
+
+			selectors['.xoo-wsc-qty-box.xoo-wsc-qtb-square'] = {
+				'border': qtyboxBorder.border,
+				'border-radius': qtyboxBorder.borderRadius
+			}
+
+
+			selectors['input[type="number"].xoo-wsc-qty'] = {
+				'border': qtyBoxInputBorder.border,
+				'border-radius': qtyBoxInputBorder.borderRadius,
+				'background-color': 	this.sy( 'scbq-input-bgcolor' ),
+				'color': 				this.sy( 'scbq-input-txtcolor' ),
+				'height': 				this.sy( 'scbq-height','px' ),
+				'line-height': 			this.sy( 'scbq-height','px' ),
+			}
+
+
+			selectors['.xoo-wsc-chng'] = {
+				'background-color': this.sy( 'scbq-box-bgcolor' ),
+				'color': 			this.sy( 'scbq-box-txtcolor' ),
+				'width': 			this.sy('scbq-btnsize' ,'px')
+			}
+
+			selectors['.xoo-wsc-qtb-circle .xoo-wsc-chng'] = {
+				'height'		: this.sy('scbq-btnsize' ,'px'),
+				'line-height'	: this.sy('scbq-btnsize' ,'px')
+			}
+
+			selectors['.xoo-wsc-body .xoo-wsc-ft-totals'] = {
+				'padding': this.sy( 'scbp-padding' ),
+				'margin': this.sy( 'scbp-margin' ),
+			}
+
 			selectors['.xoo-wsc-product dl.variation'] = {
 				'display': this.sy('scbp-var-format') === 'one_line' ? 'flex' : 'block'
 			}
-
 
 			selectors = $.extend({}, selectors, cardSelectors);
 
@@ -550,7 +672,6 @@ jQuery(document).ready(function($){
 				},
 				product: {
 					layout: 				this.sy('scb-playout'),
-					updateQty: 				false,
 					showPImage: 			this.gl('scb-show').includes('product_image'),
 					showPname: 				this.gl('scb-show').includes('product_name'),
 					showPdel: 				this.gl('scb-show').includes('product_del'),
@@ -566,7 +687,9 @@ jQuery(document).ready(function($){
 					deleteText: 			this.gl('sct-delete'),
 					deleteType: 			this.sy('scbp-deltype'),
 					deleteIcon:  			this.sy('scb-del-icon'),
-					priceType:  			this.gl('scb-prod-price')
+					priceType:  			this.gl('scb-prod-price'),
+					updateQty: 				this.gl('scb-update-qty') === "yes",
+					qtyDesign: 				this.sy('scbq-style'),
 
 				},
 				card: {
@@ -598,10 +721,12 @@ jQuery(document).ready(function($){
 						checkout: this.gl('sct-ft-chkbtn'),
 						continue: this.gl('sct-ft-contbtn')
 					}
-				}
+				},
+				informationBoxLocation: this.sy('scm-info-loc'),
+				informationBox: this.gl('sct-info')
 			}
 
-			data.product.oneLiner = data.product.qtyPriceDisplay === 'one_liner' && data.product.showPqty && data.product.showPprice && data.product.showPtotal;
+			data.product.oneLiner = data.product.qtyPriceDisplay === 'one_liner' && data.product.showPqty && data.product.showPprice && data.product.showPtotal && !data.product.updateQty;
 
 			return data;
 		},
@@ -625,20 +750,6 @@ jQuery(document).ready(function($){
 	}
 
 	SideCart.init();
-
-
-
-	$('select[name="xoo-wsc-gl-options[m-ajax-atc]"]').on( 'change', function(){
-
-		var $catSetting = $(this).closest('.xoo-as-setting').next();
-
-		if( $(this).val() === 'cat_yes' || $(this).val() === 'cat_no' ){
-			$catSetting.show();
-		}
-		else{
-			$catSetting.hide();
-		}
-	} ).trigger('change');
 
 
 	//Install login popup plugin
@@ -743,7 +854,9 @@ jQuery(document).ready(function($){
 					}
 				} )
 
-				if( !failed ){
+
+
+				if( !failed && !$('input[name="xoo-wsc-gl-options[scb-update-qty]"]').is(':checked') ){
 					$oneLinerSetting.show();
 				}
 
@@ -763,19 +876,6 @@ jQuery(document).ready(function($){
 	} );
 
 
-	$('select[name="xoo-wsc-gl-options[scbp-qpdisplay]"], select[name="xoo-wsc-sy-options[scbp-qpdisplay]"]').on('change', function(){
-
-		var $toggle = $('input[name="xoo-wsc-sy-options[scbp-card-back][]"][value="total"], input[name="xoo-wsc-sy-options[scbp-card-back][]"][value="price"]').closest('label');
-
-		if( $(this).val() === 'one_liner' ){
-			$toggle.hide();
-		}
-		else{
-			$toggle.show();
-		}
-	}).trigger('change');
-
-
 	$('select[name="xoo-wsc-sy-options[scbp-card-visible]"]').on('change', function(){
 
 		var $toggle = $('input[name="xoo-wsc-sy-options[scbp-card-back][]"]').closest('.xoo-as-setting');
@@ -789,17 +889,6 @@ jQuery(document).ready(function($){
 	})
 
 	
-
-
-	$('input[name="xoo-wsc-sy-options[scm-width]"]').on('change', function(){
-		if( !$('body').hasClass('folded') && $('.xoo-settings-container').width() < 900 ){
-			var $collapse = $('#collapse-button');
-			if( $collapse.length ){
-				$collapse.trigger('click');
-			}
-		}
-		$(window).trigger('resize');
-	}).trigger('change');
 
 
 
@@ -925,15 +1014,20 @@ jQuery(document).ready(function($){
 
 			Rewards.initColorPicker($bar);
 			
-			$bar.find('.xoo-wsc-bar-setting[data-barset="filter-byproduct"').trigger('change');
+			$bar.find('.xoo-wsc-bar-setting[data-barset="filter-byproduct"]').trigger('change');
 			$bar.find( '.xoo-wsc-bar-prodsearch' ).each(function( index, el ){
 				if( $(el).closest('.xoo-wsc-bar-checkpoints').length ) return; //will fetch values later on checkpoint toggle.
 				Rewards.productSearchFillDefaultValues($(el));
+				Rewards.categorySearchFillDefaultValues($(el));
 			})
 
 			if( callGlobal ){
 				Rewards.globalBarInit();
 			}
+
+			$bar.find('input.xoo-wscbarshow-bar').trigger('change');
+
+			Rewards.toggleBarSettings( $bar );
 			
 			
 		},
@@ -942,6 +1036,23 @@ jQuery(document).ready(function($){
 			Rewards.initProductSearchBox();
 			Rewards.initSortable();
 			Rewards.barNumbering();
+		},
+
+
+		toggleBarSettings: function( $bar ){
+
+			var $showcaseSettings 	= $bar.find('[data-group="free_gift"]');
+
+			if( $bar.find('.xoo-wsc-bar-chkpoint[data-type="gift"]').length ){
+				$showcaseSettings.show();
+			}
+			else{
+				$showcaseSettings.hide();
+			}
+
+			$bar.find('[data-toggle="yes"]').trigger('change'); 
+
+			
 		},
 
 
@@ -970,6 +1081,7 @@ jQuery(document).ready(function($){
 			$('body').on( 'input', '.xoo-wsc-bar-title-input', Rewards.onBarTitleChange );
 			$('body').on( 'change', 'select.xoo-wsc-bar-barValue', Rewards.onBarValueChange );
 			$('body').on( 'change', '.xoo-wsc-bar-setting[data-barset="filter-byproduct"]', Rewards.onProductFilterChange );
+			$('body').on( 'change', 'input.xoo-wscbarshow-bar', Rewards.settingShowBarElsToggle );
 
 			$('button.xoo-as-form-save').on( 'click', Rewards.beforeSettingsSave );
 			$(document).ajaxComplete(Rewards.onSettingsSave);
@@ -1029,11 +1141,19 @@ jQuery(document).ready(function($){
 		},
 
 		onCheckPointToggle: function(){
+
 			var $checkpoint = $(this).closest('.xoo-wsc-bar-chkpoint');
+
 			Rewards.initIconPicker( $checkpoint );
+
 			$.each( $checkpoint.find('.xoo-wsc-bar-prodsearch'), function( index, el ){
 				Rewards.productSearchFillDefaultValues($(el));
 			});
+
+			$.each( $checkpoint.find('.xoo-wsc-bar-catsearch'), function( index, el ){
+				Rewards.categorySearchFillDefaultValues($(el));
+			});
+			
 		},
 
 
@@ -1072,6 +1192,41 @@ jQuery(document).ready(function($){
 			})
 
 
+
+		},
+
+		categorySearchFillDefaultValues( $searchCont ){
+
+			var $defaultCont 	= $searchCont.find('.xoo-wsc-barpsearch-defaults');
+
+			if( !$defaultCont.length ) return true;
+
+			var $defaultInputs  = $defaultCont.find('input'),
+				$searchSelect 	= $searchCont.find('select.wc-category-search'),
+				defaultValues 	= [];
+
+			if( !$defaultInputs.length ) return true;
+
+			let categoryIDs = $defaultInputs.map(function(){
+			    return $(this).val();
+			}).get();
+
+			$searchCont.addClass('xoo-as-processing');
+
+			$.ajax({
+				url: xoo_wsc_admin_params.adminurl,
+				type: 'POST',
+				data: {
+					action: 'xoo_wsc_category_search_fill_defaults',
+					category_ids: categoryIDs,
+					xoo_wsc_nonce: xoo_wsc_admin_params.nonce
+				},
+				success: function( response ){
+					$searchSelect.html(response);
+					$defaultCont.remove();
+					$searchCont.removeClass('xoo-as-processing');
+				}
+			});
 
 		},
 
@@ -1155,7 +1310,9 @@ jQuery(document).ready(function($){
 		},
 
 		deleteCheckpoint: function(e){
+			var $bar = $(this).closest('.xoo-wsc-bar');
 			$(this).closest('.xoo-wsc-bar-chkpoint').remove();
+			Rewards.toggleBarSettings($bar);
 			e.stopImmediatePropagation();
 		},
 
@@ -1180,8 +1337,7 @@ jQuery(document).ready(function($){
 
 			Rewards.initIconPicker( $checkpoint );
 			Rewards.initProductSearchBox();
-
-
+			Rewards.toggleBarSettings( $bar );
 		},
 
 		initProductSearchBox(){
@@ -1196,9 +1352,32 @@ jQuery(document).ready(function($){
 			  $(e.target).next().attr('class',e.iconpickerValue || $(e.target).val() );
 			}).trigger('iconpickerSelected');
 			
+		},
+
+		settingShowBarElsToggle(){
+			var $thisCont = $(this).closest('label');
+
+			if ($(this).is(':checked')) {
+				$thisCont.siblings('label').show();
+			} else {
+				$thisCont.siblings('label').hide();
+			}
 		}
 
 	}
+
+	
+	// Show/hide max gifts field when "Allow users to select their gift" is toggled
+	$(document).on('change', '.xoo-wsc-chkpoint-setting input[name*="[choose]"]', function() {
+		var $container = $(this).closest('.xoo-wsc-bar-chkpoint');
+		var $maxGiftsField = $container.find('.xoo-wsc-max-gifts');
+		
+		if ($(this).is(':checked')) {
+			$maxGiftsField.show();
+		} else {
+			$maxGiftsField.hide();
+		}
+	});
 
 	Rewards.init();
 
@@ -1228,6 +1407,31 @@ jQuery(document).ready(function($){
 		} ).trigger('change');
 
 	}
+
+
+	setTimeout( function(){
+
+		var onceResized = false;
+
+		$(window).resize(function(){
+
+			if( onceResized ) return;
+
+			const $container 	= $('.xoo-as-container');
+
+			if( $container.length && $container.innerWidth() <= 900 ){
+				
+				SideCart.toggle('close');
+				
+			}
+
+			onceResized = true;
+
+		}).trigger('resize');
+
+	}, 400 );
+
+
 
 	
 	

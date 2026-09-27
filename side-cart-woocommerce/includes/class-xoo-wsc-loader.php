@@ -31,7 +31,7 @@ class Xoo_Wsc_Loader{
 		$this->define( "XOO_WSC_PATH", plugin_dir_path( XOO_WSC_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WSC_PLUGIN_BASENAME", plugin_basename( XOO_WSC_PLUGIN_FILE ) );
 		$this->define( "XOO_WSC_URL", untrailingslashit( plugins_url( '/', XOO_WSC_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WSC_VERSION", "2.7.5" ); //Plugin version
+		$this->define( "XOO_WSC_VERSION", "2.8.2" ); //Plugin version
 		$this->define( "XOO_WSC_LITE", true );
 	}
 
@@ -188,6 +188,7 @@ class Xoo_Wsc_Loader{
 			
 			$glOptions 	= xoo_wsc_helper()->get_general_option();
 			$syOptions 	= xoo_wsc_helper()->get_style_option();
+			$avOptions 	= xoo_wsc_helper()->get_advanced_option();
 
 			if( version_compare( $db_version, '2.5', '<')  ){
 				$glOptions['scb-show'][] 		= 'product_qty';
@@ -230,7 +231,81 @@ class Xoo_Wsc_Loader{
 				$syOptions['sck-count-size'] = 28;
 			}
 			
+
+			if( version_compare( $db_version, '2.7.6', '<')  ){
+
+				$syOptions['scf-btn-newlayout'] = 'no';
+				$syOptions['scb-empty-img'] 	= '';
+				$avOptions['m-fetch-cart'] 		= 'page_load';
+				$glOptions['sct-info'] 			= '';
+				$syOptions['scm-info-loc'] 		= 'footer_start';
+
+				update_option( 'xoo-wsc-had-old-btn-layout', 'yes' );
+
+			}
+
+
+			if( version_compare( $db_version, '2.7.7', '<')  ){
+
 			
+
+				//Create theme from older button settings
+				if( isset( $syOptions['scf-btn-main'] ) && !empty( $syOptions['scf-btn-main'] ) && ( !isset( $syOptions['scf-btn-newlayout'] ) || $syOptions['scf-btn-newlayout'] === "yes" ) ){
+
+					$button_settings = xoo_wsc_helper()->get_button_values( $syOptions['scf-btn-main'] );
+
+					$default_theme1 = array_merge(
+						$button_settings,
+						array(
+							'theme_id' => 'theme_default1',
+							'title'    => 'Default Theme #1',
+						)
+					);
+
+					$default_theme2 = array_merge(
+						$button_settings,
+						array(
+							'theme_id'  => 'theme_default2',
+							'title'     => 'Default Theme #2',
+							'size_type' => 'auto',
+						)
+					);
+
+					$syOptions['scm-btnthemes'] = array(
+						'theme_default1' => $default_theme1,
+						'theme_default2' => $default_theme2,
+					);
+
+					$syOptions['scm-btntheme-cart'] = $syOptions['scm-btntheme-checkout'] = $syOptions['scm-btntheme-continue'] = 'theme_default1';
+					
+					$syOptions['scm-btntheme-empty'] = 'theme_default2';
+					
+				}
+
+			}
+
+
+			if( version_compare( $db_version, '2.8.0', '<')  ){
+
+				$glOptions['scb-update-qty'] 	= 'no';
+				$glOptions['sch-show'] 			= array_diff( $glOptions['sch-show'], array( 'notifications' ) );
+
+				$syOptions['scbq-btnsize'] 		= 20;
+				$syOptions['scbq-input-border'] = $syOptions['scbq-box-border'] = array(
+					'size' 		=> 1,
+					'color' 	=> '#c9c9c9',
+					'style' 	=> 'solid',
+					'radius' 	=> 0,
+				);
+
+				if ( false === get_option( 'xoo_tracking_consent_side-cart-woocommerce', false ) ) {
+				    update_option( 'xoo_tracking_consent_side-cart-woocommerce', 'no' );
+				}
+
+			}
+
+			
+			update_option('xoo-wsc-av-options', $avOptions );
 			update_option('xoo-wsc-gl-options', $glOptions );
 			update_option('xoo-wsc-sy-options', $syOptions );
 

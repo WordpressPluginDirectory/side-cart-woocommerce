@@ -43,8 +43,9 @@
 					</div>
 
 					<div class="xoo-wsc-bar-setting xoo-wsc-barset-multiplebox">
-						<label>Show</label>
+						<label>Bar elements to show</label>
 						<div>
+							<label><input type="checkbox" value="bar" class="xoo-wscbarshow-bar" name="<?php echo $id ?>[show][]" {{ data.show && data.show.includes('bar') ? 'checked' : '' }}>Bar</label>
 							<label><input type="checkbox" value="remaining" name="<?php echo $id ?>[show][]" {{ data.show && data.show.includes('remaining') ? 'checked' : '' }}>Remaining</label>
 							<label><input type="checkbox" value="amount" name="<?php echo $id ?>[show][]" {{ data.show && data.show.includes('amount') ? 'checked' : '' }}>Amount</label>
 							<label><input type="checkbox" value="title" name="<?php echo $id ?>[show][]" {{ data.show && data.show.includes('title') ? 'checked' : '' }}>Title</label>
@@ -70,6 +71,35 @@
 						<input type="text" value="{{data.comptxt}}" name="<?php echo $id ?>[comptxt]">
 					</div>
 
+
+					<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup" data-group="free_gift">
+
+						<h4 style="width: 100%; margin: 0;">Free Gift Showcase</h4>
+
+						<div class="xoo-wsc-bar-setting xoo-wsc-barset-multiplebox" style="margin-bottom: 10px;">
+							<label>Show</label>
+
+							<div>
+								<label><input type="checkbox" value="bar" name="<?php echo $id ?>[showcase][]" {{ data.showcase && data.showcase.includes('bar') ? 'checked' : '' }}>Gift Bar</label>
+								<label><input type="checkbox" value="added_gifts" name="<?php echo $id ?>[showcase][]" {{ data.showcase && data.showcase.includes('added_gifts') ? 'checked' : '' }}>Gifts added to cart</label>
+								<label><input type="checkbox" value="unavailable_gifts" name="<?php echo $id ?>[showcase][]" {{ data.showcase && data.showcase.includes('unavailable_gifts') ? 'checked' : '' }}>Unavailable Gifts</label>
+							</div>
+
+						</div>
+
+					</div>
+
+					<div class="xoo-wsc-barset-full  xoo-wsc-bar-setgroup" data-group="free_gift">
+						<div class="xoo-wsc-bar-setting">
+							<label>Gift Showcase Heading</label>
+							<input type="text" value="{{data.gift_showcase_heading}}" name="<?php echo $id ?>[gift_showcase_heading]">
+						</div>
+
+						<div class="xoo-wsc-bar-setting">
+							<label>Gift Showcase Heading on checkpoint achieved</label>
+							<input type="text" value="{{data.gift_showcase_heading_achieved}}" name="<?php echo $id ?>[gift_showcase_heading_achieved]">
+						</div>
+					</div>
 
 					<div class="xoo-wsc-accordion">
 
@@ -147,6 +177,11 @@
 									<input type="text" value="{{data.contBGColor}}" name="<?php echo $id ?>[contBGColor]">
 								</div>
 
+								<div class="xoo-wsc-bar-setting">
+									<label>Font Size</label>
+									<input type="number" value="{{data.fontSize}}" name="<?php echo $id ?>[fontSize]">
+								</div>
+
 							</div>
 
 							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
@@ -166,6 +201,45 @@
 
 							</div>
 
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup xoo-wsc-bar-showcase-set" data-group="free_gift">
+
+								<h4 style="width: 100%; margin: 0;">Gifts Showcase</h4>
+
+								<div class="xoo-wsc-bar-setting">
+									<label>Container Border</label>
+									<input type="text" value="{{data.showcaseBorder}}" name="<?php echo $id ?>[showcaseBorder]">
+								</div>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Background Color</label>
+									<input type="text" value="{{data.showcaseBGColor}}" name="<?php echo $id ?>[showcaseBGColor]">
+								</div>
+
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Text Color</label>
+									<input type="text" value="{{data.showcaseTxtColor}}" name="<?php echo $id ?>[showcaseTxtColor]">
+								</div>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Heading Color</label>
+									<input type="text" value="{{data.showcaseHeadingColor}}" name="<?php echo $id ?>[showcaseHeadingColor]">
+								</div>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Bar Container Background Color</label>
+									<input type="text" value="{{data.showcaseBarBGColor}}" name="<?php echo $id ?>[showcaseBarBGColor]">
+								</div>
+
+								<div class="xoo-wsc-bar-setting xoo-wsc-barColorPicker">
+									<label>Bar Container Text Color</label>
+									<input type="text" value="{{data.showcaseBarTxtColor}}" name="<?php echo $id ?>[showcaseBarTxtColor]">
+								</div>
+
+								
+
+
+							</div>
 
 						</div>
 
@@ -220,21 +294,38 @@
 
 							</div>
 
+							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup" data-group="free_gift">
+								<div class="xoo-wsc-bar-setting">
+									<div class="xoo-wsc-bar-setchkbox">
+										<label>Free Gift - Limit to Highest Gift</label>
+										<input type="hidden" name="<?php echo $id ?>[highestGift]" value="no">
+										<input type="checkbox" value="yes" name="<?php echo $id ?>[highestGift]" {{ data.highestGift == 'yes' ? 'checked' : '' }}>
+									</div>
+									<span class="xoo-scbhk-desc">If you have multiple "Free Gift" checkpoints and only want to award the gift from the highest checkpoint, enable this option. </span>
+								</div>
+
+							</div>
+
+
 							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
 								<div class="xoo-wsc-bar-setting">
-									<label>Free Gift - Limit to Highest Gift</label>
-									<input type="hidden" name="<?php echo $id ?>[highestGift]" value="no">
-									<input type="checkbox" value="yes" name="<?php echo $id ?>[highestGift]" {{ data.highestGift == 'yes' ? 'checked' : '' }}>
-									<span class="xoo-scbhk-desc">If you have multiple "Free Gift" checkpoints and only want to award the gift from the highest checkpoint, enable this option. </span>
+									<div class="xoo-wsc-bar-setchkbox">
+										<label>Grant Reward Only for Highest Checkpoint</label>
+										<input type="hidden" name="<?php echo $id ?>[highestReward]" value="no">
+										<input type="checkbox" value="yes" name="<?php echo $id ?>[highestReward]" {{ data.highestReward == 'yes' ? 'checked' : '' }}>
+									</div>
+									<span class="xoo-scbhk-desc">Enable this option to grant rewards only for the highest checkpoint reached. Rewards from previously completed checkpoints will be skipped.<br>Example: If a customer reaches checkpoint 5, only the reward for checkpoint 5 will be granted. Rewards for checkpoints 1–4 will be skipped. </span>
 								</div>
 
 							</div>
 
 							<div class="xoo-wsc-barset-full xoo-wsc-bar-setgroup">
 								<div class="xoo-wsc-bar-setting">
-									<label>Discount - Use Highest Discount Across All Bars</label>
-									<input type="hidden" name="<?php echo $id ?>[overrideDiscount]" value="no">
-									<input type="checkbox" value="yes" name="<?php echo $id ?>[overrideDiscount]" {{ data.overrideDiscount == 'yes' ? 'checked' : '' }}>
+									<div class="xoo-wsc-bar-setchkbox">
+										<label>Discount - Use Highest Discount Across All Bars</label>
+										<input type="hidden" name="<?php echo $id ?>[overrideDiscount]" value="no">
+										<input type="checkbox" value="yes" name="<?php echo $id ?>[overrideDiscount]" {{ data.overrideDiscount == 'yes' ? 'checked' : '' }}>
+									</div>
 									<span class="xoo-scbhk-desc">When enabled, the highest discount milestone across all progress bars will take priority and override discounts from other progress bars. If disabled, the discount checkpoints in this progress bar will apply its own discount independently. </span>
 								</div>
 
@@ -258,7 +349,7 @@
 					<option value="discount">Discount</option>
 					<option value="display">Only for display</option>
 				</select>
-				<button type="button" class="button button-secondary xoo-wsc-bar-add-chkpoint">+ Add checkpoint</button>
+				<button type="button" class="xoo-btn xoo-secondary-btn xoo-wsc-bar-add-chkpoint">+ Add checkpoint</button>
 			</div>
 
 			<div class="xoo-wsc-bar-checkpoints"></div>

@@ -58,9 +58,46 @@ class Xoo_Wsc_Admin_Settings{
 		add_action( 'xoo_admin_setting_field_callback_html', array( $this, 'header_layout_setting_html' ), 10, 4 );
 
 		add_action( 'wp_ajax_xoo_wsc_product_search_fill_defaults', array( $this, 'product_search_fill_defaults' ) );
+		add_action( 'wp_ajax_xoo_wsc_category_search_fill_defaults', array( $this, 'category_search_fill_defaults' ) );
 
 		add_filter( 'xoo_wsc_admin_settings', array( $this, 'filter_settings' ), 10, 2 );
 
+
+
+
+	}
+
+	public function category_search_fill_defaults(){
+
+		if ( ! wp_verify_nonce( $_POST['xoo_wsc_nonce'], 'xoo-wsc-nonce' ) ) {
+			wp_die( 'Cheating' );
+		}
+
+		$category_ids = isset( $_POST['category_ids'] ) ? array_map( 'absint', (array) $_POST['category_ids'] ) : array();
+
+		if ( empty( $category_ids ) ) {
+			wp_die();
+		}
+
+		$optionsHTML = '';
+
+		foreach ( $category_ids as $category_id ) {
+
+			$category = get_term( $category_id, 'product_cat' );
+
+			if ( $category && ! is_wp_error( $category ) ) {
+
+				$optionsHTML .= sprintf(
+					'<option value="%d" selected="selected">%s</option>',
+					$category->term_id,
+					esc_html( $category->name )
+				);
+			}
+		}
+
+		echo $optionsHTML;
+		
+		wp_die();
 	}
 
 
@@ -72,6 +109,15 @@ class Xoo_Wsc_Admin_Settings{
 				}
 			}
 		}
+
+		if( $type === 'style' && get_option( 'xoo-wsc-had-old-btn-layout',true ) !== "yes" ){
+			foreach  ($settings as $index => $setting ) {
+				if( in_array( $setting['id'], array( 'scf-btns-theme', 'scf-btn-border', 'scf-btn-bgcolor', 'scf-btn-txtcolor', 'scf-btnhv-border', 'scf-btnhv-bgcolor', 'scf-btnhv-txtcolor', 'scf-btn-newlayout' ) ) ){
+					unset( $settings[$index] );
+				}
+			}
+		}
+
 		return $settings;
 	}
 
@@ -157,8 +203,8 @@ class Xoo_Wsc_Admin_Settings{
 		
 		wp_enqueue_style( 'xoo-wsc-magic', XOO_WSC_URL.'/library/magic/dist/magic.min.css', array(), '1.0' );
 		wp_enqueue_script( 'masonry-js', 'https://unpkg.com/masonry-layout@4.2.2/dist/masonry.pkgd.min.js', array(), XOO_WSC_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
-		wp_enqueue_script( 'xoo-wsc-serializejson', XOO_WSC_URL . '/admin/assets/xoo-wsc-serializejson.js', array( 'jquery' ), '1.0', true );
-		
+
+
 
 		wp_enqueue_style( 'xoo-wsc-admin-fonts', XOO_WSC_URL . '/assets/css/xoo-wsc-fonts.css', array(), XOO_WSC_VERSION );
 		wp_enqueue_style( 'xoo-wsc-admin-style', XOO_WSC_URL . '/admin/assets/xoo-wsc-admin-style.css', array(), XOO_WSC_VERSION );
@@ -170,24 +216,41 @@ class Xoo_Wsc_Admin_Settings{
 			'isMobile' 	=> wp_is_mobile() ? 'yes' : 'no',
 			'hasMenu' 	=> !empty( wp_get_nav_menus() ),
 			'bars' 		 => xoo_wsc_helper()->get_rewards_option('bars'),
-			'barDefaults' => array(
+			'barDefaults' =>  array(
 				'settings' => array(
-					'barTitle' 				=> 'Progress bar [%^]',
-					'enable' 				=> 'yes',
-					'barValue' 				=> 'subtotal',
-					'location' 				=> 'xoo_wsc_body_start',
-					'show' 					=> array( 'remaining', 'amount', 'title', 'icon' ),
-					'comptxt' 				=> "🎉 Congratulations, you've unlocked all rewards.",
-					'emptyColor' 			=> '#eee',
-					'filledColor' 			=> '#444',
-					'textColor' 			=> '#000',
-					'iconColor' 			=> '#444',
-					'iconBGColor' 			=> '#fff',
-					'iconBorder' 			=> '2px solid #eee',
-					'iconColorFilled' 		=> '#fff',
-					'iconBGColorFilled' 	=> '#444',
-					'iconBorderFilled'		=> '4px solid #eee',
-					'overrideDiscount' 		=> 'yes' 
+					'barTitle' 							=> 'Progress bar [%^]',
+					'enable' 							=> 'yes',
+					'barValue' 							=> 'subtotal',
+					'location' 							=> 'xoo_wsc_body_start',
+					'show' 								=> array( 'bar', 'remaining', 'amount', 'title', 'icon' ),
+					'comptxt' 							=> "Congratulations, you've unlocked all rewards.",
+					'showcase' 							=> array( 'bar', 'added_gifts', 'unavailable_gifts' ),
+					'gift_showcase_heading' 			=> "Gifts Picked for You",
+					'gift_showcase_heading_achieved' 	=> "Gifts Unlocked!",
+					'emptyColor' 						=> '#eee',
+					'filledColor' 						=> '#444',
+					'textColor' 						=> '#000',
+					'iconColor' 						=> '#444',
+					'iconBGColor' 						=> '#fff',
+					'iconBorder' 						=> '2px solid #eee',
+					'iconColorFilled' 					=> '#fff',
+					'iconBGColorFilled' 				=> '#444',
+					'iconBorderFilled'					=> '4px solid #eee',
+					'contBGColor' 						=> '#fff',
+					'fontSize' 							=> 14,
+					'contMargin' 						=> '0px 0px',
+					'contPadding' 						=> '15px 20px',
+					'highestGift' 						=> 'no',
+					'overrideDiscount' 					=> 'yes',
+					'filter_byproducts' 				=> 'no',
+					'filter_product_ids' 				=> '' ,
+					'productNotEligibleTxt'				=> 'This product is not eligible for rewards',
+					'showcaseBorder'					=> '1px solid #eee',
+					'showcaseBGColor'					=> '#fff',
+					'showcaseTxtColor'					=> '#000',
+					'showcaseHeadingColor'				=> '#444',
+					'showcaseBarBGColor'				=> '#f8f9fa',
+					'showcaseBarTxtColor'				=> '#000'
 				),
 				'checkpoints' => array(
 					'freeshipping' => array(
@@ -199,14 +262,22 @@ class Xoo_Wsc_Admin_Settings{
 						'remaining' => "You're [value] away from Free Shipping",
 					),
 					'gift' => array(
-						'enable' 	=> 'yes',
-						'title' 	=> 'Free Gift',
-						'icon' 		=> 'fas fa-gift',
-						'iconFilled' => 'fas fa-check',
-						'amount' 	=> 15,
-						'remaining' => "You're [value] away from a Free Gift",
-						'gift_qty' 	=> 1,
-						'gift_ids' 	=> '',
+						'enable' 				=> 'yes',
+						'title' 				=> 'Free Gift',
+						'icon' 					=> 'fas fa-gift',
+						'iconFilled' 			=> 'fas fa-check',
+						'amount' 				=> 15,
+						'remaining' 			=> "You're [value] away from a Free Gift",
+						'gift_qty' 				=> 1,
+						'gift_ids' 				=> '',
+						'cat_ids' 				=> '',
+						'showcase' 				=> 'always',
+						'choose' 				=> 'yes',
+						'max_gifts' 			=> 0,
+						'showcase_beforetxt' 	=> 'Shop for [value] to claim your gift.',
+						'showcase_achievedtxt' 	=> 'Unlocked! Claim your gift',
+						'showcase_claimedtxt' 	=> 'Gift added to your cart!',
+						'showcase_heading' 		=> 'Free Gifts for you'
 					),
 					'discount' => array(
 						'enable' 	=> 'yes',
@@ -268,7 +339,7 @@ class Xoo_Wsc_Admin_Settings{
 				$download_result = download_url($plugin_zip_url);
 
 				if (is_wp_error($download_result)) {
-					throw new Xoo_Exception( $download_result );
+					throw new \XooWSC\Framework\Xoo_Exception( $download_result );
 				}
 
 				// Prepare for installation
@@ -281,7 +352,7 @@ class Xoo_Wsc_Admin_Settings{
 
 				// Return the result of the installation
 				if (is_wp_error($install_result)) {
-					throw new Xoo_Exception( $install_result );
+					throw new \XooWSC\Framework\Xoo_Exception( $install_result );
 				}
 
 				//Default setting when installed using side cart
@@ -311,7 +382,7 @@ class Xoo_Wsc_Admin_Settings{
 			$activate_result = activate_plugin($plugin_slug . '/xoo-el-main.php');
 
 			if (is_wp_error($activate_result)) {
-				throw new Xoo_Exception( $activate_result );
+				throw new \XooWSC\Framework\Xoo_Exception( $activate_result );
 			}
 
 			wp_send_json( array(
@@ -406,11 +477,6 @@ class Xoo_Wsc_Admin_Settings{
 					<span>You can change this later from "Style"</span>
 				</div>
 
-				<div>
-					<span class="xoo-wsc-adpopup-head">Quantity & Price Display</span>
-					<?php echo xoo_wsc_helper()->admin->get_setting_html_pop( 'general', 'sc_body', 'scbp-qpdisplay' ); ?>
-				</div>
-
 				<button type="button" class="xoo-wsc-adpopup-go button-primary button">Let's Go!</button>
 			</div>
 			<div class="xoo-wsc-adpop-opac"></div>
@@ -498,6 +564,42 @@ class Xoo_Wsc_Admin_Settings{
 
 		return ob_get_clean();
 
+	}
+
+
+
+	public function default_info_text(){
+
+		ob_start();
+
+		?>
+		<div style="padding:5px 5px;">
+			<table style="margin:auto;border-collapse:collapse;border:none; width: 380px;  text-align: center; background-color: transparent;" border="0">
+				<tr>
+					<td align="center" style="padding:5px 12px;font-size:13px;border:none;text-align: center;background-color: transparent;">
+						<div align="center" style="text-align:center;" a>
+							<img src="<?php echo XOO_WSC_URL.'/admin/assets/images/info/check.png'?>" style="width:30px;height:auto;" class="aligncenter">
+						</div>
+						<span style="color: #000000;"><b>Secure Checkout</b></span>
+					</td>
+					<td align="center" style="padding:5px 12px;font-size:13px;border:none;text-align: center; background-color: transparent;">
+						<div align="center" style="text-align:center;">
+							<img src="<?php echo XOO_WSC_URL.'/admin/assets/images/info/man.png'?>" style="width:30px;height:auto;" class="aligncenter">
+						</div>
+						<span style="color: #000000;"><b>Fast Shipping</b></span>
+					</td>
+					<td align="center" style="padding:5px 12px;font-size:13px;border:none;text-align: center;background-color: transparent;">
+						<div align="center" style="text-align:center;">
+							<img src="<?php echo XOO_WSC_URL.'/admin/assets/images/info/returns.png'?>" style="width:30px;height:auto;" class="aligncenter">
+						</div>
+						<span style="color: #000000;"><b>Easy Returns</b></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<?php
+		return ob_get_clean();
 	}
 
 }

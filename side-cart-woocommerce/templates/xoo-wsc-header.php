@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.7.1
+ * @version 2.8.0
  */
 
 
@@ -60,10 +60,9 @@ $headingHTML = $basketHTML = $closeHTML = $saveHTML = '';
 
 <div class="xoo-wsch-top xoo-wsch-new">
 
-	<?php if( $showNotifications ): ?>
-		<?php xoo_wsc_cart()->print_notices_html( 'cart' ); ?>
-	<?php endif; ?>	
 
+	<?php xoo_wsc_cart()->print_notices_html(); ?>
+	
 	<?php foreach ( $headerLayout as $section => $elements ): ?>
 		
 		<div class="xoo-wsch-section xoo-wsch-sec-<?php echo $section ?>">

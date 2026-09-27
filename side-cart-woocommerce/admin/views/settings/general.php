@@ -24,60 +24,6 @@ else{
 
 $settings = array(
 
-	/***** Shortcode ****/
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Add basket to menu',
-		'id' 			=> 'shbk-menu',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> $menuOptions,
-			'multiple' => 'yes',
-			'custom_attributes' => array(
-				'data-select2box' => 'yes',
-				'multiple' => 'yes',
-				'data-placeholder' => 'Select menu'
-			)
-		),
-		'default' 	=> 'none',
-		'desc' 			=> empty( $menus ) ? 'You don\'t have any menu on your site yet. Please <a href="'.admin_url( 'nav-menus.php' ).'" target="__blank">create</a> one first.' : ''
-	),
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'Show',
-		'id' 			=> 'shbk-show',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> array(
-				'icon' 			=> 'Icon',
-				'subtotal' 		=> 'Subtotal',
-				'count' 		=> 'Count',
-			)
-		),
-		'default' 	=> array(
-			'icon', 'subtotal', 'count',
-		),
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox_list',
-		'title' 		=> 'When cart is empty, hide',
-		'id' 			=> 'shbk-hide',
-		'section_id' 	=> 'sh_bk',
-		'args' 			=> array(
-			'options' 	=> array(
-				'icon' 			=> 'Icon',
-				'subtotal' 		=> 'Subtotal',
-				'count' 		=> 'Count',
-			)
-		),
-		'default' 	=> array(),
-	),
-
-
 	/** SIDE CART HEADER **/
 
 	array(
@@ -87,9 +33,9 @@ $settings = array(
 		'section_id' 	=> 'sc_head',
 		'args' 			=> array(
 			'options' 	=> array(
-				'notifications' => 'Notifications',
 				'basket' 		=> 'Basket Icon',
 				'close' 		=> 'Close Icon',
+				'notifications' => 'Notifications',
 				'save' 			=> 'Save for Later Icon',
 			),
 		),
@@ -97,7 +43,7 @@ $settings = array(
 			'notifications', 'basket', 'close', 'save'
 		),
 		'pro' => array(
-			'notifications', 'shipping_bar', 'save'
+			'shipping_bar', 'save'
 		)
 	),
 
@@ -144,6 +90,58 @@ $settings = array(
 	),
 
 	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Allow quantity update',
+		'id' 			=> 'scb-update-qty',
+		'section_id' 	=> 'sc_body',
+		'default' 		=> 'yes',
+		'args' 			=> array(
+			'toggleSettings' => array(
+				'xoo-wsc-gl-options[scbp-qpdisplay]' => array( 'yes' ),
+				'xoo-wsc-sy-options[scbp-qpdisplay]' => array( 'yes' ),
+			)
+		),
+
+	),
+
+
+	array(
+		'callback' 		=> 'number',
+		'title' 		=> 'Quantity Update Delay',
+		'id' 			=> 'scb-update-delay',
+		'section_id' 	=> 'sc_body',
+		'default' 		=> '500',
+		'desc' 			=> 'Wait before quantiy update request is sent to server ( 1 second = 1000 )'
+	),
+
+	array(
+		'callback' 		=> 'checkbox',
+		'title' 		=> 'Allow Variation update',
+		'id' 			=> 'scb-quickview',
+		'section_id' 	=> 'sc_body',
+		'default' 		=> 'yes',
+		'desc' 			=> 'For variable products, allow customers to change their selected option.',
+		'pro' 			=> 'yes'
+	),
+
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Quantity & Price Display',
+		'id' 			=> 'scbp-qpdisplay',
+		'section_id' 	=> 'sc_body',
+		'args' 			=> array(
+			'options' 	=> array(
+				'one_liner' => 'Show in one line',
+				'separate' 	=> 'Show separately',
+			),
+		),
+		'default' 		=> 'one_liner',
+		'desc' 			=> 'When quantity update is not allowed'
+	),
+
+
+
+	array(
 		'callback' 		=> 'select',
 		'title' 		=> 'Show Product Savings in',
 		'id' 			=> 'scb-prod-savings',
@@ -155,6 +153,7 @@ $settings = array(
 			),
 		),
 		'default' 	=> 'amount',
+		'desc' 		=> 'The amount saved when product is on sale.'
 	),
 
 	array(
@@ -174,44 +173,7 @@ $settings = array(
 
 	array(
 		'callback' 		=> 'select',
-		'title' 		=> 'Quantiy & Price Display',
-		'id' 			=> 'scbp-qpdisplay',
-		'section_id' 	=> 'sc_body',
-		'args' 			=> array(
-			'options' 	=> array(
-				'one_liner' => 'Show in one line',
-				'separate' 	=> 'Show separately',
-			),
-		),
-		'default' 		=> 'separate',
-		'desc' 			=> '"One line" works when quantity, price and total are enabled'
-	),
-
-
-	array(
-		'callback' 		=> 'checkbox',
-		'title' 		=> 'Allow quantity update',
-		'id' 			=> 'scb-update-qty',
-		'section_id' 	=> 'sc_body',
-		'default' 		=> 'yes',
-		'pro' 			=> 'yes',
-	),
-
-
-	array(
-		'callback' 		=> 'number',
-		'title' 		=> 'Quantity Update Delay',
-		'id' 			=> 'scb-update-delay',
-		'section_id' 	=> 'sc_body',
-		'default' 		=> '500',
-		'desc' 			=> 'Wait before quantiy update request is sent to server ( 1 second = 1000 )',
-		'pro' 			=> 'yes',
-	),
-
-
-	array(
-		'callback' 		=> 'select',
-		'title' 		=> 'Show Variation in product title',
+		'title' 		=> 'Include Variation data in product title',
 		'id' 			=> 'scb-pname-var',
 		'section_id' 	=> 'sc_body',
 		'args' 			=> array(
@@ -303,7 +265,6 @@ $settings = array(
 		'default' 		=> 'yes',
 		'desc' 			=> 'Set footer text below under "Texts section" '
 	),
-
 
 
 	/*** SUGGESTED PRODUCTS ***/
@@ -465,9 +426,12 @@ $settings = array(
 				'cat_yes' 	=> 'Yes, only for product categories',
 				'no'		=> 'No',
 			),
+			'toggleSettings' => array(
+				'xoo-wsc-gl-options[m-ajax-atc-catid]' => array( 'yes', 'no' ),
+			)
 		),
 		'default' 		=> 'yes',
-		'desc' 			=> 'Add to cart without refreshing page'
+		'desc' 			=> 'Add to cart without refreshing page',
 	),
 
 
@@ -578,7 +542,58 @@ $settings = array(
 	),
 
 
+	/***** Shortcode ****/
 
+	array(
+		'callback' 		=> 'select',
+		'title' 		=> 'Add basket to menu',
+		'id' 			=> 'shbk-menu',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> $menuOptions,
+			'multiple' => 'yes',
+			'custom_attributes' => array(
+				'data-select2box' => 'yes',
+				'multiple' => 'yes',
+				'data-placeholder' => 'Select menu'
+			)
+		),
+		'default' 	=> 'none',
+		'desc' 			=> empty( $menus ) ? 'You don\'t have any menu on your site yet. Please <a href="'.admin_url( 'nav-menus.php' ).'" target="__blank">create</a> one first.' : ''
+	),
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'Show',
+		'id' 			=> 'shbk-show',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> array(
+				'icon' 			=> 'Icon',
+				'subtotal' 		=> 'Subtotal',
+				'count' 		=> 'Count',
+			)
+		),
+		'default' 	=> array(
+			'icon', 'subtotal', 'count',
+		),
+	),
+
+
+	array(
+		'callback' 		=> 'checkbox_list',
+		'title' 		=> 'When cart is empty, hide',
+		'id' 			=> 'shbk-hide',
+		'section_id' 	=> 'sh_bk',
+		'args' 			=> array(
+			'options' 	=> array(
+				'icon' 			=> 'Icon',
+				'subtotal' 		=> 'Subtotal',
+				'count' 		=> 'Count',
+			)
+		),
+		'default' 	=> array(),
+	),
 
 	/***** TEXTS *****/
 	array(
@@ -588,6 +603,21 @@ $settings = array(
 		'section_id' 	=> 'texts',
 		'default' 		=> 'Your Cart',
 	),
+
+
+
+	array(
+		'callback' 		=> 'wp_editor',
+		'title' 		=> 'Information Box',
+		'id' 			=> 'sct-info',
+		'section_id' 	=> 'texts',
+		'default' 		=> xoo_wsc_admin_settings()->default_info_text(),
+		'desc' 			=> '',
+		'args' 			=> array(
+			'reset' 	=> 'yes'
+		)
+	),
+
 
 	array(
 		'callback' 		=> 'text',
@@ -667,6 +697,7 @@ $settings = array(
 		'section_id' 	=> 'texts',
 		'default' 		=> 'Remove',
 	),
+
 
 
 	array(

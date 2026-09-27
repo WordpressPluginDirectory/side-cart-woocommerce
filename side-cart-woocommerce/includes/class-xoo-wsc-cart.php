@@ -15,6 +15,10 @@ class Xoo_Wsc_Cart{
 	public $addedToCart = false;
 	public $bundleItems = array();
 
+	public $noticeHTML;
+
+	public $action;
+
 
 	public static function get_instance(){
 		if ( is_null( self::$_instance ) ) {
@@ -61,6 +65,8 @@ class Xoo_Wsc_Cart{
 	/* Add to cart is performed by woocommerce as 'add-to-cart' is passed */
 	public function add_to_cart(){
 
+		$this->action = 'addtocart';
+
 		if( !isset( $_POST['add-to-cart'] ) ) return;
 
 		if( $this->addedToCart ){
@@ -83,8 +89,13 @@ class Xoo_Wsc_Cart{
 
 
 	public function added_to_cart( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ){
-		//$this->set_notice( __( 'Item added to cart', 'side-cart-woocommerce' ), 'sucess' );
+
+		if( in_array( 'notifications', $this->glSettings['sch-show'] ) ){
+			$this->set_notice( __( 'Item added to cart', 'side-cart-woocommerce' ), 'success', 'addtocart' );
+		}
+
 		$this->addedToCart = 'yes';
+
 	}
 
 
@@ -93,36 +104,46 @@ class Xoo_Wsc_Cart{
 	}
 
 
+	public function print_notices_html( $wc_cart_notices = true, $clean = true ) {
 
-	public function print_notices_html( $section = 'cart', $wc_cart_notices = true, $clean = true ){
+		if ( !( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			return;
+		}
 
-		if( isset( $_POST['noticeSection'] ) && $_POST['noticeSection'] !== $section ) return;
+		if ( ! isset( $this->noticeHTML ) ) {
 
-		if( $wc_cart_notices ){
+			if ( $wc_cart_notices ) {
 
-			do_action( 'woocommerce_check_cart_items' );
+				do_action( 'woocommerce_check_cart_items' );
 
-			//Add WC notices
-			$wc_notices = wc_get_notices( 'error' );
+				$wc_notices = wc_get_notices( 'error' );
 
-			foreach ( $wc_notices as $wc_notice ) {
-				$this->set_notice( $wc_notice['notice'], 'error' );
+				foreach ( $wc_notices as $wc_notice ) {
+					$this->set_notice( $wc_notice['notice'], 'error' );
+				}
+
+				wc_clear_notices();
 			}
 
-			wc_clear_notices();
+			$notices = apply_filters( 'xoo_wsc_notices_before_print', $this->notices );
 
+			$notice_html = sprintf(
+				'<div class="xoo-wsc-notice-container"><ul class="xoo-wsc-notices">%1$s</ul></div>',
+				implode( '', $notices )
+			);
+
+			$this->noticeHTML = apply_filters(
+				'xoo_wsc_print_notices_html',
+				$notice_html,
+				$this->notices
+			);
+
+			if ( $clean ) {
+				$this->notices = array();
+			}
 		}
 
-		$notices = apply_filters( 'xoo_wsc_notices_before_print', $this->notices, $section );
-
-		$notices_html = sprintf( '<div class="xoo-wsc-notice-container" data-section="%1$s"><ul class="xoo-wsc-notices">%2$s</ul></div>', $section, implode( '' , $notices )  );
-
-		echo apply_filters( 'xoo_wsc_print_notices_html', $notices_html, $notices, $section );
-		
-		if( $clean ){
-			$this->notices = array();
-		}
-
+		echo $this->noticeHTML;
 	}
 
 
@@ -130,12 +151,14 @@ class Xoo_Wsc_Cart{
 
 	public function update_item_quantity(){
 
+		$this->action = 'update';
+
 
 		$cart_key 	= sanitize_text_field( $_POST['cart_key'] );
 		$new_qty 	= (float) $_POST['qty'];
 
 		if( !is_numeric( $new_qty ) || $new_qty < 0 || !$cart_key ){
-			//$this->set_notice( __( 'Something went wrong', 'side-cart-woocommerce' ) );
+			$this->set_notice( __( 'Something went wrong', 'side-cart-woocommerce' ) );
 		}
 		
 		$validated = apply_filters( 'xoo_wsc_update_quantity', true, $cart_key, $new_qty );
@@ -144,20 +167,16 @@ class Xoo_Wsc_Cart{
 
 			$updated = $new_qty == 0 ? WC()->cart->remove_cart_item( $cart_key ) : WC()->cart->set_quantity( $cart_key, $new_qty );
 
-			if( $updated ){
+			if( $updated && in_array( 'notifications', $this->glSettings['sch-show'] ) ){
 
 				if( $new_qty == 0 ){
-
 					$notice = __( 'Item removed', 'side-cart-woocommerce' );
-
-					$notice .= '<span class="xoo-wsc-undo-item" data-key="'.$cart_key.'">'.__('Undo?','side-cart-woocommerce').'</span>';  
-
 				}
 				else{
 					$notice = __( 'Item updated', 'side-cart-woocommerce' );
 				}
 
-				//$this->set_notice( $notice, 'success' );
+				$this->set_notice( $notice, 'success' );
 				
 			}
 		}
@@ -172,6 +191,11 @@ class Xoo_Wsc_Cart{
 	public function set_ajax_fragments($fragments){
 
 		WC()->cart->calculate_totals();
+
+		ob_start();
+		xoo_wsc_helper()->get_template( 'global/markup-notice.php' );
+		$notice = ob_get_clean();
+		
 		
 		ob_start();
 		xoo_wsc_helper()->get_template( 'xoo-wsc-container.php' );
@@ -188,6 +212,7 @@ class Xoo_Wsc_Cart{
 		$fragments['div.xoo-wsc-container'] 		= $container; //Cart content
 		$fragments['div.xoo-wsc-slider'] 			= $slider;// Slider
 		$fragments['div.xoo-wsc-sc-cont'] 			= $shortcode;
+		$fragments['div.xoo-wsc-markup-notices'] 	= $notice;
 		
 		return $fragments;
 

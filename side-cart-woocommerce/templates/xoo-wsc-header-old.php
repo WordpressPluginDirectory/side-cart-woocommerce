@@ -23,10 +23,8 @@ extract( Xoo_Wsc_Template_Args::cart_header() );
 
 <div class="xoo-wsch-top">
 
-	<?php if( $showNotifications ): ?>
-		<?php xoo_wsc_cart()->print_notices_html( 'cart' ); ?>
-	<?php endif; ?>
-
+	<?php xoo_wsc_cart()->print_notices_html(); ?>
+	
 	<?php if( $showBasket ): ?>
 		<div class="xoo-wsch-basket">
 			<span class="xoo-wscb-icon xoo-wsc-icon-bag2"></span>

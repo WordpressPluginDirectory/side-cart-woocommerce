@@ -9,7 +9,7 @@
  * maintain compatibility. We try to do this as little as possible, but it does
  * happen.
  * @see     https://docs.xootix.com/side-cart-woocommerce/
- * @version 2.6.1
+ * @version 2.7.6
  */
 
 
@@ -31,7 +31,7 @@ extract( Xoo_Wsc_Template_Args::cart_body() );
 	}
 
 	if( $emptyText ){
-		$emptyHTML .= sprintf( '<span>%s</span>', $emptyText );
+		$emptyHTML .= sprintf( '<span class="xoo-wsc-emp-txt">%s</span>', $emptyText );
 	}
 
 	if( $shopURL && $shopBtnText ){

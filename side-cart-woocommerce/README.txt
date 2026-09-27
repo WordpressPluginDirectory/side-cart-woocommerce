@@ -1,14 +1,16 @@
 ===Side Cart Woocommerce | Woocommerce Cart===
 Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
-Tags: floating cart, cart popup, woocommerce, slider, rewards
+Tags: cart drawer,floating cart,cart slider,rewards
 Requires at least: 3.0.1
-Tested up to: 6.9
-Stable tag: 2.7.5
+Tested up to: 7.1
+Stable tag: 2.8.2
+Requires Plugins: woocommerce
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Manage your cart from just a click away with an interactive design
+A powerful side cart designed to make shopping faster and easier.
+Give customers instant cart access and a seamless checkout experience
 
 == Description ==
 [Live Demo](http://demo.xootix.com/side-cart-for-woocommerce/)
@@ -133,6 +135,25 @@ You can use any third party plugin such as Loco Translate for hassle free transl
 8. Change Shipping Pro
 
 == Changelog ==
+
+= 2.8.2 =
+* Fix - PHP 8.4 compatibility
+
+= 2.8.1 =
+* Fix - Issue with 3rd party ajax add to cart plugins causing crash
+* Fix - Error where WC()->cart is not available
+
+= 2.8.0 =
+* New Option - Quantity update feature is now available in the free version.
+
+= 2.7.7 =
+* New option - Button Themes
+* Improved settings UI
+
+= 2.7.6 =
+* New option - Information box
+* New option - Empty cart image
+* New option - disable ajax fragments and refresh cart only when cart is opened
 
 = 2.7.5 =
 * Fix - Count size not working 

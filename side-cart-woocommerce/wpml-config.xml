@@ -15,6 +15,7 @@
       <key name="scu-cart" />
       <key name="scu-checkout" />
       <key name="sct-subtotal" />
+      <key name="sct-info" />
       <key name="sct-footer" />
       <key name="sct-delete" />
       <key name="m-shop-url" />

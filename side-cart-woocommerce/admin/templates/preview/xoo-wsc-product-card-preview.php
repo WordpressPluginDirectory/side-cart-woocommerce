@@ -3,18 +3,20 @@
 <?php printf( '<a class="xoo-wsc-smr-link" href="#">%1$s</a>', '<i class="xoo-wsc-icon-external-link"></i>'. __( 'View', 'side-cart-woocommerce' ) ); ?>
 <?php $viewLinkHTML = ob_get_clean(); ?>
 
-<!-- Price HTML  -->
+<!-- Price HTML -->
 <?php ob_start(); ?>
+
 <# if ( data.product.showPprice && !data.product.oneLiner ) { #>
-	<div class="xoo-wsc-card-price">
+	<span class="xoo-wsc-card-price">
 		<?php echo __( 'Price: ', 'side-cart-woocommerce' ); ?>
-			<# if( data.product.priceType === "actual" ){ #>
+		<# if ( data.product.priceType === "actual" ) { #>
 			<?php echo $product_price; ?>
-		<# }else{ #>
-			<?php echo $product_sale_price ?>
+		<# } else { #>
+			<?php echo $product_sale_price; ?>
 		<# } #>
-	</div>
+	</span>
 <# } #>
+
 <?php $priceHTML = ob_get_clean(); ?>
 
 <!-- Total HTML -->
@@ -80,30 +82,46 @@
 
 <?php endif; ?>
 
-
-
 <!-- Quantity HTML -->
 <?php ob_start(); ?>
+
 <div class="xoo-wsc-qty-box-cont">
-	<# if ( data.product.oneLiner ) { #>
-		<div class="xoo-wsc-qty-price">
-			<span><?php echo $product_quantity; ?></span>
-			<span>X</span>
-			<span>
-				<# if( data.product.priceType === "actual" ){ #>
-					<?php echo $product_price; ?>
-				<# }else{ #>
-					<?php echo $product_sale_price ?>
-				<# } #>
-			</span>
-			<span>=</span>
-			<span><?php echo $product_subtotal ?></span>
+
+	<# if ( data.product.showPqty && data.product.updateQty ) { #>
+		<div class="xoo-wsc-qty-box xoo-wsc-qtb-{{{data.product.qtyDesign}}}">
+
+			<span class="xoo-wsc-minus xoo-wsc-chng">-</span>
+
+			<input type="number" class="xoo-wsc-qty" value="<?php echo esc_attr( $product_quantity ); ?>" />
+
+			<span class="xoo-wsc-plus xoo-wsc-chng">+</span>
+
 		</div>
 
 	<# }else{ #>
 
-		<# if ( data.product.showPqty ) { #>
-			<span class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <?php echo $product_quantity; ?></span>
+
+		<# if ( data.product.oneLiner ) { #>
+			<div class="xoo-wsc-qty-price">
+				<span><?php echo $product_quantity; ?></span>
+				<span>X</span>
+				<span>
+					<# if( data.product.priceType === "actual" ){ #>
+						<?php echo $product_price; ?>
+					<# }else{ #>
+						<?php echo $product_sale_price ?>
+					<# } #>
+				</span>
+				<span>=</span>
+				<span><?php echo $product_subtotal ?></span>
+			</div>
+
+		<# }else{ #>
+
+			<# if ( data.product.showPqty && !data.product.updateQty ) { #>
+				<span class="xoo-wsc-sml-qty"><?php _e( 'Qty:', 'side-cart-woocommerce' ) ?> <?php echo $product_quantity; ?></span>
+			<# } #>
+
 		<# } #>
 
 	<# } #>
@@ -111,6 +129,7 @@
 	<?php echo $totalHTML ?>
 
 </div>
+
 <?php $qtyHTML = ob_get_clean(); ?>
 
 
@@ -120,15 +139,18 @@
 
 		<div class="xoo-wsc-card-cont">
 
-			<# if ( data.product.showPdel ) { #>
+			<div class="xoo-wsc-card-actionbar">
 
-				<# if ( "icon" === data.product.deleteType  ) { #>
-					<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
-				<# }else{ #>
-					<span class="xoo-wsc-smr-del xoo-wsc-del-txt">{{data.product.deleteText}}</span>
+				<# if ( data.product.showPdel ) { #>
+					<# if ( "icon" === data.product.deleteType ) { #>
+						<span class="xoo-wsc-smr-del {{data.product.deleteIcon}}"></span>
+					<# }else{ #>
+						<span class="xoo-wsc-smr-del xoo-wsc-del-txt">{{data.product.deleteText}}</span>
+					<# } #>
+
 				<# } #>
 
-			<# } #>
+				</div>
 
 
 			<div class="xoo-wsc-img-col magictime">
@@ -171,7 +193,7 @@
 						<?php echo $qtyHTML; ?>
 					<# } #>
 
-					<# if ( data.card.backShow.total_save ) { #>
+						<# if ( data.card.backShow.total_save ) { #>
 						<?php echo $totalSavingsHTML; ?>
 					<# } #>
 
@@ -213,7 +235,7 @@
 				<?php echo $totalSavingsHTML; ?>
 			<# } #>
 
-			
+
 		</div>
 
 	</div>
